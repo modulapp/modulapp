@@ -1,0 +1,9 @@
+{
+    "module": {
+        "CREATED": "created",
+        "SETUP": "setup",
+        "ENABLED": "enabled",
+        "DISABLED": "disabled",
+        "DESTROYED": "destroyed"
+    }
+}
