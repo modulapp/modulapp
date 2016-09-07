@@ -1,5 +1,7 @@
 # Modulapp
 
+[![Build Status](https://travis-ci.org/modulapp/modulapp.svg?branch=master)](https://travis-ci.org/modulapp/modulapp)
+
 Modular application framework for node.js
 
 ## Overview
