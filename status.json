@@ -1,4 +1,11 @@
 {
+    "app": {
+        "CREATED": "created",
+        "RESOLVED": "resolved",
+        "SETUP": "setup",
+        "STARTED": "started",
+        "STOPPED": "stopped"
+    },
     "module": {
         "CREATED": "created",
         "SETUP": "setup",

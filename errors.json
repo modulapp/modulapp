@@ -1,4 +1,31 @@
 [{
+    "code": "ERR_APP_XXX",
+    "message": "Something's wrong."
+}, {
+    "code": "ERR_APP_000",
+    "message": "Not implemented yet."
+}, {
+    "code": "ERR_APP_001",
+    "message": "App already started, stop the app before resolving again."
+}, {
+    "code": "ERR_APP_002",
+    "message": "App already started, stop the app before setting up again."
+}, {
+    "code": "ERR_APP_003",
+    "message": "App already started, stop the app before starting again."
+}, {
+    "code": "ERR_APP_004",
+    "message": "App not started, cannot be stopped."
+}, {
+    "code": "ERR_APP_005",
+    "message": "App not stopped, cannot be destroyed."
+}, {
+    "code": "ERR_APP_006",
+    "message": "Cycles have been found in the dependency graph."
+}, {
+    "code": "ERR_APP_007",
+    "message": "Module dependencies are missing in the configuration."
+}, {
     "code": "ERR_MOD_000",
     "message": "Not implemented yet."
 }, {
