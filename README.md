@@ -1,5 +1,7 @@
 # Modulapp
 
+UNDER DEVELOPMENT
+
 Modular application framework for node.js
 
 ## Overview
@@ -29,4 +31,4 @@ The App manages the dependencies and the lifecycle of the modules.
 
 ## License
 
-    [MIT](LICENSE)
+    [MIT](LICENSE.md)
