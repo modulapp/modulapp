@@ -46,4 +46,25 @@
 }, {
     "code": "ERR_MOD_005",
     "message": "non-string argument cannot be accepted as dependencies."
+}, {
+    "code": "ERR_MOD_006",
+    "message": "ModuleWrapper cannot be instanciated with null or missing module and app arguments."
+}, {
+    "code": "ERR_MOD_007",
+    "message": "ModuleWrapper must be instanciated with an instance of Module."
+}, {
+    "code": "ERR_MOD_008",
+    "message": "ModuleWrapper must be instanciated with an instance of App."
+}, {
+    "code": "ERR_MOD_009",
+    "message": "Only an object argument is accepted as imports."
+}, {
+    "code": "ERR_MOD_010",
+    "message": "Options cannot be added to module wrapper after setup."
+}, {
+    "code": "ERR_MOD_011",
+    "message": "Imports cannot be added to module wrapper after setup."
+}, {
+    "code": "ERR_MOD_012",
+    "message": "Only ModuleWrapper instances can be part of the object argument for imports."
 }]
