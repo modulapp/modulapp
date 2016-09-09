@@ -31,4 +31,4 @@ The App manages the dependencies and the lifecycle of the modules.
 
 ## License
 
-    [MIT](LICENSE.md)
+[MIT](https://github.com/modulapp/modulapp/blob/master/LICENSE.md)
