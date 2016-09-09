@@ -280,7 +280,7 @@ describe('Module', function() {
         });
 
         it('should exist in the instance', function() {
-            (testModule).should.have.property('addOptions');
+            (testModule.addOptions).should.be.a.Function();
         });
 
         it('should handle empty argument', function() {
@@ -365,7 +365,7 @@ describe('Module', function() {
         });
 
         it('should exist in the instance', function() {
-            (testModule).should.have.property('addDependencies');
+            (testModule.addDependencies).should.be.a.Function();
         });
 
         it('should handle empty argument', function() {
@@ -525,7 +525,7 @@ describe('Module', function() {
     describe('#setup()', function() {
 
         it('should exist in the instance', function() {
-            (testModule).should.have.property('setup');
+            (testModule.setup).should.be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -552,7 +552,7 @@ describe('Module', function() {
     describe('#enable()', function() {
 
         it('should exist in the instance', function() {
-            (testModule).should.have.property('enable');
+            (testModule.enable).should.be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -579,7 +579,7 @@ describe('Module', function() {
     describe('#disable()', function() {
 
         it('should exist in the instance', function() {
-            (testModule).should.have.property('disable');
+            (testModule.disable).should.be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -606,7 +606,7 @@ describe('Module', function() {
     describe('#destroy()', function() {
 
         it('should exist in the instance', function() {
-            (testModule).should.have.property('destroy');
+            (testModule.destroy).should.be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -633,11 +633,11 @@ describe('Module', function() {
     describe('events', function() {
 
         it('#on() should exist in the instance', function() {
-            (testModule).should.have.property('on');
+            (testModule.on).should.be.a.Function();
         });
 
         it('#emit() should exist in the instance', function() {
-            (testModule).should.have.property('emit');
+            (testModule.emit).should.be.a.Function();
         });
 
         it('should allow emitting events', function(done) {
