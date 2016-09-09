@@ -36,10 +36,10 @@
     "message": "The module id must be provided."
 }, {
     "code": "ERR_MOD_002",
-    "message": "Options cannot be added to module after setup."
+    "message": "Options cannot be changed in module after setup."
 }, {
     "code": "ERR_MOD_003",
-    "message": "Dependencies cannot be added to module after setup."
+    "message": "Dependencies cannot be changed in module after setup."
 }, {
     "code": "ERR_MOD_004",
     "message": "Only an object argument is accepted as options."
@@ -60,10 +60,10 @@
     "message": "Only an object argument is accepted as imports."
 }, {
     "code": "ERR_MOD_010",
-    "message": "Options cannot be added to module wrapper after setup."
+    "message": "Options cannot be changed in module wrapper after setup."
 }, {
     "code": "ERR_MOD_011",
-    "message": "Imports cannot be added to module wrapper after setup."
+    "message": "Imports cannot be changed in module wrapper after setup."
 }, {
     "code": "ERR_MOD_012",
     "message": "Only ModuleWrapper instances can be part of the object argument for imports."

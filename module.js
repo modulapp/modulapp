@@ -24,18 +24,18 @@ class Module extends EventEmitter {
 
         super();
 
-        this.id = id;
-        this.status = status.CREATED;
+        this._id = id; // TODO Should be private
+        this._status = status.CREATED; // TODO Should be private
 
         if (_.isPlainObject(options)) {
             this._options = options;
         }
-        this._dependencies = [];
-        this._package = {};
+        this._dependencies = []; // TODO Should be private
+        this._package = {}; // TODO Should be private
 
         if (packagejson) {
-            this._package = packagejson;
-            this.version = this._package.version;
+            this._package = packagejson; // TODO Should be private
+            this._version = this._package.version; // TODO Should be private
             if (_.has(this._package, 'module.dependencies')) {
                 this._dependencies = this._package.module.dependencies;
             }
@@ -47,6 +47,88 @@ class Module extends EventEmitter {
         }
 
     }
+
+    // Static methods -----------------------------------------------------------------------------
+
+    static get events() {
+        return events;
+    }
+
+    static get status() {
+        return status;
+    }
+
+    // Getters and Setters ------------------------------------------------------------------------
+
+    get id() {
+        return this._id;
+    }
+
+    get status() {
+        return this._status;
+    }
+
+    get version() {
+        return this._version;
+    }
+
+    get options() {
+        return this._options;
+    }
+
+    set options(newOptions = {}) {
+        if (this.status !== status.CREATED) {
+            throw errors.ERR_MOD_002;
+        }
+        if (_.isNull(newOptions)) {
+            this._options = {};
+        } else if (_.isPlainObject(newOptions)) {
+            this._options = newOptions;
+        } else {
+            throw errors.ERR_MOD_004;
+        }
+    }
+
+    get dependencies() {
+        return this._dependencies;
+    }
+
+    set dependencies(newDependencies = []) {
+        // TODO check arguments
+        if (this.status !== status.CREATED) {
+            throw errors.ERR_MOD_003;
+        }
+        if (_.isNull(newDependencies)) {
+            this._dependencies = [];
+        } else if (_.isString(newDependencies)) {
+            this._dependencies = [newDependencies];
+        } else if (_.isArray(newDependencies)) {
+
+            newDependencies = _.flattenDeep(newDependencies);
+
+            _.remove(newDependencies, (value) => {
+                return _.isNull(value);
+            });
+            _.forEach(newDependencies, (value) => {
+                if (!_.isString(value)) {
+                    throw errors.ERR_MOD_005;
+                }
+            });
+            newDependencies = _.flattenDeep(newDependencies);
+            newDependencies = _.uniq(newDependencies);
+
+            this._dependencies = newDependencies;
+
+        } else {
+            throw errors.ERR_MOD_005;
+        }
+    }
+
+    get package() {
+        return this._package;
+    }
+
+    // Public instance methods --------------------------------------------------------------------
 
     addOptions(options = {}) {
         if (this.status !== status.CREATED) {
