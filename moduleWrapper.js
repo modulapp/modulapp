@@ -12,7 +12,7 @@ const Module = require('./module.js');
 
 class ModuleWrapper extends EventEmitter {
 
-    constructor(_module, app, imports = {}, options = {}) {
+    constructor(_module, app, options = {}, imports = {}) {
 
         if (_.isUndefined(_module) || _.isUndefined(app) || _.isNull(_module) || _.isNull(app)) {
             throw errors.ERR_MOD_006;
@@ -52,47 +52,52 @@ class ModuleWrapper extends EventEmitter {
         // Setup
         this._initialFuncSetup = this.module.setup;
         this.setup = _.bind(this._initialFuncSetup, this.module, this.app, this.options, this.imports);
-        _.unset(this.module, 'setup');
+        this.module.setup = undefined;
 
         // Enable
         this._initialFuncEnable = this.module.enable;
         this.enable = _.bind(this._initialFuncEnable, this.module, this.app, this.options, this
             .imports);
-        _.unset(this.module, 'enable');
+        this.module.enable = undefined;
 
         // Disable
         this._initialFuncDisable = this.module.disable;
         this.disable = _.bind(this._initialFuncDisable, this.module, this.app, this.options,
             this.imports);
-        _.unset(this.module, 'disable');
+        this.module.disable = undefined;
 
         // Destroy
         this._initialFuncDestroy = this.module.destroy;
         this.destroy = _.bind(this._initialFuncDestroy, this.module, this.app, this.options,
             this.imports);
-        _.unset(this.module, 'destroy');
+        this.module.destroy = undefined;
 
     }
 
     addOptions(newOptions = {}) {
         if (this.status !== status.CREATED) {
-            throw errors.ERR_MOD_XXX; // TODO define the error
+            throw errors.ERR_MOD_010;
         }
         if (_.isPlainObject(newOptions) || _.isNull(newOptions)) {
             this.options = _.merge(this.options, newOptions);
         } else {
-            throw errors.ERR_MOD_XXX; // TODO define the error
+            throw errors.ERR_MOD_004;
         }
     }
 
     addImports(newImports = {}) {
         if (this.status !== status.CREATED) {
-            throw errors.ERR_MOD_XXX; // TODO define the error
+            throw errors.ERR_MOD_011;
         }
         if (_.isPlainObject(newImports) || _.isNull(newImports)) {
+            _.forEach(newImports, (wrapperInstance) => {
+                if (!(wrapperInstance instanceof ModuleWrapper)) {
+                    throw errors.ERR_MOD_012;
+                }
+            });
             this.imports = _.merge(this.imports, newImports);
         } else {
-            throw errors.ERR_MOD_XXX; // TODO define the error
+            throw errors.ERR_MOD_009;
         }
     }
 
