@@ -8,6 +8,9 @@ describe('Module', function() {
     "use strict";
 
     let testModule;
+    let testWrapper = {
+        module: new Module("test")
+    };
 
     beforeEach('initialize testModule', function() {
         testModule = new Module('myModule');
@@ -55,7 +58,7 @@ describe('Module', function() {
             });
 
             it('should have a status', function() {
-                should(testModule.status).be.exactly('created');
+                should(testModule.status).be.exactly(Module.status.CREATED);
             });
 
             it('should have an undefined version', function() {
@@ -72,7 +75,7 @@ describe('Module', function() {
                 });
 
             it('should have no package information', function() {
-                should(testModule.package).be.empty();
+                should(testModule.package).be.Null();
             });
 
             describe('if another argument options', function() {
@@ -112,7 +115,7 @@ describe('Module', function() {
             });
 
             it('should have a status', function() {
-                should(testModule.status).be.exactly('created');
+                should(testModule.status).be.exactly(Module.status.CREATED);
             });
 
             it('should have a version', function() {
@@ -183,7 +186,7 @@ describe('Module', function() {
             });
 
             it('should have a status', function() {
-                should(testModule.status).be.exactly('created');
+                should(testModule.status).be.exactly(Module.status.CREATED);
             });
 
             it('should have a version', function() {
@@ -337,7 +340,7 @@ describe('Module', function() {
         });
 
         it('should throw an error if not in created status', function() {
-            testModule._status = 'otherThanCreated';
+            testModule._changeStatus(Module.status.ENABLED, testWrapper);
             (function() {
                 testModule.options = testOptions1;
             }).should.throw(errors.ERR_MOD_002);
@@ -359,7 +362,7 @@ describe('Module', function() {
 
         beforeEach('Clear options before each tests', function() {
             testModule.options = {};
-            testModule._status = 'created';
+            testModule._changeStatus(Module.status.CREATED, testWrapper);
         });
 
         it('should exist in the instance', function() {
@@ -430,7 +433,7 @@ describe('Module', function() {
         });
 
         it('should throw an error if not in created status', function() {
-            testModule._status = 'otherThanCreated';
+            testModule._changeStatus(Module.status.ENABLED, testWrapper);
             (function() {
                 testModule.addOptions(testOptions1);
             }).should.throw(errors.ERR_MOD_002);
@@ -560,10 +563,10 @@ describe('Module', function() {
         });
 
         it('should throw an error if not in created status', function() {
-            testModule._status = 'otherThanCreated';
+            testModule._changeStatus(Module.status.ENABLED, testWrapper);
             (function() {
                 testModule.dependencies = 'db';
-            }).should.throw(errors.ERR_MOD_003); // TODO
+            }).should.throw(errors.ERR_MOD_003);
         });
 
     });
@@ -572,7 +575,7 @@ describe('Module', function() {
 
         beforeEach('Clear dependencies before each tests', function() {
             testModule.dependencies = [];
-            testModule._status = 'created';
+            testModule._changeStatus(Module.status.CREATED, testWrapper);
         });
 
         it('should exist in the instance', function() {
@@ -725,10 +728,51 @@ describe('Module', function() {
         });
 
         it('should throw an error if not in created status', function() {
-            testModule._status = 'otherThanCreated';
+            testModule._changeStatus(Module.status.ENABLED, testWrapper);
             (function() {
                 testModule.addDependencies(['db', 'server']);
             }).should.throw(errors.ERR_MOD_003);
+        });
+
+    });
+
+    describe('#_changeStatus()', function() {
+
+        beforeEach('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
+
+        it('should exist in the instance', function() {
+            (testModule._changeStatus).should.be.a.Function();
+        });
+
+        it('should be used only from a ModuleWrapper instance', function() {
+            (function() {
+                testModule._changeStatus(Module.status.SETUP);
+            }).should.throw(errors.ERR_MOD_014);
+            (function() {
+                testModule._changeStatus(Module.status.ENABLED,
+                    testWrapper);
+            }).should.not.throw();
+        });
+
+        it('should only accept a string from the predefined list', function() {
+            (function() {
+                testModule._changeStatus('notACorrectStatus',
+                    testWrapper);
+            }).should.throw(errors.ERR_MOD_013);
+            (function() {
+                testModule._changeStatus(Module.status.SETUP,
+                    testWrapper);
+            }).should.not.throw();
+        });
+
+        it('should update the status', function() {
+            should(testModule.status).be.exactly(Module.status.CREATED);
+            testModule._changeStatus(Module.status.SETUP, testWrapper);
+            should(testModule.status).be.exactly(Module.status.SETUP);
+            testModule._changeStatus(Module.status.ENABLED, testWrapper);
+            should(testModule.status).be.exactly(Module.status.ENABLED);
         });
 
     });

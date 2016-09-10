@@ -67,4 +67,10 @@
 }, {
     "code": "ERR_MOD_012",
     "message": "Only ModuleWrapper instances can be part of the object argument for imports."
+}, {
+    "code": "ERR_MOD_013",
+    "message": "The status must be one of the defined status."
+}, {
+    "code": "ERR_MOD_014",
+    "message": "The status update can only be done from its internal wrapper."
 }]

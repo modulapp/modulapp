@@ -7,9 +7,44 @@ const errors = require('./errors');
 const events = require('./events.json').module;
 const status = require('./status.json').module;
 
+const privateProps = new WeakMap();
+
+// Private functions ------------------------------------------------------------------------------
+
+function checkDependencies(dependencies) {
+
+    if (_.isNull(dependencies)) {
+        return [];
+    } else if (_.isString(dependencies)) {
+        return [dependencies];
+    } else if (_.isArray(dependencies)) {
+
+        dependencies = _.flattenDeep(dependencies);
+
+        _.remove(dependencies, (value) => {
+            return _.isNull(value);
+        });
+        _.forEach(dependencies, (value) => {
+            if (!_.isString(value)) {
+                throw errors.ERR_MOD_005;
+            }
+        });
+        dependencies = _.flattenDeep(dependencies);
+        dependencies = _.uniq(dependencies);
+
+        return dependencies;
+
+    } else {
+        throw errors.ERR_MOD_005;
+    }
+
+}
+
+// Class definition -------------------------------------------------------------------------------
+
 class Module extends EventEmitter {
 
-    constructor(id, options = {}) {
+    constructor(id, initialOptions = {}) {
 
         let packagejson = null;
 
@@ -24,27 +59,34 @@ class Module extends EventEmitter {
 
         super();
 
-        this._id = id; // TODO Should be private
-        this._status = status.CREATED; // TODO Should be private
+        let version;
+        let options = {};
+        let dependencies = [];
 
-        if (_.isPlainObject(options)) {
-            this._options = options;
+        if (_.isPlainObject(initialOptions)) {
+            options = initialOptions;
         }
-        this._dependencies = []; // TODO Should be private
-        this._package = {}; // TODO Should be private
 
         if (packagejson) {
-            this._package = packagejson; // TODO Should be private
-            this._version = this._package.version; // TODO Should be private
-            if (_.has(this._package, 'module.dependencies')) {
-                this._dependencies = this._package.module.dependencies;
+            version = packagejson.version;
+            if (_.has(packagejson, 'module.dependencies')) {
+                dependencies = checkDependencies(packagejson.module.dependencies);
             }
-            if (_.has(this._package, 'module.options')) {
-                if (_.isPlainObject(this._package.module.options)) {
-                    this._options = _.merge(this._options, this._package.module.options);
+            if (_.has(packagejson, 'module.options')) {
+                if (_.isPlainObject(packagejson.module.options)) {
+                    options = _.merge(options, packagejson.module.options);
                 }
             }
         }
+
+        privateProps.set(this, {
+            id: id,
+            status: status.CREATED,
+            version: version,
+            options: options,
+            dependencies: dependencies,
+            package: packagejson
+        });
 
     }
 
@@ -61,71 +103,49 @@ class Module extends EventEmitter {
     // Getters and Setters ------------------------------------------------------------------------
 
     get id() {
-        return this._id;
+        return privateProps.get(this).id;
     }
 
     get status() {
-        return this._status;
+        return privateProps.get(this).status;
     }
 
     get version() {
-        return this._version;
+        return privateProps.get(this).version;
     }
 
     get options() {
-        return this._options;
+        return privateProps.get(this).options;
     }
 
     set options(newOptions = {}) {
         if (this.status !== status.CREATED) {
             throw errors.ERR_MOD_002;
         }
+        let props = privateProps.get(this);
         if (_.isNull(newOptions)) {
-            this._options = {};
+            props.options = {};
         } else if (_.isPlainObject(newOptions)) {
-            this._options = newOptions;
+            props.options = newOptions;
         } else {
             throw errors.ERR_MOD_004;
         }
+        privateProps.set(this, props);
     }
 
     get dependencies() {
-        return this._dependencies;
+        return privateProps.get(this).dependencies;
     }
 
     set dependencies(newDependencies = []) {
-        // TODO check arguments
         if (this.status !== status.CREATED) {
             throw errors.ERR_MOD_003;
         }
-        if (_.isNull(newDependencies)) {
-            this._dependencies = [];
-        } else if (_.isString(newDependencies)) {
-            this._dependencies = [newDependencies];
-        } else if (_.isArray(newDependencies)) {
-
-            newDependencies = _.flattenDeep(newDependencies);
-
-            _.remove(newDependencies, (value) => {
-                return _.isNull(value);
-            });
-            _.forEach(newDependencies, (value) => {
-                if (!_.isString(value)) {
-                    throw errors.ERR_MOD_005;
-                }
-            });
-            newDependencies = _.flattenDeep(newDependencies);
-            newDependencies = _.uniq(newDependencies);
-
-            this._dependencies = newDependencies;
-
-        } else {
-            throw errors.ERR_MOD_005;
-        }
+        privateProps.get(this).dependencies = checkDependencies(newDependencies);
     }
 
     get package() {
-        return this._package;
+        return privateProps.get(this).package;
     }
 
     // Public instance methods --------------------------------------------------------------------
@@ -135,7 +155,7 @@ class Module extends EventEmitter {
             throw errors.ERR_MOD_002;
         }
         if (_.isPlainObject(options) || _.isNull(options)) {
-            this._options = _.merge(this._options, options);
+            this.options = _.merge(this.options, options);
         } else {
             throw errors.ERR_MOD_004;
         }
@@ -145,18 +165,25 @@ class Module extends EventEmitter {
         if (this.status !== status.CREATED) {
             throw errors.ERR_MOD_003;
         }
+        dependencies = checkDependencies(dependencies);
+        dependencies = _.concat(this.dependencies, dependencies);
         dependencies = _.flattenDeep(dependencies);
-        _.remove(dependencies, (value) => {
-            return _.isNull(value);
-        });
-        _.forEach(dependencies, (value) => {
-            if (!_.isString(value)) {
-                throw errors.ERR_MOD_005;
-            }
-        });
-        this._dependencies = _.concat(this._dependencies, dependencies);
-        this._dependencies = _.flattenDeep(this._dependencies);
-        this._dependencies = _.uniq(this._dependencies);
+        dependencies = _.uniq(dependencies);
+        this.dependencies = dependencies;
+    }
+
+    _changeStatus(newStatus, wrapper) {
+        if (!_.has(wrapper, 'module')) {
+            throw errors.ERR_MOD_014;
+        }
+
+        if (!_.includes(status, newStatus)) {
+            throw errors.ERR_MOD_013;
+        }
+
+        let props = privateProps.get(this);
+        props.status = newStatus;
+        privateProps.set(this, props);
     }
 
     setup(app, options, imports, done) {
