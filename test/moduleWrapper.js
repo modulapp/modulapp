@@ -6,7 +6,7 @@ const App = require('../app.js');
 
 const ModuleWrapper = require('../moduleWrapper.js');
 
-describe.skip('ModuleWrapper', function() {
+describe('ModuleWrapper', function() {
     "use strict";
 
     let wrapper;
@@ -157,75 +157,6 @@ describe.skip('ModuleWrapper', function() {
                 (wrapper).should.have.property('dependencies');
             });
 
-            describe('wrapped module', function() {
-
-                it('should still have an id property', function() {
-                    (wrapper.module).should.have.property(
-                        'id', 'testModule');
-                });
-
-                it('should still have a status property', function() {
-                    (wrapper.module).should.have.property(
-                        'status', 'created');
-                });
-
-                it('should still have a version property', function() {
-                    (wrapper.module).should.have.property(
-                        'version', '1.0.0');
-                });
-
-                it('should not have a _options property', function() {
-                    (wrapper.module).should.not.have.property(
-                        '_options');
-                });
-
-                it('should not have a _dependencies property',
-                    function() {
-                        (wrapper.module).should.not.have.property(
-                            '_dependencies');
-                    });
-
-                it('should not have a _package property', function() {
-                    (wrapper.module).should.not.have.property(
-                        '_package');
-                });
-
-            });
-
-            describe('original object of wrapped module', function() {
-
-                it('should still have an id property', function() {
-                    (testModule).should.have.property(
-                        'id', 'testModule');
-                });
-
-                it('should still have a status property', function() {
-                    (testModule).should.have.property(
-                        'status', 'created');
-                });
-
-                it('should still have a version property', function() {
-                    (testModule).should.have.property(
-                        'version', '1.0.0');
-                });
-
-                it('should not have a _options property', function() {
-                    (testModule).should.not.have.property(
-                        '_options');
-                });
-
-                it('should not have a _dependencies property',
-                    function() {
-                        (testModule).should.not.have.property(
-                            '_dependencies');
-                    });
-
-                it('should not have a _package property', function() {
-                    (testModule).should.not.have.property(
-                        '_package');
-                });
-            });
-
         });
 
         describe('with optional arguments', function() {
@@ -274,75 +205,6 @@ describe.skip('ModuleWrapper', function() {
 
             it('should have a dependencies property', function() {
                 (wrapper).should.have.property('dependencies');
-            });
-
-            describe('wrapped module', function() {
-
-                it('should still have an id property', function() {
-                    (wrapper.module).should.have.property(
-                        'id', 'testModule');
-                });
-
-                it('should still have a status property', function() {
-                    (wrapper.module).should.have.property(
-                        'status', 'created');
-                });
-
-                it('should still have a version property', function() {
-                    (wrapper.module).should.have.property(
-                        'version', '1.0.0');
-                });
-
-                it('should not have a _options property', function() {
-                    (wrapper.module).should.not.have.property(
-                        '_options');
-                });
-
-                it('should not have a _dependencies property',
-                    function() {
-                        (wrapper.module).should.not.have.property(
-                            '_dependencies');
-                    });
-
-                it('should not have a _package property', function() {
-                    (wrapper.module).should.not.have.property(
-                        '_package');
-                });
-
-            });
-
-            describe('original object of wrapped module', function() {
-
-                it('should still have an id property', function() {
-                    (testModule).should.have.property(
-                        'id', 'testModule');
-                });
-
-                it('should still have a status property', function() {
-                    (testModule).should.have.property(
-                        'status', 'created');
-                });
-
-                it('should still have a version property', function() {
-                    (testModule).should.have.property(
-                        'version', '1.0.0');
-                });
-
-                it('should not have a _options property', function() {
-                    (testModule).should.not.have.property(
-                        '_options');
-                });
-
-                it('should not have a _dependencies property',
-                    function() {
-                        (testModule).should.not.have.property(
-                            '_dependencies');
-                    });
-
-                it('should not have a _package property', function() {
-                    (testModule).should.not.have.property(
-                        '_package');
-                });
             });
 
         });

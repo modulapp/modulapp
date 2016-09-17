@@ -32,20 +32,16 @@ class ModuleWrapper extends EventEmitter {
         this.app = app;
         this.imports = imports;
 
+        // Get properties from module
+
         this.id = this.module.id;
-        if (_.has(this.module, 'version')) {
+        if (_.isString(this.module.version)) {
             this.version = this.module.version;
         }
         this.status = status.CREATED;
-
-        // Get properties then remove them from module
-
-        this.options = _.merge(options, this.module._options);
-        _.unset(this.module, '_options');
-        this.package = this.module._package;
-        _.unset(this.module, '_package');
-        this.dependencies = this.module._dependencies;
-        _.unset(this.module, '_dependencies');
+        this.options = _.merge(options, this.module.options);
+        this.package = this.module.package;
+        this.dependencies = this.module.dependencies;
 
         // Get lifecycle functions then remove them from module
 
