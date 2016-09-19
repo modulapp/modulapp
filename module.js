@@ -3,9 +3,9 @@
 const EventEmitter = require('events').EventEmitter;
 const _ = require('lodash');
 
-const errors = require('./errors');
-const events = require('./events.json').module;
-const status = require('./status.json').module;
+const _errors = require('./errors');
+const _events = require('./events.json').module;
+const _status = require('./status.json').module;
 
 const privateProps = new WeakMap();
 
@@ -26,7 +26,7 @@ function checkDependencies(dependencies) {
         });
         _.forEach(dependencies, (value) => {
             if (!_.isString(value)) {
-                throw errors.ERR_MOD_005;
+                throw _errors.ERR_MOD_005;
             }
         });
         dependencies = _.flattenDeep(dependencies);
@@ -35,7 +35,7 @@ function checkDependencies(dependencies) {
         return dependencies;
 
     } else {
-        throw errors.ERR_MOD_005;
+        throw _errors.ERR_MOD_005;
     }
 
 }
@@ -54,7 +54,7 @@ class Module extends EventEmitter {
         }
 
         if (!id) {
-            throw errors.ERR_MOD_001;
+            throw _errors.ERR_MOD_001;
         }
 
         super();
@@ -81,7 +81,7 @@ class Module extends EventEmitter {
 
         privateProps.set(this, {
             id: id,
-            status: status.CREATED,
+            status: _status.CREATED,
             version: version,
             options: options,
             dependencies: dependencies,
@@ -93,11 +93,11 @@ class Module extends EventEmitter {
     // Static methods -----------------------------------------------------------------------------
 
     static get events() {
-        return events;
+        return _events;
     }
 
     static get status() {
-        return status;
+        return _status;
     }
 
     // Getters and Setters ------------------------------------------------------------------------
@@ -119,8 +119,8 @@ class Module extends EventEmitter {
     }
 
     set options(newOptions = {}) {
-        if (this.status !== status.CREATED) {
-            throw errors.ERR_MOD_002;
+        if (this.status !== _status.CREATED) {
+            throw _errors.ERR_MOD_002;
         }
         let props = privateProps.get(this);
         if (_.isNull(newOptions)) {
@@ -128,7 +128,7 @@ class Module extends EventEmitter {
         } else if (_.isPlainObject(newOptions)) {
             props.options = newOptions;
         } else {
-            throw errors.ERR_MOD_004;
+            throw _errors.ERR_MOD_004;
         }
         privateProps.set(this, props);
     }
@@ -138,8 +138,8 @@ class Module extends EventEmitter {
     }
 
     set dependencies(newDependencies = []) {
-        if (this.status !== status.CREATED) {
-            throw errors.ERR_MOD_003;
+        if (this.status !== _status.CREATED) {
+            throw _errors.ERR_MOD_003;
         }
         privateProps.get(this).dependencies = checkDependencies(newDependencies);
     }
@@ -151,19 +151,19 @@ class Module extends EventEmitter {
     // Public instance methods --------------------------------------------------------------------
 
     addOptions(options = {}) {
-        if (this.status !== status.CREATED) {
-            throw errors.ERR_MOD_002;
+        if (this.status !== _status.CREATED) {
+            throw _errors.ERR_MOD_002;
         }
         if (_.isPlainObject(options) || _.isNull(options)) {
             this.options = _.merge(this.options, options);
         } else {
-            throw errors.ERR_MOD_004;
+            throw _errors.ERR_MOD_004;
         }
     }
 
     addDependencies(...dependencies) {
-        if (this.status !== status.CREATED) {
-            throw errors.ERR_MOD_003;
+        if (this.status !== _status.CREATED) {
+            throw _errors.ERR_MOD_003;
         }
         dependencies = checkDependencies(dependencies);
         dependencies = _.concat(this.dependencies, dependencies);
@@ -174,11 +174,11 @@ class Module extends EventEmitter {
 
     _changeStatus(newStatus, wrapper) {
         if (!_.has(wrapper, 'module')) {
-            throw errors.ERR_MOD_014;
+            throw _errors.ERR_MOD_014;
         }
 
-        if (!_.includes(status, newStatus)) {
-            throw errors.ERR_MOD_013;
+        if (!_.includes(_status, newStatus)) {
+            throw _errors.ERR_MOD_013;
         }
 
         let props = privateProps.get(this);
