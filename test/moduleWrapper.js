@@ -1,4 +1,5 @@
 const should = require('should');
+const sinon = require('sinon');
 const _ = require('lodash');
 const errors = require('../errors.js');
 const Module = require('../module.js');
@@ -48,47 +49,48 @@ describe('ModuleWrapper', function() {
         describe('with illegal arguments', function() {
 
             it('should throw an error with no argument', function() {
-                (function() {
+                should(function() {
                     wrapper = new ModuleWrapper();
-                }).should.throw(errors.ERR_MOD_006);
+                }).throw(errors.ERR_MOD_006);
             });
 
             it('should throw an error with a null as 1st argument',
                 function() {
-                    (function() {
+                    should(function() {
                         wrapper = new ModuleWrapper(null, app);
-                    }).should.throw(errors.ERR_MOD_006);
+                    }).throw(errors.ERR_MOD_006);
                 });
 
             it('should throw an error with a null as 2nd argument',
                 function() {
-                    (function() {
+                    should(function() {
                         wrapper = new ModuleWrapper(testModule,
                             null);
-                    }).should.throw(errors.ERR_MOD_006);
+                    }).throw(errors.ERR_MOD_006);
                 });
 
             it(
                 'should throw an error if 1st argument is not a Module instance',
                 function() {
-                    (function() {
+                    should(function() {
                         let notModule = {
                             id: 'a'
                         };
-                        wrapper = new ModuleWrapper(notModule, app);
-                    }).should.throw(errors.ERR_MOD_007);
+                        wrapper = new ModuleWrapper(notModule,
+                            app);
+                    }).throw(errors.ERR_MOD_007);
                 });
 
             it(
                 'should throw an error if 2nd argument is not an App instance',
                 function() {
-                    (function() {
+                    should(function() {
                         let notApp = {
                             id: 'a'
                         };
                         wrapper = new ModuleWrapper(testModule,
                             notApp);
-                    }).should.throw(errors.ERR_MOD_008);
+                    }).throw(errors.ERR_MOD_008);
                 });
 
         });
@@ -118,15 +120,15 @@ describe('ModuleWrapper', function() {
             });
 
             it('should have an id property', function() {
-                (wrapper).should.have.property('id', 'testModule');
+                should(wrapper).have.property('id', 'testModule');
             });
 
             it('should have a status property ("created")', function() {
-                (wrapper).should.have.property('status', 'created');
+                should(wrapper).have.property('status', 'created');
             });
 
             it('should have a version property', function() {
-                (wrapper).should.have.property('version', '1.0.0');
+                should(wrapper).have.property('version', '1.0.0');
             });
 
             it('should have a module property', function() {
@@ -138,23 +140,23 @@ describe('ModuleWrapper', function() {
             });
 
             it('should have an empty object imports property', function() {
-                (wrapper.imports).should.be.empty();
+                should(wrapper.imports).be.empty();
             });
 
             it('should have an options property', function() {
-                (wrapper.options).should.have.properties([
+                should(wrapper.options).have.properties([
                     'db_url', 'db_port'
                 ]);
             });
 
             it('should have a package property', function() {
-                (wrapper.package).should.have.properties([
+                should(wrapper.package).have.properties([
                     'name', 'version', 'module'
                 ]);
             });
 
             it('should have a dependencies property', function() {
-                (wrapper).should.have.property('dependencies');
+                should(wrapper).have.property('dependencies');
             });
 
         });
@@ -229,79 +231,79 @@ describe('ModuleWrapper', function() {
         });
 
         it('should exist in the instance', function() {
-            (wrapper.addOptions).should.be.a.Function();
+            should(wrapper.addOptions).be.a.Function();
         });
 
         it('should handle empty argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addOptions();
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle null argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addOptions(null);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle empty object argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addOptions({});
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should not accept non-object argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addOptions([]);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 wrapper.addOptions(['new option']);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 wrapper.addOptions('new option');
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 wrapper.addOptions(123);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 wrapper.addOptions(true);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 wrapper.addOptions(function() {});
-            }).should.throw(errors.ERR_MOD_004);
+            }).throw(errors.ERR_MOD_004);
         });
 
         it('should accept an object argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addOptions(testOptions1);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should merge argument object with existing options', function() {
-            (wrapper.options).should.not.have.property('db_url');
-            (wrapper.options).should.not.have.property('db_port');
-            (wrapper.options).should.not.have.property('timeout');
+            should(wrapper.options).not.have.property('db_url');
+            should(wrapper.options).not.have.property('db_port');
+            should(wrapper.options).not.have.property('timeout');
 
             wrapper.addOptions(testOptions1);
 
-            (wrapper.options).should.have.property('db_url',
+            should(wrapper.options).have.property('db_url',
                 'localhost');
-            (wrapper.options).should.have.property('db_port', 8080);
-            (wrapper.options).should.not.have.property('timeout');
+            should(wrapper.options).have.property('db_port', 8080);
+            should(wrapper.options).not.have.property('timeout');
 
             wrapper.addOptions(testOptions2);
 
-            (wrapper.options).should.have.property('db_url',
+            should(wrapper.options).have.property('db_url',
                 '127.0.0.0');
-            (wrapper.options).should.have.property('db_port', 8080);
-            (wrapper.options).should.have.property('timeout', 1000);
+            should(wrapper.options).have.property('db_port', 8080);
+            should(wrapper.options).have.property('timeout', 1000);
         });
 
         it('should throw an error if not in created status', function() {
             wrapper.status = 'otherThanCreated';
-            (function() {
+            should(function() {
                 wrapper.addOptions(testOptions1);
-            }).should.throw(errors.ERR_MOD_010);
+            }).throw(errors.ERR_MOD_010);
         });
 
     });
@@ -328,52 +330,52 @@ describe('ModuleWrapper', function() {
         });
 
         it('should exist in the instance', function() {
-            (wrapper.addImports).should.be.a.Function();
+            should(wrapper.addImports).be.a.Function();
         });
 
         it('should handle empty argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addImports();
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle null argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addImports(null);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle empty object argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addImports({});
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should not accept non-object argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addImports([]);
-            }).should.throw(errors.ERR_MOD_009);
-            (function() {
+            }).throw(errors.ERR_MOD_009);
+            should(function() {
                 wrapper.addImports(['new option']);
-            }).should.throw(errors.ERR_MOD_009);
-            (function() {
+            }).throw(errors.ERR_MOD_009);
+            should(function() {
                 wrapper.addImports('new option');
-            }).should.throw(errors.ERR_MOD_009);
-            (function() {
+            }).throw(errors.ERR_MOD_009);
+            should(function() {
                 wrapper.addImports(123);
-            }).should.throw(errors.ERR_MOD_009);
-            (function() {
+            }).throw(errors.ERR_MOD_009);
+            should(function() {
                 wrapper.addImports(true);
-            }).should.throw(errors.ERR_MOD_009);
-            (function() {
+            }).throw(errors.ERR_MOD_009);
+            should(function() {
                 wrapper.addImports(function() {});
-            }).should.throw(errors.ERR_MOD_009);
+            }).throw(errors.ERR_MOD_009);
         });
 
         it('should accept an object as argument', function() {
-            (function() {
+            should(function() {
                 wrapper.addImports(testImports1); // TODO
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it(
@@ -382,34 +384,34 @@ describe('ModuleWrapper', function() {
                 const nonWrapperImport = {
                     logger: 'logger'
                 };
-                (function() {
+                should(function() {
                     wrapper.addImports(nonWrapperImport);
-                }).should.throw(errors.ERR_MOD_012);
+                }).throw(errors.ERR_MOD_012);
             });
 
         it('should merge argument object with existing imports', function() {
-            (wrapper.imports).should.not.have.property('logger');
-            (wrapper.imports).should.not.have.property('db');
-            (wrapper.imports).should.not.have.property('server');
+            should(wrapper.imports).not.have.property('logger');
+            should(wrapper.imports).not.have.property('db');
+            should(wrapper.imports).not.have.property('server');
 
             wrapper.addImports(testImports1);
 
-            (wrapper.imports).should.have.property('logger');
-            (wrapper.imports).should.have.property('db');
-            (wrapper.imports).should.not.have.property('server');
+            should(wrapper.imports).have.property('logger');
+            should(wrapper.imports).have.property('db');
+            should(wrapper.imports).not.have.property('server');
 
             wrapper.addImports(testImports2);
 
-            (wrapper.imports).should.have.property('logger');
-            (wrapper.imports).should.have.property('db');
-            (wrapper.imports).should.have.property('server');
+            should(wrapper.imports).have.property('logger');
+            should(wrapper.imports).have.property('db');
+            should(wrapper.imports).have.property('server');
         });
 
         it('should throw an error if not in created status', function() {
             wrapper.status = 'otherThanCreated';
-            (function() {
+            should(function() {
                 wrapper.addImports();
-            }).should.throw(errors.ERR_MOD_011);
+            }).throw(errors.ERR_MOD_011);
         });
 
     });
@@ -417,7 +419,7 @@ describe('ModuleWrapper', function() {
     describe('#setup()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.setup).should.be.a.Function();
+            should(wrapper.setup).be.a.Function();
         });
 
         it('should not be available in the wrapped module', function() {
@@ -434,7 +436,7 @@ describe('ModuleWrapper', function() {
     describe('#enable()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.enable).should.be.a.Function();
+            should(wrapper.enable).be.a.Function();
         });
 
         it('should not be available in the wrapped module', function() {
@@ -451,7 +453,7 @@ describe('ModuleWrapper', function() {
     describe('#disable()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.disable).should.be.a.Function();
+            should(wrapper.disable).be.a.Function();
         });
 
         it('should not be available in the wrapped module', function() {
@@ -468,7 +470,7 @@ describe('ModuleWrapper', function() {
     describe('#destroy()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.destroy).should.be.a.Function();
+            should(wrapper.destroy).be.a.Function();
         });
 
         it('should not be available in the wrapped module', function() {
@@ -485,7 +487,7 @@ describe('ModuleWrapper', function() {
     describe('#setupModule()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.setupModule).should.be.a.Function();
+            should(wrapper.setupModule).be.a.Function();
         });
 
     });
@@ -493,7 +495,7 @@ describe('ModuleWrapper', function() {
     describe('#enableModule()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.enableModule).should.be.a.Function();
+            should(wrapper.enableModule).be.a.Function();
         });
 
     });
@@ -501,7 +503,7 @@ describe('ModuleWrapper', function() {
     describe('#disableModule()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.disableModule).should.be.a.Function();
+            should(wrapper.disableModule).be.a.Function();
         });
 
     });
@@ -509,7 +511,7 @@ describe('ModuleWrapper', function() {
     describe('#destroyModule()', function() {
 
         it('should exist in the instance', function() {
-            (wrapper.destroyModule).should.be.a.Function();
+            should(wrapper.destroyModule).be.a.Function();
         });
 
     });

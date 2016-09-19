@@ -22,26 +22,26 @@ describe('Module', function() {
 
             it('should throw an error with no argument', function() {
 
-                (function() {
+                should(function() {
                     testModule = new Module();
-                }).should.throw(errors.ERR_MOD_001);
+                }).throw(errors.ERR_MOD_001);
 
             });
 
             it('should throw an error with null argument', function() {
 
-                (function() {
+                should(function() {
                     testModule = new Module(null);
-                }).should.throw(errors.ERR_MOD_001);
+                }).throw(errors.ERR_MOD_001);
 
             });
 
             it('should throw an error with an empty String (\'\') argument',
                 function() {
 
-                    (function() {
+                    should(function() {
                         testModule = new Module('');
-                    }).should.throw(errors.ERR_MOD_001);
+                    }).throw(errors.ERR_MOD_001);
 
                 });
 
@@ -271,54 +271,54 @@ describe('Module', function() {
         });
 
         it('should handle empty value', function() {
-            (function() {
+            should(function() {
                 testModule.options = undefined;
-            }).should.not.throw();
+            }).not.throw();
             should(testModule.options).be.an.Object();
             should(testModule.options).be.empty();
         });
 
         it('should handle null value', function() {
-            (function() {
+            should(function() {
                 testModule.options = null;
-            }).should.not.throw();
+            }).not.throw();
             should(testModule.options).be.an.Object();
             should(testModule.options).be.empty();
         });
 
         it('should handle empty object', function() {
-            (function() {
+            should(function() {
                 testModule.options = {};
-            }).should.not.throw();
+            }).not.throw();
             should(testModule.options).be.an.Object();
             should(testModule.options).be.empty();
         });
 
         it('should not accept non-object value', function() {
-            (function() {
+            should(function() {
                 testModule.options = [];
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.options = ['new option'];
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.options = 'new option';
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.options = 123;
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.options = true;
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.options = function() {};
-            }).should.throw(errors.ERR_MOD_004);
+            }).throw(errors.ERR_MOD_004);
         });
 
         it('should accept an object value', function() {
-            (function() {
+            should(function() {
                 testModule.options = testOptions1;
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should replace existing options', function() {
@@ -341,9 +341,9 @@ describe('Module', function() {
 
         it('should throw an error if not in created status', function() {
             testModule._changeStatus(Module.status.ENABLED, testWrapper);
-            (function() {
+            should(function() {
                 testModule.options = testOptions1;
-            }).should.throw(errors.ERR_MOD_002);
+            }).throw(errors.ERR_MOD_002);
         });
 
     });
@@ -370,48 +370,48 @@ describe('Module', function() {
         });
 
         it('should handle empty argument', function() {
-            (function() {
+            should(function() {
                 testModule.addOptions();
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle null argument', function() {
-            (function() {
+            should(function() {
                 testModule.addOptions(null);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle empty object argument', function() {
-            (function() {
+            should(function() {
                 testModule.addOptions({});
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should not accept non-object argument', function() {
-            (function() {
+            should(function() {
                 testModule.addOptions([]);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.addOptions(['new option']);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.addOptions('new option');
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.addOptions(123);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.addOptions(true);
-            }).should.throw(errors.ERR_MOD_004);
-            (function() {
+            }).throw(errors.ERR_MOD_004);
+            should(function() {
                 testModule.addOptions(function() {});
-            }).should.throw(errors.ERR_MOD_004);
+            }).throw(errors.ERR_MOD_004);
         });
 
         it('should accept an object argument', function() {
-            (function() {
+            should(function() {
                 testModule.addOptions(testOptions1);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should merge argument object with existing options', function() {
@@ -434,9 +434,9 @@ describe('Module', function() {
 
         it('should throw an error if not in created status', function() {
             testModule._changeStatus(Module.status.ENABLED, testWrapper);
-            (function() {
+            should(function() {
                 testModule.addOptions(testOptions1);
-            }).should.throw(errors.ERR_MOD_002);
+            }).throw(errors.ERR_MOD_002);
         });
 
     });
@@ -444,70 +444,70 @@ describe('Module', function() {
     describe('setter dependencies', function() {
 
         it('should handle empty value', function() {
-            (function() {
+            should(function() {
                 testModule.dependencies = undefined;
-            }).should.not.throw();
+            }).not.throw();
             should(testModule.dependencies).be.an.Array();
             should(testModule.dependencies).be.empty();
         });
 
         it('should handle null value', function() {
-            (function() {
+            should(function() {
                 testModule.dependencies = null;
-            }).should.not.throw();
+            }).not.throw();
             should(testModule.dependencies).be.an.Array();
             should(testModule.dependencies).be.empty();
         });
 
         it('should handle empty array value', function() {
-            (function() {
+            should(function() {
                 testModule.dependencies = [];
-            }).should.not.throw();
+            }).not.throw();
             should(testModule.dependencies).be.an.Array();
             should(testModule.dependencies).be.empty();
         });
 
         it('should accept a string argument', function() {
-            (function() {
+            should(function() {
                 testModule.dependencies = 'logger';
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should accept an array of string value', function() {
-            (function() {
+            should(function() {
                 testModule.dependencies = ['logger'];
-            }).should.not.throw();
-            (function() {
+            }).not.throw();
+            should(function() {
                 testModule.dependencies = ['db', 'server'];
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should not accept a non-string value', function() {
-            (function() {
+            should(function() {
                 testModule.dependencies = 123;
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.dependencies = {
                     a: 'a'
                 };
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.dependencies = true;
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.dependencies = function() {};
-            }).should.throw(errors.ERR_MOD_005);
+            }).throw(errors.ERR_MOD_005);
         });
 
         it('should not accept an array of non-string value', function() {
             const nonStringArray = [123, 456];
             const mixArray = ['a', 123];
-            (function() {
+            should(function() {
                 testModule.dependencies = nonStringArray;
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.dependencies = mixArray;
-            }).should.throw(errors.ERR_MOD_005);
+            }).throw(errors.ERR_MOD_005);
         });
 
         describe('replace existing dependencies', function() {
@@ -564,9 +564,9 @@ describe('Module', function() {
 
         it('should throw an error if not in created status', function() {
             testModule._changeStatus(Module.status.ENABLED, testWrapper);
-            (function() {
+            should(function() {
                 testModule.dependencies = 'db';
-            }).should.throw(errors.ERR_MOD_003);
+            }).throw(errors.ERR_MOD_003);
         });
 
     });
@@ -579,86 +579,87 @@ describe('Module', function() {
         });
 
         it('should exist in the instance', function() {
-            (testModule.addDependencies).should.be.a.Function();
+            should(testModule.addDependencies).be.a.Function();
         });
 
         it('should handle empty argument', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies();
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle null argument', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies(null);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should handle empty array argument', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies([]);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should accept a string argument', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies('logger');
-            }).should.not.throw();
-            (function() {
+            }).not.throw();
+            should(function() {
                 testModule.addDependencies('db');
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should accept an array of string argument', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies(['logger']);
-            }).should.not.throw();
-            (function() {
+            }).not.throw();
+            should(function() {
                 testModule.addDependencies(['db', 'server']);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should accept multiple string arguments', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies('logger',
                     'db', 'server');
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should accept a mix of multiple string and array of string arguments',
             function() {
-                (function() {
-                    testModule.addDependencies('logger', ['logger'], 'db', [
-                        'db', 'server'
-                    ]);
-                }).should.not.throw();
+                should(function() {
+                    testModule.addDependencies('logger', ['logger'],
+                        'db', [
+                            'db', 'server'
+                        ]);
+                }).not.throw();
             });
 
         it('should not accept a non-string argument', function() {
-            (function() {
+            should(function() {
                 testModule.addDependencies(123);
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.addDependencies('logger', 123);
-            }).should.throw(errors.ERR_MOD_005);
+            }).throw(errors.ERR_MOD_005);
         });
 
         it('should not accept an array of non-string argument', function() {
             const stringArray = ['a', 'b'];
             const nonStringArray = [123, 456];
             const mixArray = ['a', 123];
-            (function() {
+            should(function() {
                 testModule.addDependencies(nonStringArray);
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.addDependencies('logger', 123);
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.addDependencies(mixArray);
-            }).should.throw(errors.ERR_MOD_005);
-            (function() {
+            }).throw(errors.ERR_MOD_005);
+            should(function() {
                 testModule.addDependencies(stringArray, mixArray);
-            }).should.throw(errors.ERR_MOD_005);
+            }).throw(errors.ERR_MOD_005);
         });
 
         describe('merge arguments with existing dependencies', function() {
@@ -729,9 +730,9 @@ describe('Module', function() {
 
         it('should throw an error if not in created status', function() {
             testModule._changeStatus(Module.status.ENABLED, testWrapper);
-            (function() {
+            should(function() {
                 testModule.addDependencies(['db', 'server']);
-            }).should.throw(errors.ERR_MOD_003);
+            }).throw(errors.ERR_MOD_003);
         });
 
     });
@@ -743,28 +744,28 @@ describe('Module', function() {
         });
 
         it('should exist in the instance', function() {
-            (testModule._changeStatus).should.be.a.Function();
+            should(testModule._changeStatus).be.a.Function();
         });
 
         it('should be used only from a ModuleWrapper instance', function() {
-            (function() {
+            should(function() {
                 testModule._changeStatus(Module.status.SETUP);
-            }).should.throw(errors.ERR_MOD_014);
-            (function() {
+            }).throw(errors.ERR_MOD_014);
+            should(function() {
                 testModule._changeStatus(Module.status.ENABLED,
                     testWrapper);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should only accept a string from the predefined list', function() {
-            (function() {
+            should(function() {
                 testModule._changeStatus('notACorrectStatus',
                     testWrapper);
-            }).should.throw(errors.ERR_MOD_013);
-            (function() {
+            }).throw(errors.ERR_MOD_013);
+            should(function() {
                 testModule._changeStatus(Module.status.SETUP,
                     testWrapper);
-            }).should.not.throw();
+            }).not.throw();
         });
 
         it('should update the status', function() {
@@ -780,7 +781,7 @@ describe('Module', function() {
     describe('#setup()', function() {
 
         it('should exist in the instance', function() {
-            (testModule.setup).should.be.a.Function();
+            should(testModule.setup).be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -807,7 +808,7 @@ describe('Module', function() {
     describe('#enable()', function() {
 
         it('should exist in the instance', function() {
-            (testModule.enable).should.be.a.Function();
+            should(testModule.enable).be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -834,7 +835,7 @@ describe('Module', function() {
     describe('#disable()', function() {
 
         it('should exist in the instance', function() {
-            (testModule.disable).should.be.a.Function();
+            should(testModule.disable).be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -861,7 +862,7 @@ describe('Module', function() {
     describe('#destroy()', function() {
 
         it('should exist in the instance', function() {
-            (testModule.destroy).should.be.a.Function();
+            should(testModule.destroy).be.a.Function();
         });
 
         it('should have a callback as 4th argument passing a null error by default',
@@ -888,11 +889,11 @@ describe('Module', function() {
     describe('events', function() {
 
         it('#on() should exist in the instance', function() {
-            (testModule.on).should.be.a.Function();
+            should(testModule.on).be.a.Function();
         });
 
         it('#emit() should exist in the instance', function() {
-            (testModule.emit).should.be.a.Function();
+            should(testModule.emit).be.a.Function();
         });
 
         it('should allow emitting events', function(done) {
@@ -908,7 +909,7 @@ describe('Module', function() {
 
         it('should allow custom property', function() {
             testModule.duration = 10;
-            (testModule).should.have.property('duration', 10);
+            should(testModule).have.property('duration', 10);
         });
 
         it('should allow custom methods', function() {
