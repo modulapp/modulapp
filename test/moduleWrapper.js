@@ -431,6 +431,12 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).setup).be.a.Function();
         });
 
+        it('should keep hidden the initial function');
+
+        it('should execute the initial function');
+
+        it('should inject the module wrapper properties as arguments');
+
     });
 
     describe('#enable()', function() {
@@ -447,6 +453,12 @@ describe('ModuleWrapper', function() {
             should(testModule.enable).not.be.a.Function();
             should((new Module('anotherModule')).enable).be.a.Function();
         });
+
+        it('should keep hidden the initial function');
+
+        it('should execute the initial function');
+
+        it('should inject the module wrapper properties as arguments');
 
     });
 
@@ -465,6 +477,12 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).disable).be.a.Function();
         });
 
+        it('should keep hidden the initial function');
+
+        it('should execute the initial function');
+
+        it('should inject the module wrapper properties as arguments');
+
     });
 
     describe('#destroy()', function() {
@@ -482,6 +500,12 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).destroy).be.a.Function();
         });
 
+        it('should keep hidden the initial function');
+
+        it('should execute the initial function');
+
+        it('should inject the module wrapper properties as arguments');
+
     });
 
     describe('#setupModule()', function() {
@@ -489,6 +513,20 @@ describe('ModuleWrapper', function() {
         it('should exist in the instance', function() {
             should(wrapper.setupModule).be.a.Function();
         });
+
+        it('should first emit a setting_up event from the module');
+
+        it('should call #setup()');
+
+        it('should pass the error to the callback');
+
+        it('should change the status to "setup" if successful');
+
+        it('should change the status of the module to "setup" if successful');
+
+        it('should emit a setup event from the module');
+
+        it('should execute the callback if successful');
 
     });
 
@@ -498,6 +536,20 @@ describe('ModuleWrapper', function() {
             should(wrapper.enableModule).be.a.Function();
         });
 
+        it('should first emit a enabling event from the module');
+
+        it('should call #enable()');
+
+        it('should pass the error to the callback');
+
+        it('should change the status to "enabled" if successful');
+
+        it('should change the status of the module to "enabled" if successful');
+
+        it('should emit a enabled event from the module');
+
+        it('should execute the callback if successful');
+
     });
 
     describe('#disableModule()', function() {
@@ -506,6 +558,20 @@ describe('ModuleWrapper', function() {
             should(wrapper.disableModule).be.a.Function();
         });
 
+        it('should first emit a disabling event from the module');
+
+        it('should call #disable()');
+
+        it('should pass the error to the callback');
+
+        it('should change the status to "disabled" if successful');
+
+        it('should change the status of the module to "disabled" if successful');
+
+        it('should emit a disabled event from the module');
+
+        it('should execute the callback if successful');
+
     });
 
     describe('#destroyModule()', function() {
@@ -513,6 +579,20 @@ describe('ModuleWrapper', function() {
         it('should exist in the instance', function() {
             should(wrapper.destroyModule).be.a.Function();
         });
+
+        it('should first emit a destroying event from the module');
+
+        it('should call #destroy()');
+
+        it('should pass the error to the callback');
+
+        it('should change the status to "destroyed" if successful');
+
+        it('should change the status of the module to "destroyed" if successful');
+
+        it('should emit a destroyed event from the module');
+
+        it('should execute the callback if successful');
 
     });
 

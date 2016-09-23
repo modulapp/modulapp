@@ -99,7 +99,6 @@ class ModuleWrapper extends EventEmitter {
 
     setupModule(done) {
         this.module.emit(_events.SETTING_UP);
-        //this.module.setup(this.app, this.options, this.imports, (err) => { // TODO To check
         this.setup((err) => {
             if (err) {
                 done(err);
@@ -114,7 +113,6 @@ class ModuleWrapper extends EventEmitter {
 
     enableModule(done) {
         this.module.emit(_events.ENABLING);
-        //this.module.enable(this.app, this.options, this.imports, (err) => { // TODO To check
         this.enable((err) => {
             if (err) {
                 done(err);
@@ -129,7 +127,6 @@ class ModuleWrapper extends EventEmitter {
 
     disableModule(done) {
         this.module.emit(_events.DISABLING);
-        //this.module.disable(this.app, this.options, this.imports, (err) => { // TODO To check
         this.disable((err) => {
             if (err) {
                 done(err);
@@ -144,7 +141,6 @@ class ModuleWrapper extends EventEmitter {
 
     destroyModule(done) {
         this.module.emit(_events.DESTROYING);
-        //this.module.destroy(this.app, this.options, this.imports, (err) => { // TODO To check
         this.destroy((err) => {
             if (err) {
                 done(err);
