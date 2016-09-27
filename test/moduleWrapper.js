@@ -1,11 +1,11 @@
 const should = require('should');
 const sinon = require('sinon');
 const _ = require('lodash');
-const errors = require('../errors.js');
-const Module = require('../module.js');
-const App = require('../app.js');
+const errors = require('../errors');
+const Module = require('../module');
+const App = require('../app');
 
-const ModuleWrapper = require('../moduleWrapper.js');
+const ModuleWrapper = require('../moduleWrapper');
 
 describe('ModuleWrapper', function() {
     "use strict";
@@ -638,7 +638,7 @@ describe('ModuleWrapper', function() {
             wrapper.setupModule(function(err) {
                 should(err).be.exactly(testErr);
                 done();
-            })
+            });
         });
 
         it('should pass an error if not in created status', function(done) {
@@ -718,7 +718,7 @@ describe('ModuleWrapper', function() {
             wrapper.enableModule(function(err) {
                 should(err).be.exactly(testErr);
                 done();
-            })
+            });
         });
 
         it('should pass an error if not in setup status', function(done) {
@@ -799,7 +799,7 @@ describe('ModuleWrapper', function() {
             wrapper.disableModule(function(err) {
                 should(err).be.exactly(testErr);
                 done();
-            })
+            });
         });
 
         it('should pass an error if not in enabled status', function(done) {
@@ -881,7 +881,7 @@ describe('ModuleWrapper', function() {
             wrapper.destroyModule(function(err) {
                 should(err).be.exactly(testErr);
                 done();
-            })
+            });
         });
 
         it('should pass an error if not in disabled status', function(done) {

@@ -7,8 +7,8 @@ const _errors = require('./errors');
 const _events = require('./events.json').module;
 const _status = require('./status.json').module;
 
-const App = require('./app.js');
-const Module = require('./module.js');
+const App = require('./app');
+const Module = require('./module');
 
 class ModuleWrapper extends EventEmitter {
 
@@ -165,6 +165,6 @@ class ModuleWrapper extends EventEmitter {
         });
     }
 
-};
+}
 
 module.exports = ModuleWrapper;

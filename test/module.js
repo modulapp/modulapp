@@ -1,8 +1,8 @@
 const should = require('should');
 const _ = require('lodash');
-const errors = require('../errors.js');
+const errors = require('../errors');
 
-const Module = require('../module.js');
+const Module = require('../module');
 
 describe('Module', function() {
     "use strict";
