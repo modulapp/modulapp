@@ -384,7 +384,7 @@ describe('ModuleWrapper', function() {
 
         it('should accept an object as argument', function() {
             should(function() {
-                wrapper.addImports(testImports1); // TODO
+                wrapper.addImports(testImports1);
             }).not.throw();
         });
 
@@ -500,7 +500,7 @@ describe('ModuleWrapper', function() {
                 )).be.true();
                 done();
             });
-        }); // TODO use sinon
+        });
 
     });
 
@@ -539,7 +539,7 @@ describe('ModuleWrapper', function() {
                 )).be.true();
                 done();
             });
-        }); // TODO use sinon
+        });
 
     });
 
@@ -578,7 +578,7 @@ describe('ModuleWrapper', function() {
                 )).be.true();
                 done();
             });
-        }); // TODO use sinon
+        });
 
     });
 
