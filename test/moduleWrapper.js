@@ -28,6 +28,11 @@ describe('ModuleWrapper', function() {
             }
         });
 
+        sinon.spy(testModule, 'setup');
+        sinon.spy(testModule, 'enable');
+        sinon.spy(testModule, 'disable');
+        sinon.spy(testModule, 'destroy');
+
         app = new App();
 
         let logger = new ModuleWrapper(new Module('logger'), app);
@@ -42,6 +47,11 @@ describe('ModuleWrapper', function() {
         };
 
         wrapper = new ModuleWrapper(testModule, app, otherOptions, imports);
+
+        sinon.spy(wrapper, 'setup');
+        sinon.spy(wrapper, 'enable');
+        sinon.spy(wrapper, 'disable');
+        sinon.spy(wrapper, 'destroy');
     });
 
     describe('Constructor()', function() {
@@ -431,11 +441,27 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).setup).be.a.Function();
         });
 
-        it('should keep hidden the initial function');
+        it('should keep the initial function', function() {
+            should(wrapper._initialFuncSetup).be.a.Function();
+            // TODO check it's the same function as the initial
+        });
 
-        it('should execute the initial function');
+        it('should execute the initial function', function(done) {
+            wrapper.setup(function() {
+                should(wrapper._initialFuncSetup.calledOnce).be.true();
+                done();
+            });
+        });
 
-        it('should inject the module wrapper properties as arguments');
+        it('should inject the module wrapper properties as arguments', function(
+            done) {
+            wrapper.setup(function() {
+                should(wrapper._initialFuncSetup.alwaysCalledWith(
+                    wrapper.app, wrapper.options, wrapper.imports
+                )).be.true();
+                done();
+            });
+        });
 
     });
 
@@ -454,11 +480,27 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).enable).be.a.Function();
         });
 
-        it('should keep hidden the initial function');
+        it('should keep the initial function', function() {
+            should(wrapper._initialFuncEnable).be.a.Function();
+            // TODO check it's the same function as the initial
+        });
 
-        it('should execute the initial function');
+        it('should execute the initial function', function(done) {
+            wrapper.enable(function() {
+                should(wrapper._initialFuncEnable.calledOnce).be.true();
+                done();
+            });
+        });
 
-        it('should inject the module wrapper properties as arguments');
+        it('should inject the module wrapper properties as arguments', function(
+            done) {
+            wrapper.enable(function() {
+                should(wrapper._initialFuncEnable.alwaysCalledWith(
+                    wrapper.app, wrapper.options, wrapper.imports
+                )).be.true();
+                done();
+            });
+        }); // TODO use sinon
 
     });
 
@@ -477,11 +519,27 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).disable).be.a.Function();
         });
 
-        it('should keep hidden the initial function');
+        it('should keep the initial function', function() {
+            should(wrapper._initialFuncDisable).be.a.Function();
+            // TODO check it's the same function as the initial
+        });
 
-        it('should execute the initial function');
+        it('should execute the initial function', function(done) {
+            wrapper.disable(function() {
+                should(wrapper._initialFuncDisable.calledOnce).be.true();
+                done();
+            });
+        });
 
-        it('should inject the module wrapper properties as arguments');
+        it('should inject the module wrapper properties as arguments', function(
+            done) {
+            wrapper.disable(function() {
+                should(wrapper._initialFuncDisable.alwaysCalledWith(
+                    wrapper.app, wrapper.options, wrapper.imports
+                )).be.true();
+                done();
+            });
+        }); // TODO use sinon
 
     });
 
@@ -500,11 +558,27 @@ describe('ModuleWrapper', function() {
             should((new Module('anotherModule')).destroy).be.a.Function();
         });
 
-        it('should keep hidden the initial function');
+        it('should keep the initial function', function() {
+            should(wrapper._initialFuncDestroy).be.a.Function();
+            // TODO check it's the same function as the initial
+        });
 
-        it('should execute the initial function');
+        it('should execute the initial function', function(done) {
+            wrapper.destroy(function() {
+                should(wrapper._initialFuncDestroy.calledOnce).be.true();
+                done();
+            });
+        });
 
-        it('should inject the module wrapper properties as arguments');
+        it('should inject the module wrapper properties as arguments', function(
+            done) {
+            wrapper.destroy(function() {
+                should(wrapper._initialFuncDestroy.alwaysCalledWith(
+                    wrapper.app, wrapper.options, wrapper.imports
+                )).be.true();
+                done();
+            });
+        }); // TODO use sinon
 
     });
 
@@ -514,85 +588,309 @@ describe('ModuleWrapper', function() {
             should(wrapper.setupModule).be.a.Function();
         });
 
-        it('should first emit a setting_up event from the module');
+        it('should first emit a setting_up event from the module', function(done) {
+            wrapper.module.on(Module.events.SETTING_UP, function() {
+                done();
+            });
+            wrapper.setupModule(function() {});
+        });
 
-        it('should call #setup()');
+        it('should call #setup()', function(done) {
+            wrapper.setupModule(function() {
+                should(wrapper.setup.called).be.true();
+                done();
+            });
+        });
 
-        it('should pass the error to the callback');
+        it('should change the status to "setup" if successful', function() {
+            should(wrapper.status).be.exactly(Module.status.CREATED);
+            wrapper.setupModule(function() {});
+            should(wrapper.status).be.exactly(Module.status.SETUP);
+        });
 
-        it('should change the status to "setup" if successful');
+        it('should change the status of the module to "setup" if successful',
+            function() {
+                should(wrapper.module.status).be.exactly(Module.status.CREATED);
+                wrapper.setupModule(function() {});
+                should(wrapper.module.status).be.exactly(Module.status.SETUP);
+            });
 
-        it('should change the status of the module to "setup" if successful');
+        it('should emit a setup event from the module if successful', function(done) {
+            wrapper.module.on(Module.events.SETUP, function() {
+                done();
+            });
+            wrapper.setupModule(function() {});
+        });
 
-        it('should emit a setup event from the module');
+        it('should execute the callback if successful', function(done) {
+            wrapper.setupModule(done);
+        });
 
-        it('should execute the callback if successful');
+        it('should pass the error to the callback', function(done) {
+            let testErr = new Error('testErr');
+            testModule = new Module('testModule');
+            testModule.setup = function(app, options, imports, setupDone) {
+                setupDone(testErr);
+            };
+
+            wrapper = new ModuleWrapper(testModule, new App(), {}, {});
+
+            wrapper.setupModule(function(err) {
+                should(err).be.exactly(testErr);
+                done();
+            })
+        });
+
+        it('should pass an error if not in created status', function(done) {
+            wrapper.status = 'otherThanCreated';
+            wrapper.setupModule(function(err) {
+                should(err).be.exactly(errors.ERR_MOD_015);
+                done();
+            });
+        });
 
     });
 
     describe('#enableModule()', function() {
 
+        beforeEach('initialize wrapper', function() {
+
+            wrapper.status = Module.status.SETUP;
+            wrapper.module._changeStatus(Module.status.SETUP, wrapper);
+
+        });
+
         it('should exist in the instance', function() {
             should(wrapper.enableModule).be.a.Function();
         });
 
-        it('should first emit a enabling event from the module');
+        it('should first emit a enabling event from the module', function(done) {
+            wrapper.module.on(Module.events.ENABLING, function() {
+                done();
+            });
+            wrapper.enableModule(function() {});
+        });
 
-        it('should call #enable()');
+        it('should call #enable()', function(done) {
+            wrapper.enableModule(function() {
+                should(wrapper.enable.called).be.true();
+                done();
+            });
+        });
 
-        it('should pass the error to the callback');
+        it('should change the status to "enabled" if successful', function() {
+            should(wrapper.status).be.exactly(Module.status.SETUP);
+            wrapper.enableModule(function() {});
+            should(wrapper.status).be.exactly(Module.status.ENABLED);
+        });
 
-        it('should change the status to "enabled" if successful');
+        it('should change the status of the module to "enabled" if successful',
+            function() {
+                should(wrapper.module.status).be.exactly(Module.status.SETUP);
+                wrapper.enableModule(function() {});
+                should(wrapper.module.status).be.exactly(Module.status.ENABLED);
+            });
 
-        it('should change the status of the module to "enabled" if successful');
+        it('should emit a enabled event from the module if successful', function(
+            done) {
+            wrapper.module.on(Module.events.ENABLED, function() {
+                done();
+            });
+            wrapper.enableModule(function() {});
+        });
 
-        it('should emit a enabled event from the module');
+        it('should execute the callback if successful', function(done) {
+            wrapper.enableModule(done);
+        });
 
-        it('should execute the callback if successful');
+        it('should pass the error to the callback', function(done) {
+            let testErr = new Error('testErr');
+            testModule = new Module('testModule');
+            testModule.enable = function(app, options, imports, enableDone) {
+                enableDone(testErr);
+            };
+
+            wrapper = new ModuleWrapper(testModule, new App(), {}, {});
+
+            wrapper.status = Module.status.SETUP;
+            wrapper.module._changeStatus(Module.status.SETUP, wrapper);
+
+            wrapper.enableModule(function(err) {
+                should(err).be.exactly(testErr);
+                done();
+            })
+        });
+
+        it('should pass an error if not in setup status', function(done) {
+            wrapper.status = 'otherThanSetup';
+            wrapper.enableModule(function(err) {
+                should(err).be.exactly(errors.ERR_MOD_016);
+                done();
+            });
+        });
 
     });
 
     describe('#disableModule()', function() {
 
+        beforeEach('initialize wrapper', function() {
+
+            wrapper.status = Module.status.ENABLED;
+            wrapper.module._changeStatus(Module.status.ENABLED, wrapper);
+
+        });
+
         it('should exist in the instance', function() {
             should(wrapper.disableModule).be.a.Function();
         });
 
-        it('should first emit a disabling event from the module');
+        it('should first emit a disabling event from the module', function(done) {
+            wrapper.module.on(Module.events.DISABLING, function() {
+                done();
+            });
+            wrapper.disableModule(function() {});
+        });
 
-        it('should call #disable()');
+        it('should call #disable()', function(done) {
+            wrapper.disableModule(function() {
+                should(wrapper.disable.called).be.true();
+                done();
+            });
+        });
 
-        it('should pass the error to the callback');
+        it('should change the status to "disabled" if successful', function() {
+            should(wrapper.status).be.exactly(Module.status.ENABLED);
+            wrapper.disableModule(function() {});
+            should(wrapper.status).be.exactly(Module.status.DISABLED);
+        });
 
-        it('should change the status to "disabled" if successful');
+        it('should change the status of the module to "disabled" if successful',
+            function() {
+                should(wrapper.module.status).be.exactly(Module.status.ENABLED);
+                wrapper.disableModule(function() {});
+                should(wrapper.module.status).be.exactly(Module.status.DISABLED);
+            });
 
-        it('should change the status of the module to "disabled" if successful');
+        it('should emit a disabled event from the module if successful', function(
+            done) {
+            wrapper.module.on(Module.events.DISABLED, function() {
+                done();
+            });
+            wrapper.disableModule(function() {});
+        });
 
-        it('should emit a disabled event from the module');
+        it('should execute the callback if successful', function(done) {
+            wrapper.disableModule(done);
+        });
 
-        it('should execute the callback if successful');
+        it('should pass the error to the callback', function(done) {
+            let testErr = new Error('testErr');
+            testModule = new Module('testModule');
+            testModule.disable = function(app, options, imports,
+                disableDone) {
+                disableDone(testErr);
+            };
+
+            wrapper = new ModuleWrapper(testModule, new App(), {}, {});
+
+            wrapper.status = Module.status.ENABLED;
+            wrapper.module._changeStatus(Module.status.ENABLED, wrapper);
+
+            wrapper.disableModule(function(err) {
+                should(err).be.exactly(testErr);
+                done();
+            })
+        });
+
+        it('should pass an error if not in enabled status', function(done) {
+            wrapper.status = 'otherThanEnabled';
+            wrapper.disableModule(function(err) {
+                should(err).be.exactly(errors.ERR_MOD_017);
+                done();
+            });
+        });
 
     });
 
     describe('#destroyModule()', function() {
 
+        beforeEach('initialize wrapper', function() {
+
+            wrapper.status = Module.status.DISABLED;
+            wrapper.module._changeStatus(Module.status.DISABLED, wrapper);
+
+        });
+
         it('should exist in the instance', function() {
             should(wrapper.destroyModule).be.a.Function();
         });
 
-        it('should first emit a destroying event from the module');
+        it('should first emit a destroying event from the module', function(done) {
+            wrapper.module.on(Module.events.DESTROYING, function() {
+                done();
+            });
 
-        it('should call #destroy()');
+            wrapper.destroyModule(function() {});
+        });
 
-        it('should pass the error to the callback');
+        it('should call #destroy()', function(done) {
+            wrapper.destroyModule(function() {
+                should(wrapper.destroy.called).be.true();
+                done();
+            });
+        });
 
-        it('should change the status to "destroyed" if successful');
+        it('should change the status to "destroyed" if successful', function() {
+            should(wrapper.status).be.exactly(Module.status.DISABLED);
+            wrapper.destroyModule(function() {});
+            should(wrapper.status).be.exactly(Module.status.DESTROYED);
+        });
 
-        it('should change the status of the module to "destroyed" if successful');
+        it('should change the status of the module to "destroyed" if successful',
+            function() {
+                should(wrapper.module.status).be.exactly(Module.status.DISABLED);
+                wrapper.destroyModule(function() {});
+                should(wrapper.module.status).be.exactly(Module.status.DESTROYED);
+            });
 
-        it('should emit a destroyed event from the module');
+        it('should emit a destroyed event from the module if successful', function(
+            done) {
+            wrapper.module.on(Module.events.DESTROYED, function() {
+                done();
+            });
+            wrapper.destroyModule(function() {});
+        });
 
-        it('should execute the callback if successful');
+        it('should execute the callback if successful', function(done) {
+            wrapper.destroyModule(done);
+        });
+
+        it('should pass the error to the callback', function(done) {
+            let testErr = new Error('testErr');
+            testModule = new Module('testModule');
+            testModule.destroy = function(app, options, imports,
+                destroyDone) {
+                destroyDone(testErr);
+            };
+
+            wrapper = new ModuleWrapper(testModule, new App(), {}, {});
+
+            wrapper.status = Module.status.DISABLED;
+            wrapper.module._changeStatus(Module.status.DISABLED, wrapper);
+
+            wrapper.destroyModule(function(err) {
+                should(err).be.exactly(testErr);
+                done();
+            })
+        });
+
+        it('should pass an error if not in disabled status', function(done) {
+            wrapper.status = 'otherThanDisabled';
+            wrapper.destroyModule(function(err) {
+                should(err).be.exactly(errors.ERR_MOD_018);
+                done();
+            });
+        });
 
     });
 

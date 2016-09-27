@@ -73,4 +73,16 @@
 }, {
     "code": "ERR_MOD_014",
     "message": "The status update can only be done from its internal wrapper."
+}, {
+    "code": "ERR_MOD_015",
+    "message": "setupModule can only be executed in created status."
+}, {
+    "code": "ERR_MOD_016",
+    "message": "enableModule can only be executed in setup status."
+}, {
+    "code": "ERR_MOD_017",
+    "message": "disableModule can only be executed in enabled status."
+}, {
+    "code": "ERR_MOD_018",
+    "message": "destroyModule can only be executed in disabled status."
 }]
