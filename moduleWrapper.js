@@ -98,13 +98,16 @@ class ModuleWrapper extends EventEmitter {
     }
 
     setupModule(done) {
+        if (this.status !== _status.CREATED || this.module.status !== _status.CREATED) {
+            return done(_errors.ERR_MOD_015);
+        }
         this.module.emit(_events.SETTING_UP);
         this.setup((err) => {
             if (err) {
                 done(err);
             } else {
                 this.status = _status.SETUP;
-                this.module.status = _status.SETUP;
+                this.module._changeStatus(_status.SETUP, this);
                 this.module.emit(_events.SETUP);
                 done(null);
             }
@@ -112,13 +115,16 @@ class ModuleWrapper extends EventEmitter {
     }
 
     enableModule(done) {
+        if (this.status !== _status.SETUP || this.module.status !== _status.SETUP) {
+            return done(_errors.ERR_MOD_016);
+        }
         this.module.emit(_events.ENABLING);
         this.enable((err) => {
             if (err) {
                 done(err);
             } else {
                 this.status = _status.ENABLED;
-                this.module.status = _status.ENABLED;
+                this.module._changeStatus(_status.ENABLED, this);
                 this.module.emit(_events.ENABLED);
                 done(null);
             }
@@ -126,13 +132,16 @@ class ModuleWrapper extends EventEmitter {
     }
 
     disableModule(done) {
+        if (this.status !== _status.ENABLED || this.module.status !== _status.ENABLED) {
+            return done(_errors.ERR_MOD_017);
+        }
         this.module.emit(_events.DISABLING);
         this.disable((err) => {
             if (err) {
                 done(err);
             } else {
                 this.status = _status.DISABLED;
-                this.module.status = _status.DISABLED;
+                this.module._changeStatus(_status.DISABLED, this);
                 this.module.emit(_events.DISABLED);
                 done(null);
             }
@@ -140,13 +149,16 @@ class ModuleWrapper extends EventEmitter {
     }
 
     destroyModule(done) {
+        if (this.status !== _status.DISABLED || this.module.status !== _status.DISABLED) {
+            return done(_errors.ERR_MOD_018);
+        }
         this.module.emit(_events.DESTROYING);
         this.destroy((err) => {
             if (err) {
                 done(err);
             } else {
                 this.status = _status.DESTROYED;
-                this.module.status = _status.DESTROYED;
+                this.module._changeStatus(_status.DESTROYED, this);
                 this.module.emit(_events.DESTROYED);
                 done(null);
             }
