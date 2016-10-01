@@ -173,7 +173,7 @@ class Module extends EventEmitter {
     }
 
     _changeStatus(newStatus, wrapper) {
-        if (!_.has(wrapper, 'module')) {
+        if (_.isUndefined(wrapper) || !(wrapper.constructor.name === 'ModuleWrapper')) {
             throw _errors.ERR_MOD_014;
         }
 

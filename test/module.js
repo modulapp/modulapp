@@ -2,15 +2,16 @@ const should = require('should');
 const _ = require('lodash');
 const errors = require('../errors');
 
+const ModuleWrapper = require('../moduleWrapper');
+const App = require('../app');
+
 const Module = require('../module');
 
 describe('Module', function() {
     "use strict";
 
     let testModule;
-    let testWrapper = {
-        module: new Module("test")
-    };
+    let testWrapper = new ModuleWrapper(new Module("test"), new App());
 
     beforeEach('initialize testModule', function() {
         testModule = new Module('myModule');
