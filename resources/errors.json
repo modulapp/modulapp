@@ -26,6 +26,12 @@
     "code": "ERR_APP_007",
     "message": "Module dependencies are missing in the configuration."
 }, {
+    "code": "ERR_APP_008",
+    "message": "Only an object argument is accepted as options."
+}, {
+    "code": "ERR_APP_009",
+    "message": "Options cannot be changed in app after resolve"
+}, {
     "code": "ERR_MOD_000",
     "message": "Not implemented yet."
 }, {
