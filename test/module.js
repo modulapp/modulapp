@@ -16,33 +16,72 @@ describe('Module', function() {
         testModule = new Module('myModule');
     });
 
+    describe('static getter events', function() {
+
+        it('should be available on Class def', function() {
+            should.exist(Module.events);
+        });
+
+        it('should not be available on Class instance', function() {
+            should.not.exist(testModule.events);
+        });
+
+        it('should return the list of events', function() {
+            should(Module.events).be.exactly(require('../events.json').module);
+        });
+
+        it('should not be overridable', function() {
+            should(function() {
+                Module.events = {};
+            }).throw();
+        });
+
+    });
+
+    describe('static getter status', function() {
+
+        it('should be available on Class def', function() {
+            should.exist(Module.status);
+        });
+
+        it('should return the list of status', function() {
+            should(Module.status).be.exactly(require('../status.json').module);
+        });
+
+        it('should not return the list of status on Class instance', function() {
+            should(testModule.status).not.be.exactly(require(
+                '../status.json').module);
+        });
+
+        it('should not be overridable', function() {
+            should(function() {
+                Module.status = {};
+            }).throw();
+        });
+
+    });
+
     describe('constructor()', function() {
 
         describe('with illegal argument', function() {
 
             it('should throw an error with no argument', function() {
-
                 should(function() {
                     testModule = new Module();
                 }).throw(errors.ERR_MOD_001);
-
             });
 
             it('should throw an error with null argument', function() {
-
                 should(function() {
                     testModule = new Module(null);
                 }).throw(errors.ERR_MOD_001);
-
             });
 
             it('should throw an error with an empty String (\'\') argument',
                 function() {
-
                     should(function() {
                         testModule = new Module('');
                     }).throw(errors.ERR_MOD_001);
-
                 });
 
         });
