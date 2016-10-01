@@ -158,7 +158,7 @@ class App extends EventEmitter {
             let missingModule = [];
             _.forEach(nodeIds, (nodeId) => {
                 let data = this.graph.getNodeData(nodeId);
-                if (!(data.constructor.name === 'ModuleWrapper')) {
+                if (data.constructor.name !== 'ModuleWrapper') {
                     missingModule.push(nodeId);
                 }
             });
@@ -208,7 +208,7 @@ class App extends EventEmitter {
         let nodeIds = this.graph.overallOrder();
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+            if (wrapper.constructor.name !== 'ModuleWrapper') {
                 return asyncCallback(null); // TODO Should raise an error ?
             }
             wrapper.setupModule(asyncCallback);
@@ -247,7 +247,7 @@ class App extends EventEmitter {
         let nodeIds = this.graph.overallOrder();
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+            if (wrapper.constructor.name !== 'ModuleWrapper') {
                 return asyncCallback(null); // TODO Should raise an error ?
             }
             wrapper.enableModule(asyncCallback);
@@ -277,7 +277,7 @@ class App extends EventEmitter {
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
 
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+            if (wrapper.constructor.name !== 'ModuleWrapper') {
                 return asyncCallback(null); // TODO Should raise an error ?
             }
             wrapper.disableModule(asyncCallback);
@@ -307,7 +307,7 @@ class App extends EventEmitter {
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
 
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+            if (wrapper.constructor.name !== 'ModuleWrapper') {
                 return asyncCallback(null); // TODO Should raise an error ?
             }
             wrapper.destroyModule(asyncCallback);

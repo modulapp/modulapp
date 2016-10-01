@@ -7,9 +7,6 @@ const _errors = require('./errors');
 const _events = require('./resources/events.json').module;
 const _status = require('./resources/status.json').module;
 
-const App = require('./app');
-const Module = require('./module');
-
 class ModuleWrapper extends EventEmitter {
 
     constructor(_module, _app, _options = {}, _imports = {}) {
@@ -18,11 +15,11 @@ class ModuleWrapper extends EventEmitter {
             throw _errors.ERR_MOD_006;
         }
 
-        if (!(_module.constructor.name === 'Module')) {
+        if (_module.constructor.name !== 'Module') {
             throw _errors.ERR_MOD_007;
         }
 
-        if (!(_app.constructor.name === 'App')) {
+        if (_app.constructor.name !== 'App') {
             throw _errors.ERR_MOD_008;
         }
 
@@ -87,7 +84,7 @@ class ModuleWrapper extends EventEmitter {
         }
         if (_.isPlainObject(newImports) || _.isNull(newImports)) {
             _.forEach(newImports, (wrapperInstance) => {
-                if (!(wrapperInstance.constructor.name === 'ModuleWrapper')) {
+                if (wrapperInstance.constructor.name !== 'ModuleWrapper') {
                     throw _errors.ERR_MOD_012;
                 }
             });

@@ -1,3 +1,5 @@
+"use strict";
+
 const _ = require('lodash');
 
 const errorsList = require('./resources/errors.json');

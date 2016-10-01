@@ -1,5 +1,4 @@
 const should = require('should');
-const _ = require('lodash');
 const errors = require('../errors');
 
 const App = require('../app');
@@ -163,7 +162,7 @@ describe('App', function() {
                     app.options = testOptions1;
                 }).throw(errors.ERR_APP_009);
                 done();
-            })
+            });
         });
 
     });

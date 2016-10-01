@@ -1,0 +1,26 @@
+{
+	"node": true,
+	"mocha": true,
+	"esversion": 6,
+	"eqeqeq": true,
+	"curly": true,
+	"undef": true,
+	"unused": true,
+	"latedef": true,
+	"strict": true,
+	"predef": [
+		"define",
+		"require",
+		"exports",
+		"module",
+		"describe",
+		"context",
+		"before",
+		"beforeEach",
+		"after",
+		"afterEach",
+		"it",
+		"inject",
+		"expect"
+	]
+}

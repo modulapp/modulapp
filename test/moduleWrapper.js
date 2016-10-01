@@ -1,6 +1,5 @@
 const should = require('should');
 const sinon = require('sinon');
-const _ = require('lodash');
 const errors = require('../errors');
 const Module = require('../module');
 const App = require('../app');
