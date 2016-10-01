@@ -4,7 +4,7 @@ const errors = require('../errors');
 
 const App = require('../app');
 
-describe.only('App', function() {
+describe('App', function() {
     "use strict";
 
     let app = new App();
