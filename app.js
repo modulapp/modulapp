@@ -5,7 +5,7 @@ const _ = require('lodash');
 const async = require('async');
 const DepGraph = require('dependency-graph').DepGraph;
 
-const ModuleWrapper = require('./ModuleWrapper');
+const ModuleWrapper = require('./moduleWrapper');
 
 const _errors = require('./errors');
 const _events = require('./resources/events.json').app;
