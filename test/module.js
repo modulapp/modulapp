@@ -10,12 +10,8 @@ const Module = require('../module');
 describe('Module', function() {
     "use strict";
 
-    let testModule;
+    let testModule = new Module('myModule');
     let testWrapper = new ModuleWrapper(new Module("test"), new App());
-
-    beforeEach('initialize testModule', function() {
-        testModule = new Module('myModule');
-    });
 
     describe('static getter events', function() {
 
@@ -28,7 +24,8 @@ describe('Module', function() {
         });
 
         it('should return the list of events', function() {
-            should(Module.events).be.exactly(require('../events.json').module);
+            should(Module.events).be.exactly(require(
+                '../resources/events.json').module);
         });
 
         it('should not be overridable', function() {
@@ -46,12 +43,13 @@ describe('Module', function() {
         });
 
         it('should return the list of status', function() {
-            should(Module.status).be.exactly(require('../status.json').module);
+            should(Module.status).be.exactly(require(
+                '../resources/status.json').module);
         });
 
         it('should not return the list of status on Class instance', function() {
             should(testModule.status).not.be.exactly(require(
-                '../status.json').module);
+                '../resources/status.json').module);
         });
 
         it('should not be overridable', function() {
@@ -68,26 +66,30 @@ describe('Module', function() {
 
             it('should throw an error with no argument', function() {
                 should(function() {
-                    testModule = new Module();
+                    new Module();
                 }).throw(errors.ERR_MOD_001);
             });
 
             it('should throw an error with null argument', function() {
                 should(function() {
-                    testModule = new Module(null);
+                    new Module(null);
                 }).throw(errors.ERR_MOD_001);
             });
 
             it('should throw an error with an empty String (\'\') argument',
                 function() {
                     should(function() {
-                        testModule = new Module('');
+                        new Module('');
                     }).throw(errors.ERR_MOD_001);
                 });
 
         });
 
         describe('with a string argument', function() {
+
+            before('initialize testModule', function() {
+                testModule = new Module('myModule');
+            });
 
             it('should return an instance of Module', function() {
                 should(testModule).be.an.instanceOf(Module);
@@ -120,7 +122,7 @@ describe('Module', function() {
 
             describe('if another argument options', function() {
 
-                beforeEach('initialize testModule', function() {
+                before('initialize testModule', function() {
                     testModule = new Module('myModule', {
                         timeout: 1000
                     });
@@ -139,7 +141,7 @@ describe('Module', function() {
 
         describe('with the package.json object (light)', function() {
 
-            beforeEach('initialize testModule', function() {
+            before('initialize testModule', function() {
                 testModule = new Module({
                     name: 'myModule',
                     version: '1.0.0'
@@ -181,7 +183,7 @@ describe('Module', function() {
 
             describe('if another argument options', function() {
 
-                beforeEach('initialize testModule', function() {
+                before('initialize testModule', function() {
                     testModule = new Module({
                         name: 'myModule',
                         version: '1.0.0'
@@ -203,7 +205,7 @@ describe('Module', function() {
 
         describe('with the package.json object (full)', function() {
 
-            beforeEach('initialize testModule', function() {
+            before('initialize testModule', function() {
                 testModule = new Module({
                     name: 'myModule',
                     version: '1.0.0',
@@ -259,7 +261,7 @@ describe('Module', function() {
 
             describe('if another argument options', function() {
 
-                beforeEach('initialize testModule', function() {
+                before('initialize testModule', function() {
                     testModule = new Module({
                         name: 'myModule',
                         version: '1.0.0',
@@ -401,8 +403,7 @@ describe('Module', function() {
         };
 
         beforeEach('Clear options before each tests', function() {
-            testModule.options = {};
-            testModule._changeStatus(Module.status.CREATED, testWrapper);
+            testModule = new Module('myModule');
         });
 
         it('should exist in the instance', function() {
@@ -482,6 +483,10 @@ describe('Module', function() {
     });
 
     describe('setter dependencies', function() {
+
+        beforeEach('Clear options before each tests', function() {
+            testModule = new Module('myModule');
+        });
 
         it('should handle empty value', function() {
             should(function() {
@@ -614,8 +619,7 @@ describe('Module', function() {
     describe('#addDependencies()', function() {
 
         beforeEach('Clear dependencies before each tests', function() {
-            testModule.dependencies = [];
-            testModule._changeStatus(Module.status.CREATED, testWrapper);
+            testModule = new Module('myModule');
         });
 
         it('should exist in the instance', function() {
@@ -820,6 +824,10 @@ describe('Module', function() {
 
     describe('#setup()', function() {
 
+        before('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
+
         it('should exist in the instance', function() {
             should(testModule.setup).be.a.Function();
         });
@@ -846,6 +854,10 @@ describe('Module', function() {
     });
 
     describe('#enable()', function() {
+
+        before('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
 
         it('should exist in the instance', function() {
             should(testModule.enable).be.a.Function();
@@ -874,6 +886,10 @@ describe('Module', function() {
 
     describe('#disable()', function() {
 
+        before('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
+
         it('should exist in the instance', function() {
             should(testModule.disable).be.a.Function();
         });
@@ -900,6 +916,10 @@ describe('Module', function() {
     });
 
     describe('#destroy()', function() {
+
+        before('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
 
         it('should exist in the instance', function() {
             should(testModule.destroy).be.a.Function();
@@ -928,6 +948,10 @@ describe('Module', function() {
 
     describe('events', function() {
 
+        before('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
+
         it('#on() should exist in the instance', function() {
             should(testModule.on).be.a.Function();
         });
@@ -946,6 +970,10 @@ describe('Module', function() {
     });
 
     describe('custom properties and methods', function() {
+
+        before('initialize testModule', function() {
+            testModule = new Module('myModule');
+        });
 
         it('should allow custom property', function() {
             testModule.duration = 10;

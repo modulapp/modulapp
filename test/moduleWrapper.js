@@ -10,104 +10,15 @@ const ModuleWrapper = require('../moduleWrapper');
 describe('ModuleWrapper', function() {
     "use strict";
 
-    let wrapper;
-    let testModule;
     let app;
-
-    beforeEach('initialize wrapper', function() {
-
-        testModule = new Module({
-            name: 'testModule',
-            version: '1.0.0',
-            module: {
-                dependencies: ['logger', 'db'],
-                options: {
-                    db_url: 'localhost',
-                    db_port: 8080
-                }
-            }
-        });
-
-        sinon.spy(testModule, 'setup');
-        sinon.spy(testModule, 'enable');
-        sinon.spy(testModule, 'disable');
-        sinon.spy(testModule, 'destroy');
-
-        app = new App();
-
-        let logger = new ModuleWrapper(new Module('logger'), app);
-        let db = new ModuleWrapper(new Module('db'), app);
-
-        let imports = {
-            logger, db
-        };
-
-        let otherOptions = {
-            timeout: 1000
-        };
-
-        wrapper = new ModuleWrapper(testModule, app, otherOptions, imports);
-
-        sinon.spy(wrapper, 'setup');
-        sinon.spy(wrapper, 'enable');
-        sinon.spy(wrapper, 'disable');
-        sinon.spy(wrapper, 'destroy');
-    });
+    let testModule;
+    let wrapper;
 
     describe('Constructor()', function() {
 
         describe('with illegal arguments', function() {
 
-            it('should throw an error with no argument', function() {
-                should(function() {
-                    wrapper = new ModuleWrapper();
-                }).throw(errors.ERR_MOD_006);
-            });
-
-            it('should throw an error with a null as 1st argument',
-                function() {
-                    should(function() {
-                        wrapper = new ModuleWrapper(null, app);
-                    }).throw(errors.ERR_MOD_006);
-                });
-
-            it('should throw an error with a null as 2nd argument',
-                function() {
-                    should(function() {
-                        wrapper = new ModuleWrapper(testModule,
-                            null);
-                    }).throw(errors.ERR_MOD_006);
-                });
-
-            it(
-                'should throw an error if 1st argument is not a Module instance',
-                function() {
-                    should(function() {
-                        let notModule = {
-                            id: 'a'
-                        };
-                        wrapper = new ModuleWrapper(notModule,
-                            app);
-                    }).throw(errors.ERR_MOD_007);
-                });
-
-            it(
-                'should throw an error if 2nd argument is not an App instance',
-                function() {
-                    should(function() {
-                        let notApp = {
-                            id: 'a'
-                        };
-                        wrapper = new ModuleWrapper(testModule,
-                            notApp);
-                    }).throw(errors.ERR_MOD_008);
-                });
-
-        });
-
-        describe('with minimum arguments', function() {
-
-            beforeEach('initialize wrapper', function() {
+            before('initialize wrapper', function() {
 
                 testModule = new Module({
                     name: 'testModule',
@@ -120,6 +31,59 @@ describe('ModuleWrapper', function() {
                         }
                     }
                 });
+
+                app = new App();
+
+            });
+
+            it('should throw an error with no argument', function() {
+                should(function() {
+                    new ModuleWrapper();
+                }).throw(errors.ERR_MOD_006);
+            });
+
+            it('should throw an error with a null as 1st argument',
+                function() {
+                    should(function() {
+                        new ModuleWrapper(null, app);
+                    }).throw(errors.ERR_MOD_006);
+                });
+
+            it('should throw an error with a null as 2nd argument',
+                function() {
+                    should(function() {
+                        new ModuleWrapper(testModule,
+                            null);
+                    }).throw(errors.ERR_MOD_006);
+                });
+
+            it(
+                'should throw an error if 1st argument is not a Module instance',
+                function() {
+                    should(function() {
+                        let notModule = {
+                            id: 'a'
+                        };
+                        new ModuleWrapper(notModule, app);
+                    }).throw(errors.ERR_MOD_007);
+                });
+
+            it(
+                'should throw an error if 2nd argument is not an App instance',
+                function() {
+                    should(function() {
+                        let notApp = {
+                            id: 'a'
+                        };
+                        new ModuleWrapper(testModule, notApp);
+                    }).throw(errors.ERR_MOD_008);
+                });
+
+        });
+
+        describe('with minimum arguments', function() {
+
+            before('initialize wrapper', function() {
 
                 wrapper = new ModuleWrapper(testModule, app);
 
@@ -172,6 +136,37 @@ describe('ModuleWrapper', function() {
         });
 
         describe('with optional arguments', function() {
+
+            before('initialize wrapper', function() {
+
+                testModule = new Module({
+                    name: 'testModule',
+                    version: '1.0.0',
+                    module: {
+                        dependencies: [],
+                        options: {
+                            db_url: 'localhost',
+                            db_port: 8080
+                        }
+                    }
+                });
+
+                let logger = new ModuleWrapper(new Module('logger'),
+                    app);
+                let db = new ModuleWrapper(new Module('db'), app);
+
+                let imports = {
+                    logger, db
+                };
+
+                let otherOptions = {
+                    timeout: 1000
+                };
+
+                wrapper = new ModuleWrapper(testModule, app,
+                    otherOptions, imports);
+
+            });
 
             it('should return an instance of ModuleWrapper', function() {
                 should(wrapper).be.an.instanceOf(ModuleWrapper);
@@ -428,6 +423,25 @@ describe('ModuleWrapper', function() {
 
     describe('#setup()', function() {
 
+        before('add spy', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            sinon.spy(testModule, 'setup');
+            wrapper = new ModuleWrapper(testModule, app);
+
+        });
+
         it('should exist in the instance', function() {
             should(wrapper.setup).be.a.Function();
         });
@@ -466,6 +480,25 @@ describe('ModuleWrapper', function() {
     });
 
     describe('#enable()', function() {
+
+        before('add spy', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            sinon.spy(testModule, 'enable');
+            wrapper = new ModuleWrapper(testModule, app);
+
+        });
 
         it('should exist in the instance', function() {
             should(wrapper.enable).be.a.Function();
@@ -506,6 +539,25 @@ describe('ModuleWrapper', function() {
 
     describe('#disable()', function() {
 
+        before('add spy', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            sinon.spy(testModule, 'disable');
+            wrapper = new ModuleWrapper(testModule, app);
+
+        });
+
         it('should exist in the instance', function() {
             should(wrapper.disable).be.a.Function();
         });
@@ -545,6 +597,25 @@ describe('ModuleWrapper', function() {
 
     describe('#destroy()', function() {
 
+        before('add spy', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            sinon.spy(testModule, 'destroy');
+            wrapper = new ModuleWrapper(testModule, app);
+
+        });
+
         it('should exist in the instance', function() {
             should(wrapper.destroy).be.a.Function();
         });
@@ -583,6 +654,25 @@ describe('ModuleWrapper', function() {
     });
 
     describe('#setupModule()', function() {
+
+        beforeEach('reset status and set spy before each test', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            wrapper = new ModuleWrapper(testModule, app);
+            sinon.spy(wrapper, 'setup');
+
+        });
 
         it('should exist in the instance', function() {
             should(wrapper.setupModule).be.a.Function();
@@ -653,7 +743,22 @@ describe('ModuleWrapper', function() {
 
     describe('#enableModule()', function() {
 
-        beforeEach('initialize wrapper', function() {
+        beforeEach('reset status and set spy before each test', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            wrapper = new ModuleWrapper(testModule, app);
+            sinon.spy(wrapper, 'enable');
 
             wrapper.status = Module.status.SETUP;
             wrapper.module._changeStatus(Module.status.SETUP, wrapper);
@@ -733,7 +838,22 @@ describe('ModuleWrapper', function() {
 
     describe('#disableModule()', function() {
 
-        beforeEach('initialize wrapper', function() {
+        beforeEach('reset status and set spy before each test', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            wrapper = new ModuleWrapper(testModule, app);
+            sinon.spy(wrapper, 'disable');
 
             wrapper.status = Module.status.ENABLED;
             wrapper.module._changeStatus(Module.status.ENABLED, wrapper);
@@ -814,7 +934,22 @@ describe('ModuleWrapper', function() {
 
     describe('#destroyModule()', function() {
 
-        beforeEach('initialize wrapper', function() {
+        beforeEach('reset status and set spy before each test', function() {
+
+            testModule = new Module({
+                name: 'testModule',
+                version: '1.0.0',
+                module: {
+                    dependencies: [],
+                    options: {
+                        db_url: 'localhost',
+                        db_port: 8080
+                    }
+                }
+            });
+
+            wrapper = new ModuleWrapper(testModule, app);
+            sinon.spy(wrapper, 'destroy');
 
             wrapper.status = Module.status.DISABLED;
             wrapper.module._changeStatus(Module.status.DISABLED, wrapper);
