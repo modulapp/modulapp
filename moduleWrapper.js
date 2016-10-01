@@ -12,25 +12,25 @@ const Module = require('./module');
 
 class ModuleWrapper extends EventEmitter {
 
-    constructor(_module, app, options = {}, imports = {}) {
+    constructor(_module, _app, _options = {}, _imports = {}) {
 
-        if (_.isUndefined(_module) || _.isUndefined(app) || _.isNull(_module) || _.isNull(app)) {
+        if (_.isUndefined(_module) || _.isUndefined(_app) || _.isNull(_module) || _.isNull(_app)) {
             throw _errors.ERR_MOD_006;
         }
 
-        if (!(_module instanceof Module)) {
+        if (!(_module.constructor.name === 'Module')) {
             throw _errors.ERR_MOD_007;
         }
 
-        if (!(app instanceof App)) {
+        if (!(_app.constructor.name === 'App')) {
             throw _errors.ERR_MOD_008;
         }
 
         super();
 
         this.module = _module;
-        this.app = app;
-        this.imports = imports;
+        this.app = _app;
+        this.imports = _imports;
 
         // Get properties from module
 
@@ -39,7 +39,7 @@ class ModuleWrapper extends EventEmitter {
             this.version = this.module.version;
         }
         this.status = _status.CREATED;
-        this.options = _.merge(options, this.module.options);
+        this.options = _.merge(_options, this.module.options);
         this.package = this.module.package;
         this.dependencies = this.module.dependencies;
 
@@ -87,7 +87,7 @@ class ModuleWrapper extends EventEmitter {
         }
         if (_.isPlainObject(newImports) || _.isNull(newImports)) {
             _.forEach(newImports, (wrapperInstance) => {
-                if (!(wrapperInstance instanceof ModuleWrapper)) {
+                if (!(wrapperInstance.constructor.name === 'ModuleWrapper')) {
                     throw _errors.ERR_MOD_012;
                 }
             });
