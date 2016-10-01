@@ -1,3 +1,5 @@
+"use strict";
+
 const should = require('should');
 const sinon = require('sinon');
 const errors = require('../errors');
@@ -7,7 +9,6 @@ const App = require('../app');
 const ModuleWrapper = require('../moduleWrapper');
 
 describe('ModuleWrapper', function() {
-    "use strict";
 
     let app;
     let testModule;

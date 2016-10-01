@@ -1,10 +1,11 @@
+"use strict";
+
 const should = require('should');
 const errors = require('../errors');
 
 const App = require('../app');
 
 describe('App', function() {
-    "use strict";
 
     let app = new App();
 

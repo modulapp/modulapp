@@ -1,3 +1,5 @@
+"use strict";
+
 const should = require('should');
 const _ = require('lodash');
 const errors = require('../errors');
@@ -8,7 +10,6 @@ const App = require('../app');
 const Module = require('../module');
 
 describe('Module', function() {
-    "use strict";
 
     let testModule = new Module('myModule');
     let testWrapper = new ModuleWrapper(new Module("test"), new App());
