@@ -5,19 +5,82 @@ const _ = require('lodash');
 const async = require('async');
 const DepGraph = require('dependency-graph').DepGraph;
 
-const errors = require('./errors');
-const events = require('./events.json').app;
-const status = require('./status.json').app;
+const ModuleWrapper = require('./ModuleWrapper');
+
+const _errors = require('./errors');
+const _events = require('./resources/events.json').app;
+const _status = require('./resources/status.json').app;
+
+const privateProps = new WeakMap();
+
+function changeStatus(appInstance, newStatus) {
+
+    if (!_.includes(_status, newStatus)) {
+        // TODO throw _errors.ERR_MOD_013;
+    }
+
+    let props = privateProps.get(appInstance);
+    props.status = newStatus;
+    privateProps.set(appInstance, props);
+}
 
 class App extends EventEmitter {
 
     constructor(config = [], options = {}) {
         super();
-        this.config = config;
-        this.graph = new DepGraph();
-        this.options = options;
-        this.status = status.CREATED;
+
+        privateProps.set(this, {
+            config: config,
+            graph: new DepGraph(),
+            options: options,
+            status: _status.CREATED
+        });
     }
+
+    // Static methods -----------------------------------------------------------------------------
+
+    static get events() {
+        return _events;
+    }
+
+    static get status() {
+        return _status;
+    }
+
+    // Getters and Setters ------------------------------------------------------------------------
+
+    get config() {
+        return privateProps.get(this).config;
+    }
+
+    get graph() {
+        return privateProps.get(this).graph;
+    }
+
+    get options() {
+        return privateProps.get(this).options;
+    }
+
+    set options(newOptions = {}) {
+        if (this.status !== _status.CREATED) {
+            throw _errors.ERR_APP_009;
+        }
+        let props = privateProps.get(this);
+        if (_.isNull(newOptions)) {
+            props.options = {};
+        } else if (_.isPlainObject(newOptions)) {
+            props.options = newOptions;
+        } else {
+            throw _errors.ERR_APP_008; // TODO throw an error;
+        }
+        privateProps.set(this, props);
+    }
+
+    get status() {
+        return privateProps.get(this).status;
+    }
+
+    // Public instance methods --------------------------------------------------------------------
 
     addOptions(options = {}) {
         // TODO raise an error depending on the status
@@ -33,12 +96,11 @@ class App extends EventEmitter {
 
     // Resolve the dependencies of the modules
     resolve(callback) { // TODO callback required?
-        if (this.status === status.STARTED) {
-            callback(errors.ERR_APP_001);
-            return this;
+        if (this.status === _status.STARTED) {
+            return callback(_errors.ERR_APP_001);
         }
 
-        this.emit(this.events.RESOLVING);
+        this.emit(_events.RESOLVING);
 
         // - iterate on this.config
         //   - create a wrapper
@@ -51,7 +113,7 @@ class App extends EventEmitter {
         // - check missing module by checking the data of all graph node
         //   - if missing module, check its dependants and raise an error
 
-        const nbModuleDefInConfig = this.config;
+        const nbModuleDefInConfig = this.config.length;
 
         _.forEach(this.config, (moduleDef) => {
 
@@ -59,7 +121,7 @@ class App extends EventEmitter {
             let id = moduleWrapper.id;
             let dependencies = moduleWrapper.dependencies;
 
-            if (this.options[id]) { // TODO find the equivalent in lodash
+            if (_.has(this.options, 'id')) {
                 moduleWrapper.addOptions(this.options[id]);
             }
 
@@ -84,11 +146,9 @@ class App extends EventEmitter {
             nodeIds = this.graph.overallOrder();
         } catch (err) {
             if (_.startsWith(err.message, 'Dependency Cycle Found')) {
-                callback(errors.ERR_APP_006);
-                return this;
+                return callback(_errors.ERR_APP_006);
             } else {
-                callback(err);
-                return this;
+                return callback(err);
             }
         }
 
@@ -98,14 +158,13 @@ class App extends EventEmitter {
             let missingModule = [];
             _.forEach(nodeIds, (nodeId) => {
                 let data = this.graph.getNodeData(nodeId);
-                if (!(data instanceof ModuleWrapper)) {
+                if (!(data.constructor.name === 'ModuleWrapper')) {
                     missingModule.push(nodeId);
                 }
             });
-            let missingModuleError = errors.ERR_APP_007;
+            let missingModuleError = _errors.ERR_APP_007;
             missingModuleError.data = missingModule;
-            callback(missingModuleError);
-            return this;
+            return callback(missingModuleError);
         }
 
         // Set the imports in each wrapper
@@ -115,7 +174,7 @@ class App extends EventEmitter {
             let imports = {};
             _.forEach(depNodeIds, (depNodeId) => {
                 let depWrapper = this.graph.getNodeData(depNodeId);
-                if (depWrapper instanceof ModuleWrapper) {
+                if (depWrapper.constructor.name === 'ModuleWrapper') {
                     imports[depNodeId] = depWrapper;
                 }
             });
@@ -123,38 +182,34 @@ class App extends EventEmitter {
             this.graph.getNodeData(nodeId, wrapper); // TODO required ?
         });
 
-        this.emit(this.events.RESOLVED);
-        this.status = status.RESOLVED;
+        this.emit(_events.RESOLVED);
+        changeStatus(this, _status.RESOLVED);
         callback(null); // TODO return null when implemented
-        return this;
     }
 
     // Setup every modules following the dependency graph
     setup(callback) {
-        if (this.status === status.STARTED) {
-            callback(errors.ERR_APP_002);
-            return this;
+        if (this.status === _status.STARTED) {
+            return callback(_errors.ERR_APP_002);
         }
 
-        if (this.status === status.CREATED) {
-            this.resolve((err) => { // TODO callback required ?
+        if (this.status === _status.CREATED) {
+            return this.resolve((err) => { // TODO callback required ?
                 if (err) {
                     callback(err);
-                    return this;
+                } else {
+                    this.setup(callback);
                 }
-                return this.setup(callback);
             });
         }
 
-        this.emit(this.events.SETTING_UP);
+        this.emit(_events.SETTING_UP);
 
         let nodeIds = this.graph.overallOrder();
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
-
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper instanceof ModuleWrapper)) {
-                asyncCallback(null); // TODO Should raise an error ?
-                return;
+            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+                return asyncCallback(null); // TODO Should raise an error ?
             }
             wrapper.setupModule(asyncCallback);
             // TODO what to do if something wrong in the function
@@ -162,107 +217,98 @@ class App extends EventEmitter {
         }, (err) => {
             if (err) {
                 callback(err);
-                return;
+            } else {
+                this.emit(_events.SETUP);
+                changeStatus(this, _status.SETUP);
+                callback(null);
             }
-            this.emit(this.events.SETUP);
-            this.status = status.SETUP;
-            callback(null);
-            return this;
         });
 
     }
 
     // Enable every modules following the dependency graph
     start(callback) {
-        if (this.status === status.STARTED) {
-            callback(errors.ERR_APP_003);
-            return;
+        if (this.status === _status.STARTED) {
+            return callback(_errors.ERR_APP_003);
         }
 
-        if (this.status === status.CREATED) {
-            this.setup((err) => {
+        if (this.status === _status.CREATED) {
+            return this.setup((err) => {
                 if (err) {
                     callback(err);
-                    return;
+                } else {
+                    this.start(callback);
                 }
-                return this.start(callback);
             });
         }
 
-        this.emit(this.events.STARTING);
+        this.emit(_events.STARTING);
 
         let nodeIds = this.graph.overallOrder();
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
-
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper instanceof ModuleWrapper)) {
-                asyncCallback(null); // TODO Should raise an error ?
-                return;
+            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+                return asyncCallback(null); // TODO Should raise an error ?
             }
-            wrapper.startModule(asyncCallback);
+            wrapper.enableModule(asyncCallback);
             // TODO what to do if something wrong in the function
 
         }, (err) => {
             if (err) {
                 callback(err);
-                return;
+            } else {
+                this.emit(_events.STARTED);
+                changeStatus(this, _status.STARTED);
+                callback(null);
             }
-            this.emit(this.events.STARTED);
-            this.status = status.STARTED;
-            callback(null);
         });
 
     }
 
     // Disable every modules following the dependency graph
     stop(callback) {
-        if (this.status !== status.STARTED) {
-            callback(errors.ERR_APP_004);
-            return this;
+        if (this.status !== _status.STARTED) {
+            return callback(_errors.ERR_APP_004);
         }
 
-        this.emit(this.events.STOPPING);
+        this.emit(_events.STOPPING);
 
         let nodeIds = _.reverse(this.graph.overallOrder());
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
 
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper instanceof ModuleWrapper)) {
-                asyncCallback(null); // TODO Should raise an error ?
-                return;
+            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+                return asyncCallback(null); // TODO Should raise an error ?
             }
-            wrapper.stopModule(asyncCallback);
+            wrapper.disableModule(asyncCallback);
             // TODO what to do if something wrong in the function
 
         }, (err) => {
             if (err) {
                 callback(err);
-                return;
+            } else {
+                this.emit(_events.STOPPED);
+                changeStatus(this, _status.STOPPED);
+                callback(null);
             }
-            this.emit(this.events.STOPPED);
-            this.status = status.STOPPED;
-            callback(null);
-            return this;
         });
 
     }
 
     // Destroy every modules following the dependency graph
     destroy(callback) {
-        if (this.status !== status.STOPPED) {
-            callback(errors.ERR_APP_005);
-            return;
+        if (this.status !== _status.STOPPED) {
+            return callback(_errors.ERR_APP_005);
         }
 
-        this.emit(this.events.DESTROYING);
+        this.emit(_events.DESTROYING);
 
         let nodeIds = _.reverse(this.graph.overallOrder());
         async.eachSeries(nodeIds, (nodeId, asyncCallback) => {
 
             let wrapper = this.graph.getNodeData(nodeId);
-            if (!(wrapper instanceof ModuleWrapper)) {
-                asyncCallback(null); // TODO Should raise an error ?
-                return;
+            if (!(wrapper.constructor.name === 'ModuleWrapper')) {
+                return asyncCallback(null); // TODO Should raise an error ?
             }
             wrapper.destroyModule(asyncCallback);
             // TODO what to do if something wrong in the function
@@ -270,10 +316,10 @@ class App extends EventEmitter {
         }, (err) => {
             if (err) {
                 callback(err);
-                return;
+            } else {
+                this.emit(_events.DESTROYED);
+                callback(null);
             }
-            this.emit(this.events.DESTROYED);
-            callback(null);
         });
 
     }
