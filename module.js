@@ -4,8 +4,8 @@ const EventEmitter = require('events').EventEmitter;
 const _ = require('lodash');
 
 const _errors = require('./errors');
-const _events = require('./events.json').module;
-const _status = require('./status.json').module;
+const _events = require('./resources/events.json').module;
+const _status = require('./resources/status.json').module;
 
 const privateProps = new WeakMap();
 

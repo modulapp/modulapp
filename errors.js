@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const errorsList = require('./errors.json');
+const errorsList = require('./resources/errors.json');
 
 let errors = {};
 
