@@ -776,7 +776,7 @@ describe('Module', function() {
         it('should throw an error if not in created status', function() {
             testModule._changeStatus(Module.status.ENABLED, testWrapper);
             should(function() {
-                testModule.addDependencies(['db', 'server']);
+                testModule.addDependencies(['server', 'db']);
             }).throw(errors.ERR_MOD_003);
         });
 

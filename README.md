@@ -7,8 +7,10 @@ Modular application framework for node.js
 [![npm](https://img.shields.io/npm/l/modulapp.svg)](https://www.npmjs.com/package/modulapp)
 [![node](https://img.shields.io/node/v/modulapp.svg)]()
 [![David](https://img.shields.io/david/modulapp/modulapp.svg)](https://github.com/modulapp/modulapp)
-[![David](https://img.shields.io/david/dev/modulapp/modulapp.svg)](https://github.com/modulapp/modulapp)
+
 [![Travis build](https://img.shields.io/travis/modulapp/modulapp/master.svg)](https://travis-ci.org/modulapp/modulapp)
+[![Coveralls](https://img.shields.io/coveralls/modulapp/modulapp.svg)](https://coveralls.io/github/modulapp/modulapp)
+[![David](https://img.shields.io/david/dev/modulapp/modulapp.svg)](https://github.com/modulapp/modulapp)
 
 ## Overview
 
@@ -37,4 +39,4 @@ The App manages the dependencies and the lifecycle of the modules.
 
 ## License
 
-    [MIT](LICENSE)
+    [MIT](https://github.com/modulapp/modulapp/blob/master/LICENSE.md)
