@@ -409,7 +409,7 @@ describe('Module', function() {
             timeout: 1000
         };
 
-        beforeEach('Clear options before each tests', function() {
+        beforeEach('clear options before each tests', function() {
             testModule = new Module('myModule');
         });
 
@@ -491,7 +491,7 @@ describe('Module', function() {
 
     describe('setter dependencies', function() {
 
-        beforeEach('Clear options before each tests', function() {
+        beforeEach('clear options before each tests', function() {
             testModule = new Module('myModule');
         });
 
@@ -564,7 +564,7 @@ describe('Module', function() {
 
         describe('replace existing dependencies', function() {
 
-            beforeEach('Clear options before each tests', function() {
+            beforeEach('clear options before each tests', function() {
                 testModule = new Module('myModule');
             });
 
@@ -625,7 +625,7 @@ describe('Module', function() {
 
     describe('#addDependencies()', function() {
 
-        beforeEach('Clear dependencies before each tests', function() {
+        beforeEach('clear dependencies before each tests', function() {
             testModule = new Module('myModule');
         });
 
