@@ -67,24 +67,27 @@ describe('App', function() {
         describe('with illegal arguments', function() {
 
             it(
-                'should throw an error if first argument different than Array or Object',
+                'should throw an error if first argument different than Array, Object or Module instance',
                 function() {
                     should(function() {
                         new App('test');
-                    }).throw(errors.ERR_APP_010);
+                    }).throw(errors.ERR_APP_013);
                     should(function() {
                         new App(true);
-                    }).throw(errors.ERR_APP_010);
+                    }).throw(errors.ERR_APP_013);
                     should(function() {
                         new App(123);
-                    }).throw(errors.ERR_APP_010);
+                    }).throw(errors.ERR_APP_013);
                     should(function() {
                         new App(function() {});
-                    }).throw(errors.ERR_APP_010);
+                    }).throw(errors.ERR_APP_013);
                     should(function() {
                         new App({
                             test: 'test'
                         });
+                    }).not.throw();
+                    should(function() {
+                        new App(serverModule);
                     }).not.throw();
                     should(function() {
                         new App([serverModule]);
@@ -92,22 +95,42 @@ describe('App', function() {
                 });
 
             it(
-                'should throw an error if second argument different than Object while first argument is an Array',
+                'should throw an error if second argument different than Object while first argument is an Array or a Module instance',
                 function() {
+                    should(function() {
+                        new App(serverModule,
+                            'test');
+                    }).throw(errors.ERR_APP_011);
                     should(function() {
                         new App([serverModule],
                             'test');
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App(serverModule,
+                            true);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
                         new App([serverModule],
                             true);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
+                        new App(serverModule, 123);
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
                         new App([serverModule], 123);
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App(serverModule,
+                            function() {});
                     }).throw(errors.ERR_APP_011);
                     should(function() {
                         new App([serverModule],
                             function() {});
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App(serverModule, [
+                            'test'
+                        ]);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
                         new App([serverModule], [
@@ -115,11 +138,30 @@ describe('App', function() {
                         ]);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
+                        new App(serverModule, {
+                            test: 'test'
+                        });
+                    }).not.throw();
+                    should(function() {
                         new App([serverModule], {
                             test: 'test'
                         });
                     }).not.throw();
                 });
+
+            it('should handle null argument', function() {
+                should(function() {
+                    new App(null, {
+                        test: 'test'
+                    });
+                }).not.throw();
+                should(function() {
+                    new App([serverModule], null);
+                }).not.throw();
+                should(function() {
+                    new App(null, null);
+                }).not.throw();
+            });
 
         });
 
@@ -574,21 +616,21 @@ describe('App', function() {
         it('should not accept non-array value', function() {
             should(function() {
                 app.config = '123';
-            }).throw(errors.ERR_APP_012);
+            }).throw(errors.ERR_APP_013);
             should(function() {
                 app.config = 123;
-            }).throw(errors.ERR_APP_012);
+            }).throw(errors.ERR_APP_013);
             should(function() {
                 app.config = {
                     a: 'a'
                 };
-            }).throw(errors.ERR_APP_012);
+            }).throw(errors.ERR_APP_013);
             should(function() {
                 app.config = true;
-            }).throw(errors.ERR_APP_012);
+            }).throw(errors.ERR_APP_013);
             should(function() {
                 app.config = function() {};
-            }).throw(errors.ERR_APP_012);
+            }).throw(errors.ERR_APP_013);
         });
 
         it('should only accept an array of Module instances', function() {

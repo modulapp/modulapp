@@ -46,7 +46,7 @@ function checkConfig(config) {
 
         return config;
     } else {
-        throw _errors.ERR_APP_012;
+        throw _errors.ERR_APP_013;
     }
 }
 
@@ -64,9 +64,9 @@ class App extends EventEmitter {
         if (_.isPlainObject(config)) {
             options = config;
             config = [];
-        } else if (!_.isArray(config)) {
-            throw _errors.ERR_APP_010;
         }
+
+        config = checkConfig(config);
 
         if (!_.isPlainObject(options)) {
             throw _errors.ERR_APP_011;
@@ -247,7 +247,7 @@ class App extends EventEmitter {
 
         this.emit(_events.RESOLVED);
         changeStatus(this, _status.RESOLVED);
-        callback(null); // TODO return null when implemented
+        callback(null);
     }
 
     // Setup every modules following the dependency graph
