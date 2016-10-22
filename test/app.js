@@ -8,7 +8,7 @@ const Module = require('../module');
 
 const App = require('../app');
 
-describe('App', function() {
+describe.only('App', function() {
 
     let app = new App();
 
@@ -145,10 +145,12 @@ describe('App', function() {
             });
 
             it('should have no config', function() {
+                should(app.config).be.an.Array();
                 should(app.config).be.empty();
             });
 
             it('should have no option', function() {
+                should(app.options).be.an.Object();
                 should(app.options).be.empty();
             });
 
@@ -196,10 +198,12 @@ describe('App', function() {
                 });
 
                 it('should have appropriate config', function() {
+                    should(app.config).be.an.Array();
                     should(app.config).have.length(2);
                 });
 
                 it('should have no option', function() {
+                    should(app.options).be.an.Object();
                     should(app.options).be.empty();
                 });
 
@@ -252,10 +256,12 @@ describe('App', function() {
                 });
 
                 it('should have no config', function() {
+                    should(app.config).be.an.Array();
                     should(app.config).be.empty();
                 });
 
                 it('should have appropriate options', function() {
+                    should(app.options).be.an.Object();
                     should(app.options.server.host).be.exactly(
                         'localhost');
                     should(app.options.server.port).be.exactly(
@@ -320,10 +326,12 @@ describe('App', function() {
                 });
 
                 it('should have appropriate config', function() {
+                    should(app.config).be.an.Array();
                     should(app.config).have.length(2);
                 });
 
                 it('should have appropriate options', function() {
+                    should(app.options).be.an.Object();
                     should(app.options.server.host).be.exactly(
                         'localhost');
                     should(app.options.server.port).be.exactly(
@@ -450,6 +458,101 @@ describe('App', function() {
     });
 
     describe('setter config', function() {
+
+        beforeEach('Clear config before each tests', function() {
+            app = new App();
+        });
+
+        it('should handle empty value', function() {
+            should(function() {
+                app.config = undefined;
+            }).not.throw();
+            should(app.config).be.an.array();
+            should(app.config).be.empty();
+        });
+
+        it('sould handle null value', function() {
+            should(function() {
+                app.config = null;
+            }).not.throw();
+            should(app.config).be.an.array();
+            should(app.config).be.empty();
+        });
+
+        it('should handle empty array value', function() {
+            should(function() {
+                app.config = [];
+            }).not.throw();
+            should(app.config).be.an.array();
+            should(app.config).be.empty();
+        });
+
+        it('should not accept non-array value', function() {
+            should(function() {
+                app.config = '123';
+            }).throw(errors.ERR_APP_012);
+            should(function() {
+                app.config = 123;
+            }).throw(errors.ERR_APP_012);
+            should(function() {
+                app.config = {
+                    a: 'a'
+                };
+            }).throw(errors.ERR_APP_012);
+            should(function() {
+                app.config = true;
+            }).throw(errors.ERR_APP_012);
+            should(function() {
+                app.config = function() {};
+            }).throw(errors.ERR_APP_012);
+        });
+
+        it('should only accept an array of Module instances', function() {
+            let server = new Module('server');
+            should(function() {
+                app.config = [server];
+            }).not.throw();
+            should(function() {
+                app.config = ['123'];
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.config = [123];
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.config = [{
+                    a: 'a'
+                }];
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.config = [true];
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.config = [function() {}];
+            }).throw(errors.ERR_APP_013);
+        });
+
+        it('should replace existing config', function() {
+            should(app.config).be.empty();
+
+            let server = new Module('server');
+            let db = new Module('db');
+            app.config = [server, db];
+            should(app.config).have.length(2);
+
+            app.config = [db];
+            should(app.config).have.length(1);
+        });
+
+        it('should remove duplicates', function() {
+            should(app.config).be.empty();
+
+            let server = new Module('server');
+            let db = new Module('db');
+            app.config = [server, server, db];
+            should(app.config).have.length(2);
+        });
+
+        it('should throw an error if not in created status');
 
     });
 

@@ -38,6 +38,12 @@
     "code": "ERR_APP_011",
     "message": "Second argument for App constructor must be an object."
 }, {
+    "code": "ERR_APP_012",
+    "message": "Non-array argument cannot be accepted as config."
+}, {
+    "code": "ERR_APP_013",
+    "message": "Only module instance can be accepted as part of the config array."
+}, {
     "code": "ERR_MOD_000",
     "message": "Not implemented yet."
 }, {
@@ -57,7 +63,7 @@
     "message": "Only an object argument is accepted as options."
 }, {
     "code": "ERR_MOD_005",
-    "message": "non-string argument cannot be accepted as dependencies."
+    "message": "Non-string argument cannot be accepted as dependencies."
 }, {
     "code": "ERR_MOD_006",
     "message": "ModuleWrapper cannot be instanciated with null or missing module and app arguments."

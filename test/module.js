@@ -109,11 +109,13 @@ describe('Module', function() {
             });
 
             it('should have no option', function() {
+                should(testModule.options).be.an.Object();
                 should(testModule.options).be.empty();
             });
 
             it('should have no dependency',
                 function() {
+                    should(testModule.dependencies).be.an.Array();
                     should(testModule.dependencies).be.empty();
                 });
 
@@ -167,11 +169,13 @@ describe('Module', function() {
 
             it('should have no option',
                 function() {
+                    should(testModule.options).be.an.Object();
                     should(testModule.options).be.empty();
                 });
 
             it('should have no dependency',
                 function() {
+                    should(testModule.dependencies).be.an.Array();
                     should(testModule.dependencies).be.empty();
                 });
 
@@ -238,6 +242,7 @@ describe('Module', function() {
 
             it('should have appropriate options',
                 function() {
+                    should(testModule.options).be.an.Object();
                     should(testModule.options.db_url).be.exactly(
                         'localhost');
                     should(testModule.options.db_port).be.exactly(
@@ -246,6 +251,7 @@ describe('Module', function() {
 
             it('should have appropriate dependencies',
                 function() {
+                    should(testModule.dependencies).be.an.Array();
                     should(testModule.dependencies).have.length(2);
                 });
 
@@ -605,7 +611,7 @@ describe('Module', function() {
             let nbDepAfterUniq = _.uniq(testModule.dependencies).length;
             should
                 .equal(nbDepAfterUniq, nbDep,
-                    'The dependencies contains exact duplicates');
+                    'The dependencies contain exact duplicates');
         });
 
         it('should throw an error if not in created status', function() {
