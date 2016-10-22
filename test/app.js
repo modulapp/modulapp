@@ -8,7 +8,10 @@ const Module = require('../module');
 
 const App = require('../app');
 
-describe.only('App', function() {
+describe('App', function() {
+
+    let serverModule = new Module('server');
+    let dbModule = new Module('db');
 
     let app = new App();
 
@@ -84,7 +87,7 @@ describe.only('App', function() {
                         });
                     }).not.throw();
                     should(function() {
-                        new App([new Module('testModule')]);
+                        new App([serverModule]);
                     }).not.throw();
                 });
 
@@ -92,27 +95,27 @@ describe.only('App', function() {
                 'should throw an error if second argument different than Object while first argument is an Array',
                 function() {
                     should(function() {
-                        new App([new Module('testModule')],
+                        new App([serverModule],
                             'test');
                     }).throw(errors.ERR_APP_011);
                     should(function() {
-                        new App([new Module('testModule')],
+                        new App([serverModule],
                             true);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
-                        new App([new Module('testModule')], 123);
+                        new App([serverModule], 123);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
-                        new App([new Module('testModule')],
+                        new App([serverModule],
                             function() {});
                     }).throw(errors.ERR_APP_011);
                     should(function() {
-                        new App([new Module('testModule')], [
+                        new App([serverModule], [
                             'test'
                         ]);
                     }).throw(errors.ERR_APP_011);
                     should(function() {
-                        new App([new Module('testModule')], {
+                        new App([serverModule], {
                             test: 'test'
                         });
                     }).not.throw();
@@ -169,13 +172,7 @@ describe.only('App', function() {
             describe('config as 1st', function() {
 
                 before('initialize app', function() {
-
-                    let server = new Module('server');
-                    let db = new Module('db');
-
-                    let config = [server, db];
-
-                    app = new App(config);
+                    app = new App([serverModule, dbModule]);
                 });
 
                 it('should return an instance of App', function() {
@@ -286,12 +283,6 @@ describe.only('App', function() {
             describe('config as 1st, options as 2nd', function() {
 
                 before('initialize app', function() {
-
-                    let server = new Module('server');
-                    let db = new Module('db');
-
-                    let config = [server, db];
-
                     let options = {
                         server: {
                             host: 'localhost',
@@ -303,7 +294,8 @@ describe.only('App', function() {
                         }
                     };
 
-                    app = new App(config, options);
+                    app = new App([serverModule, dbModule],
+                        options);
                 });
 
                 it('should return an instance of App', function() {
@@ -369,7 +361,7 @@ describe.only('App', function() {
             timeout: 1000
         };
 
-        beforeEach('intialize app', function() {
+        beforeEach('clear options before each tests', function() {
             app = new App();
         });
 
@@ -455,6 +447,98 @@ describe.only('App', function() {
 
     describe('#addOptions()', function() {
 
+        const testOptions1 = {
+            db: {
+                url: 'localhost',
+                port: 8080
+            }
+        };
+
+        const testOptions2 = {
+            db: {
+                url: '127.0.0.0',
+                timeout: 1000
+            }
+        };
+
+        beforeEach('clear options before each tests', function() {
+            app = new App();
+        });
+
+        it('should exist in the instance', function() {
+            should(app.addOptions).be.a.Function();
+        });
+
+        it('should handle empty argument', function() {
+            should(function() {
+                app.addOptions();
+            }).not.throw();
+        });
+
+        it('should handle null argument', function() {
+            should(function() {
+                app.addOptions(null);
+            }).not.throw();
+        });
+
+        it('should not accept non-object argument', function() {
+            should(function() {
+                app.addOptions([]);
+            }).throw(errors.ERR_APP_008);
+            should(function() {
+                app.addOptions(['new option']);
+            }).throw(errors.ERR_APP_008);
+            should(function() {
+                app.addOptions('new option');
+            }).throw(errors.ERR_APP_008);
+            should(function() {
+                app.addOptions(123);
+            }).throw(errors.ERR_APP_008);
+            should(function() {
+                app.addOptions(true);
+            }).throw(errors.ERR_APP_008);
+            should(function() {
+                app.addOptions(function() {});
+            }).throw(errors.ERR_APP_008);
+        });
+
+        it('should accept an object argument', function() {
+            should(function() {
+                app.addOptions(testOptions1);
+            }).not.throw();
+        });
+
+        it('should handle empty object argument', function() {
+            should(function() {
+                app.addOptions({});
+            }).not.throw();
+        });
+
+        it('should merge argument object with existing options', function() {
+            should(app.options.db).be.Undefined();
+
+            app.addOptions(testOptions1);
+
+            should(app.options.db.url).be.exactly('localhost');
+            should(app.options.db.port).be.exactly(8080);
+            should(app.options.db.timeout).be.Undefined();
+
+            app.addOptions(testOptions2);
+
+            should(app.options.db.url).be.exactly('127.0.0.0');
+            should(app.options.db.port).be.exactly(8080);
+            should(app.options.db.timeout).be.exactly(1000);
+        });
+
+        it('should throw an error if not in created status', function(done) {
+            app.resolve(function() {
+                should(function() {
+                    app.addOptions(testOptions1);
+                }).throw(errors.ERR_APP_009);
+                done();
+            });
+        });
+
     });
 
     describe('setter config', function() {
@@ -467,7 +551,7 @@ describe.only('App', function() {
             should(function() {
                 app.config = undefined;
             }).not.throw();
-            should(app.config).be.an.array();
+            should(app.config).be.an.Array();
             should(app.config).be.empty();
         });
 
@@ -475,7 +559,7 @@ describe.only('App', function() {
             should(function() {
                 app.config = null;
             }).not.throw();
-            should(app.config).be.an.array();
+            should(app.config).be.an.Array();
             should(app.config).be.empty();
         });
 
@@ -483,7 +567,7 @@ describe.only('App', function() {
             should(function() {
                 app.config = [];
             }).not.throw();
-            should(app.config).be.an.array();
+            should(app.config).be.an.Array();
             should(app.config).be.empty();
         });
 
@@ -552,11 +636,146 @@ describe.only('App', function() {
             should(app.config).have.length(2);
         });
 
-        it('should throw an error if not in created status');
+        it('should throw an error if not in created status', function(done) {
+            app.resolve(function() {
+                should(function() {
+                    app.config = [serverModule];
+                }).throw(errors.ERR_APP_014);
+                done();
+            });
+        });
 
     });
 
     describe('#addConfig()', function() {
+
+        beforeEach('clear config before each tests', function() {
+            app = new App();
+        });
+
+        it('should exist in the instance', function() {
+            should(app.addConfig).be.a.Function();
+        });
+
+        it('should handle empty argument', function() {
+            should(function() {
+                app.addConfig();
+            }).not.throw();
+        });
+
+        it('should handle null argument', function() {
+            should(function() {
+                app.addConfig(null);
+            }).not.throw();
+        });
+
+        it('should accept a Module instance argument', function() {
+            should(function() {
+                app.addConfig(serverModule);
+            }).not.throw();
+        });
+
+        it('should accept multiple Module instance arguments', function() {
+            should(function() {
+                app.addConfig(serverModule, dbModule);
+            }).not.throw();
+        });
+
+        it('should accept an array of Module instance argument', function() {
+            should(function() {
+                app.addConfig([serverModule, dbModule]);
+            }).not.throw();
+        });
+
+        it(
+            'should accept a mix of multiple Module instance and array of Module instance as arguments',
+            function() {
+                should(function() {
+                    app.addConfig(serverModule, [dbModule]);
+                }).not.throw();
+            });
+
+        it('should handle empty array argument', function() {
+            should(function() {
+                app.addConfig([]);
+            }).not.throw();
+        });
+
+        it('should not accept non-array and non-Module instance argument', function() {
+            should(function() {
+                app.addConfig(132);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig('132');
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig(true);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig({
+                    a: 'a'
+                });
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig(function() {});
+            }).throw(errors.ERR_APP_013);
+        });
+
+        it('should not accept array of non-Module instance argument', function() {
+            should(function() {
+                app.addConfig([132]);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig(['132']);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig([true]);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig([{
+                    a: 'a'
+                }]);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig([function() {}]);
+            }).throw(errors.ERR_APP_013);
+            should(function() {
+                app.addConfig(serverModule, ['132']);
+            }).throw(errors.ERR_APP_013);
+        });
+
+        it('should merge argument with existing config', function() {
+            let loggerModule = new Module('logger');
+            let utilsModule = new Module('utils');
+
+            app.addConfig(serverModule);
+            should(app.config).containDeep([serverModule]);
+            should(app.config).have.length(1);
+
+            app.addConfig([dbModule]);
+            should(app.config).containDeep([serverModule, dbModule]);
+            should(app.config).have.length(2);
+
+            app.addConfig(loggerModule, [utilsModule]);
+            should(app.config).containDeep([serverModule, dbModule,
+                loggerModule, utilsModule
+            ]);
+            should(app.config).have.length(4);
+        });
+
+        it('should remove duplicates', function() {
+            app.addConfig(serverModule, dbModule, serverModule, [dbModule]);
+            should(app.config).have.length(2);
+        });
+
+        it('should throw an error if not in created status', function(done) {
+            app.resolve(function() {
+                should(function() {
+                    app.addConfig([serverModule]);
+                }).throw(errors.ERR_APP_014);
+                done();
+            });
+        });
 
     });
 
