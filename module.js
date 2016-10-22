@@ -151,9 +151,6 @@ class Module extends EventEmitter {
     // Public instance methods --------------------------------------------------------------------
 
     addOptions(options = {}) {
-        if (this.status !== _status.CREATED) {
-            throw _errors.ERR_MOD_002;
-        }
         if (_.isPlainObject(options) || _.isNull(options)) {
             this.options = _.merge(this.options, options);
         } else {
@@ -162,9 +159,6 @@ class Module extends EventEmitter {
     }
 
     addDependencies(...dependencies) {
-        if (this.status !== _status.CREATED) {
-            throw _errors.ERR_MOD_003;
-        }
         dependencies = checkDependencies(dependencies);
         dependencies = _.concat(this.dependencies, dependencies);
         dependencies = _.flattenDeep(dependencies);
