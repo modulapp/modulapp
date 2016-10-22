@@ -24,6 +24,32 @@ function changeStatus(appInstance, newStatus) {
     privateProps.set(appInstance, props);
 }
 
+function checkConfig(config) {
+    if (_.isNull(config)) {
+        return [];
+    } else if (config.constructor.name === 'Module') {
+        return [config];
+    } else if (_.isArray(config)) {
+
+        config = _.flattenDeep(config);
+
+        _.remove(config, (value) => {
+            return _.isNull(value);
+        });
+        _.forEach(config, (value) => {
+            if (value.constructor.name !== 'Module') {
+                throw _errors.ERR_APP_013;
+            }
+        });
+        config = _.flattenDeep(config);
+        config = _.uniq(config);
+
+        return config;
+    } else {
+        throw _errors.ERR_APP_012;
+    }
+}
+
 class App extends EventEmitter {
 
     constructor(config = [], options = {}) {
@@ -77,6 +103,14 @@ class App extends EventEmitter {
         return privateProps.get(this).config;
     }
 
+    set config(newConfig = []) {
+        // TODO if status in resolved, update the config and resolve again?
+        if (this.status !== _status.CREATED) {
+            throw _errors.ERR_APP_014;
+        }
+        privateProps.get(this).config = checkConfig(newConfig);
+    }
+
     get graph() {
         return privateProps.get(this).graph;
     }
@@ -86,6 +120,7 @@ class App extends EventEmitter {
     }
 
     set options(newOptions = {}) {
+        // TODO if status in resolved, update the wrapper in the graph?
         if (this.status !== _status.CREATED) {
             throw _errors.ERR_APP_009;
         }
@@ -107,15 +142,19 @@ class App extends EventEmitter {
     // Public instance methods --------------------------------------------------------------------
 
     addOptions(options = {}) {
-        // TODO raise an error depending on the status
-        // TODO if already resolved, update the wrapper in the graph
-        this.options = _.merge(this.options, options);
+        if (_.isPlainObject(options) || _.isNull(options)) {
+            this.options = _.merge(this.options, options);
+        } else {
+            throw _errors.ERR_APP_008;
+        }
     }
 
-    addConfig(config = []) {
-        // TODO if status in resolved, update the config and resolve again
-        // TODO raise an error depending on the status
-        this.config = this.config.concat(config);
+    addConfig(...config) {
+        config = checkConfig(config);
+        config = _.concat(this.config, config);
+        config = _.flattenDeep(config);
+        config = _.uniq(config);
+        this.config = config;
     }
 
     // Resolve the dependencies of the modules
