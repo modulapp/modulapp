@@ -16,7 +16,7 @@ const privateProps = new WeakMap();
 function changeStatus(appInstance, newStatus) {
 
     if (!_.includes(_status, newStatus)) {
-        // TODO throw _errors.ERR_MOD_013;
+        throw _errors.ERR_APP_XXX; // TODO define error
     }
 
     let props = privateProps.get(appInstance);
@@ -27,9 +27,29 @@ function changeStatus(appInstance, newStatus) {
 class App extends EventEmitter {
 
     constructor(config = [], options = {}) {
+
+        if (_.isNull(config)) {
+            config = [];
+        }
+        if (_.isNull(options)) {
+            options = {};
+        }
+
+        if (_.isPlainObject(config)) {
+            options = config;
+            config = [];
+        } else if (!_.isArray(config)) {
+            throw _errors.ERR_APP_010;
+        }
+
+        if (!_.isPlainObject(options)) {
+            throw _errors.ERR_APP_011;
+        }
+
         super();
 
         privateProps.set(this, {
+            id: _.uniqueId(),
             config: config,
             graph: new DepGraph(),
             options: options,
@@ -48,6 +68,10 @@ class App extends EventEmitter {
     }
 
     // Getters and Setters ------------------------------------------------------------------------
+
+    get id() {
+        return privateProps.get(this).id;
+    }
 
     get config() {
         return privateProps.get(this).config;
@@ -71,7 +95,7 @@ class App extends EventEmitter {
         } else if (_.isPlainObject(newOptions)) {
             props.options = newOptions;
         } else {
-            throw _errors.ERR_APP_008; // TODO throw an error;
+            throw _errors.ERR_APP_008;
         }
         privateProps.set(this, props);
     }
