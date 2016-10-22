@@ -30,7 +30,13 @@
     "message": "Only an object argument is accepted as options."
 }, {
     "code": "ERR_APP_009",
-    "message": "Options cannot be changed in app after resolve"
+    "message": "Options cannot be changed in app after resolve."
+}, {
+    "code": "ERR_APP_010",
+    "message": "First argument for App constructor must be an array or an object."
+}, {
+    "code": "ERR_APP_011",
+    "message": "Second argument for App constructor must be an object."
 }, {
     "code": "ERR_MOD_000",
     "message": "Not implemented yet."

@@ -1,7 +1,10 @@
 "use strict";
 
 const should = require('should');
+const DepGraph = require('dependency-graph').DepGraph;
 const errors = require('../errors');
+
+const Module = require('../module');
 
 const App = require('../app');
 
@@ -60,13 +63,287 @@ describe('App', function() {
 
         describe('with illegal arguments', function() {
 
+            it(
+                'should throw an error if first argument different than Array or Object',
+                function() {
+                    should(function() {
+                        new App('test');
+                    }).throw(errors.ERR_APP_010);
+                    should(function() {
+                        new App(true);
+                    }).throw(errors.ERR_APP_010);
+                    should(function() {
+                        new App(123);
+                    }).throw(errors.ERR_APP_010);
+                    should(function() {
+                        new App(function() {});
+                    }).throw(errors.ERR_APP_010);
+                    should(function() {
+                        new App({
+                            test: 'test'
+                        });
+                    }).not.throw();
+                    should(function() {
+                        new App([new Module('testModule')]);
+                    }).not.throw();
+                });
+
+            it(
+                'should throw an error if second argument different than Object while first argument is an Array',
+                function() {
+                    should(function() {
+                        new App([new Module('testModule')],
+                            'test');
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App([new Module('testModule')],
+                            true);
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App([new Module('testModule')], 123);
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App([new Module('testModule')],
+                            function() {});
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App([new Module('testModule')], [
+                            'test'
+                        ]);
+                    }).throw(errors.ERR_APP_011);
+                    should(function() {
+                        new App([new Module('testModule')], {
+                            test: 'test'
+                        });
+                    }).not.throw();
+                });
+
         });
 
-        describe('with minimal argument', function() {
+        describe('with no argument', function() {
+
+            before('initialize app', function() {
+                app = new App();
+            });
+
+            it('should return an instance of App', function() {
+                should(app).be.an.instanceOf(App);
+            });
+
+            it('should have a non overridable id', function() {
+                should(app.id).be.a.String();
+                should(function() {
+                    app.id = 'new id';
+                }).throw();
+            });
+
+            it('should have a non overridable status', function() {
+                should(app.status).be.exactly(App.status.CREATED);
+                should(function() {
+                    app.status = 'new status';
+                }).throw();
+            });
+
+            it('should have no config', function() {
+                should(app.config).be.empty();
+            });
+
+            it('should have no option', function() {
+                should(app.options).be.empty();
+            });
+
+            it('should have a non overridable graph', function() {
+                should(app.graph).be.an.instanceOf(DepGraph);
+                let newGraph = new DepGraph();
+                should(function() {
+                    app.graph = newGraph;
+                }).throw();
+            });
 
         });
 
         describe('with optional arguments', function() {
+
+            describe('config as 1st', function() {
+
+                before('initialize app', function() {
+
+                    let server = new Module('server');
+                    let db = new Module('db');
+
+                    let config = [server, db];
+
+                    app = new App(config);
+                });
+
+                it('should return an instance of App', function() {
+                    should(app).be.an.instanceOf(App);
+                });
+
+                it('should have a non overridable id', function() {
+                    should(app.id).be.a.String();
+                    should(function() {
+                        app.id = 'new id';
+                    }).throw();
+                });
+
+                it('should have a non overridable status', function() {
+                    should(app.status).be.exactly(App.status
+                        .CREATED);
+                    should(function() {
+                        app.status = 'new status';
+                    }).throw();
+                });
+
+                it('should have appropriate config', function() {
+                    should(app.config).have.length(2);
+                });
+
+                it('should have no option', function() {
+                    should(app.options).be.empty();
+                });
+
+                it('should have a non overridable graph', function() {
+                    should(app.graph).be.an.instanceOf(
+                        DepGraph);
+                    let newGraph = new DepGraph();
+                    should(function() {
+                        app.graph = newGraph;
+                    }).throw();
+                });
+
+            });
+
+            describe('options as 1st', function() {
+
+                before('initialize app', function() {
+
+                    let options = {
+                        server: {
+                            host: 'localhost',
+                            port: 8080
+                        },
+                        db: {
+                            host: 'localhost',
+                            port: 1234
+                        }
+                    };
+
+                    app = new App(options);
+                });
+
+                it('should return an instance of App', function() {
+                    should(app).be.an.instanceOf(App);
+                });
+
+                it('should have a non overridable id', function() {
+                    should(app.id).be.a.String();
+                    should(function() {
+                        app.id = 'new id';
+                    }).throw();
+                });
+
+                it('should have a non overridable status', function() {
+                    should(app.status).be.exactly(App.status
+                        .CREATED);
+                    should(function() {
+                        app.status = 'new status';
+                    }).throw();
+                });
+
+                it('should have no config', function() {
+                    should(app.config).be.empty();
+                });
+
+                it('should have appropriate options', function() {
+                    should(app.options.server.host).be.exactly(
+                        'localhost');
+                    should(app.options.server.port).be.exactly(
+                        8080);
+                    should(app.options.db.host).be.exactly(
+                        'localhost');
+                    should(app.options.db.port).be.exactly(
+                        1234);
+                });
+
+                it('should have a non overridable graph', function() {
+                    should(app.graph).be.an.instanceOf(
+                        DepGraph);
+                    let newGraph = new DepGraph();
+                    should(function() {
+                        app.graph = newGraph;
+                    }).throw();
+                });
+
+            });
+
+            describe('config as 1st, options as 2nd', function() {
+
+                before('initialize app', function() {
+
+                    let server = new Module('server');
+                    let db = new Module('db');
+
+                    let config = [server, db];
+
+                    let options = {
+                        server: {
+                            host: 'localhost',
+                            port: 8080
+                        },
+                        db: {
+                            host: 'localhost',
+                            port: 1234
+                        }
+                    };
+
+                    app = new App(config, options);
+                });
+
+                it('should return an instance of App', function() {
+                    should(app).be.an.instanceOf(App);
+                });
+
+                it('should have a non overridable id', function() {
+                    should(app.id).be.a.String();
+                    should(function() {
+                        app.id = 'new id';
+                    }).throw();
+                });
+
+                it('should have a non overridable status', function() {
+                    should(app.status).be.exactly(App.status
+                        .CREATED);
+                    should(function() {
+                        app.status = 'new status';
+                    }).throw();
+                });
+
+                it('should have appropriate config', function() {
+                    should(app.config).have.length(2);
+                });
+
+                it('should have appropriate options', function() {
+                    should(app.options.server.host).be.exactly(
+                        'localhost');
+                    should(app.options.server.port).be.exactly(
+                        8080);
+                    should(app.options.db.host).be.exactly(
+                        'localhost');
+                    should(app.options.db.port).be.exactly(
+                        1234);
+                });
+
+                it('should have a non overridable graph', function() {
+                    should(app.graph).be.an.instanceOf(
+                        DepGraph);
+                    let newGraph = new DepGraph();
+                    should(function() {
+                        app.graph = newGraph;
+                    }).throw();
+                });
+
+            });
 
         });
 
