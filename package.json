@@ -23,7 +23,7 @@
         "architect",
         "dependency"
     ],
-    "author": "",
+    "author": "nauwep <nauwep.dev@gmail.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/modulapp/modulapp/issues"
@@ -40,6 +40,8 @@
     "dependencies": {
         "async": "^2.0.1",
         "dependency-graph": "^0.5.0",
-        "lodash": "^4.15.0"
+        "errors-factory": "^1.0.1",
+        "lodash": "^4.15.0",
+        "messages-factory": "^1.0.2"
     }
 }

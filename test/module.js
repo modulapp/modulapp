@@ -2,7 +2,8 @@
 
 const should = require('should');
 const _ = require('lodash');
-const errors = require('../errors');
+const ErrorsFactory = require('errors-factory');
+const errors = new ErrorsFactory(require('../resources/errors.json'));
 
 const ModuleWrapper = require('../moduleWrapper');
 const App = require('../app');

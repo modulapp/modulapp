@@ -2,7 +2,8 @@
 
 const should = require('should');
 const sinon = require('sinon');
-const errors = require('../errors');
+const ErrorsFactory = require('errors-factory');
+const errors = new ErrorsFactory(require('../resources/errors.json'));
 const Module = require('../module');
 const App = require('../app');
 
@@ -734,7 +735,9 @@ describe('ModuleWrapper', function() {
         it('should pass an error if not in created status', function(done) {
             wrapper.status = 'otherThanCreated';
             wrapper.setupModule(function(err) {
-                should(err).be.exactly(errors.ERR_MOD_015);
+                should(function() {
+                    throw err;
+                }).throw(errors.ERR_MOD_015);
                 done();
             });
         });
@@ -829,7 +832,9 @@ describe('ModuleWrapper', function() {
         it('should pass an error if not in setup status', function(done) {
             wrapper.status = 'otherThanSetup';
             wrapper.enableModule(function(err) {
-                should(err).be.exactly(errors.ERR_MOD_016);
+                should(function() {
+                    throw err;
+                }).throw(errors.ERR_MOD_016);
                 done();
             });
         });
@@ -925,7 +930,9 @@ describe('ModuleWrapper', function() {
         it('should pass an error if not in enabled status', function(done) {
             wrapper.status = 'otherThanEnabled';
             wrapper.disableModule(function(err) {
-                should(err).be.exactly(errors.ERR_MOD_017);
+                should(function() {
+                    throw err;
+                }).throw(errors.ERR_MOD_017);
                 done();
             });
         });
@@ -1022,7 +1029,9 @@ describe('ModuleWrapper', function() {
         it('should pass an error if not in disabled status', function(done) {
             wrapper.status = 'otherThanDisabled';
             wrapper.destroyModule(function(err) {
-                should(err).be.exactly(errors.ERR_MOD_018);
+                should(function() {
+                    throw err;
+                }).throw(errors.ERR_MOD_018);
                 done();
             });
         });

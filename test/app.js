@@ -2,7 +2,8 @@
 
 const should = require('should');
 const DepGraph = require('dependency-graph').DepGraph;
-const errors = require('../errors');
+const ErrorsFactory = require('errors-factory');
+const errors = new ErrorsFactory(require('../resources/errors.json'));
 
 const Module = require('../module');
 

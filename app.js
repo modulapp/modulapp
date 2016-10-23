@@ -1,13 +1,14 @@
 "use strict";
 
 const EventEmitter = require('events').EventEmitter;
+const ErrorsFactory = require('errors-factory');
 const _ = require('lodash');
 const async = require('async');
 const DepGraph = require('dependency-graph').DepGraph;
 
 const ModuleWrapper = require('./moduleWrapper');
 
-const _errors = require('./errors');
+const _errors = new ErrorsFactory(require('./resources/errors.json'));
 const _events = require('./resources/events.json').app;
 const _status = require('./resources/status.json').app;
 
@@ -16,7 +17,7 @@ const privateProps = new WeakMap();
 function changeStatus(appInstance, newStatus) {
 
     if (!_.includes(_status, newStatus)) {
-        throw _errors.ERR_APP_XXX; // TODO define error
+        throw _errors.ERR_APP_015;
     }
 
     let props = privateProps.get(appInstance);

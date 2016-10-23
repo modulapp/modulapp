@@ -47,6 +47,9 @@
     "code": "ERR_APP_014",
     "message": "Config cannot be changed in app after resolve."
 }, {
+    "code": "ERR_APP_015",
+    "message": "The status must be one of the defined status."
+}, {
     "code": "ERR_MOD_000",
     "message": "Not implemented yet."
 }, {

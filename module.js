@@ -1,9 +1,10 @@
 "use strict";
 
 const EventEmitter = require('events').EventEmitter;
+const ErrorsFactory = require('errors-factory');
 const _ = require('lodash');
 
-const _errors = require('./errors');
+const _errors = new ErrorsFactory(require('./resources/errors.json'));
 const _events = require('./resources/events.json').module;
 const _status = require('./resources/status.json').module;
 
