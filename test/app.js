@@ -1,11 +1,13 @@
 "use strict";
 
 const should = require('should');
+const sinon = require('sinon');
 const DepGraph = require('dependency-graph').DepGraph;
 const ErrorsFactory = require('errors-factory');
 const errors = new ErrorsFactory(require('../resources/errors.json'));
 
 const Module = require('../module');
+const ModuleWrapper = require('../moduleWrapper');
 
 const App = require('../app');
 
@@ -13,6 +15,7 @@ describe('App', function() {
 
     let serverModule = new Module('server');
     let dbModule = new Module('db');
+    let loggerModule = new Module('logger');
 
     let app = new App();
 
@@ -822,23 +825,821 @@ describe('App', function() {
 
     });
 
+    describe('#_changeStatus()', function() {
+
+        before('initialize app', function() {
+            app = new App();
+        });
+
+        it('should exist in the instance', function() {
+            should(app._changeStatus).be.a.Function();
+        });
+
+        it('should only accept a string from the predefined list', function() {
+            should(function() {
+                app._changeStatus('notACorrectStatus');
+            }).throw(errors.ERR_APP_015);
+            should(function() {
+                app._changeStatus(App.status.RESOLVED);
+            }).not.throw();
+        });
+
+        it('should update the status', function() {
+            should(app.status).be.exactly(App.status.RESOLVED);
+            app._changeStatus(App.status.SETUP);
+            should(app.status).be.exactly(App.status.SETUP);
+            app._changeStatus(App.status.STARTED);
+            should(app.status).be.exactly(App.status.STARTED);
+        });
+
+    });
+
     describe('#resolve()', function() {
+
+        beforeEach('initialize app before each test', function() {
+            app = new App();
+            serverModule = new Module('server');
+            dbModule = new Module('db');
+            loggerModule = new Module('logger');
+        });
+
+        it('should not throw an error if callback is undefined', function() {
+            should(function() {
+                app.resolve(undefined);
+            }).not.throw();
+        });
+
+        it('should not throw an error if callback is null', function() {
+            should(function() {
+                app.resolve(null);
+            }).not.throw();
+        });
+
+        it('should execute the callback argument', function() {
+            let spy = sinon.spy();
+            app.resolve(spy);
+            should(spy.calledOnce).be.true();
+        });
+
+        it('should throw an error in case of module dependency cycle (no callback)',
+            function() {
+                serverModule.addDependencies('db');
+                dbModule.addDependencies('server');
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                should(function() {
+                    app.resolve();
+                }).throw(errors.ERR_APP_006);
+            });
+
+        it(
+            'should pass an error to the callback in case of module dependency cycle',
+            function(
+                done) {
+                serverModule.addDependencies('db');
+                dbModule.addDependencies('server');
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                app.resolve((err) => {
+                    should(err.message).be.exactly(errors.ERR_APP_006.message);
+                    done();
+                });
+            });
+
+        it(
+            'should throw an error in case of missing required dependency module (no callback)',
+            function() {
+                serverModule.addDependencies('db', 'utils');
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                should(function() {
+                    app.resolve();
+                }).throw(errors.ERR_APP_007);
+            });
+
+        it(
+            'should pass an error to the callback in case of missing required dependency module',
+            function(done) {
+                serverModule.addDependencies('db', 'utils');
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                app.resolve((err) => {
+                    should(err.message).be.exactly(errors.ERR_APP_007.message);
+                    done();
+                });
+            });
+
+        it('should build the module graph', function() {
+            serverModule.addDependencies('logger');
+            dbModule.addDependencies('server', 'logger');
+            app.addConfig(loggerModule, serverModule, dbModule);
+
+            app.resolve();
+
+            let graph = app.graph;
+            should.exist(graph.nodes.logger);
+            should.exist(graph.nodes.server);
+            should.exist(graph.nodes.db);
+        });
+
+        it('should wrap every module in a ModuleWrapper instance', function() {
+            app.addConfig(serverModule, dbModule);
+
+            app.resolve();
+
+            let graph = app.graph;
+
+            let serverNode = graph.getNodeData('server');
+            should(serverNode).be.an.instanceOf(ModuleWrapper);
+            let dbNode = graph.getNodeData('db');
+            should(dbNode).be.an.instanceOf(ModuleWrapper);
+        });
+
+        it('should pass the dependency module as imports in the wrapper',
+            function() {
+                serverModule.addDependencies('logger');
+                dbModule.addDependencies('server', 'logger');
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                app.resolve();
+
+                let graph = app.graph;
+
+                let serverNode = graph.getNodeData('server');
+                should.exist(serverNode.imports.logger);
+                let loggerServerImport = serverNode.imports.logger;
+                should(loggerServerImport).be.an.instanceOf(ModuleWrapper);
+
+                let dbNode = graph.getNodeData('db');
+                should.exist(dbNode.imports.server);
+                let serverDbImport = dbNode.imports.server;
+                should(serverDbImport).be.an.instanceOf(ModuleWrapper);
+                should.exist(dbNode.imports.logger);
+                let loggerDbImport = dbNode.imports.logger;
+                should(loggerDbImport).be.an.instanceOf(ModuleWrapper);
+            });
+
+        it('should set the appropriate options', function() {
+            app.addOptions({
+                server: {
+                    host: 'localhost',
+                    port: 8080
+                },
+                db: {
+                    url: 'localhost'
+                }
+            });
+            app.addConfig(serverModule, dbModule);
+
+            app.resolve();
+
+            let graph = app.graph;
+
+            let serverNode = graph.getNodeData('server');
+            should(serverNode.options.host).be.exactly('localhost');
+            should(serverNode.options.port).be.exactly(8080);
+
+            let dbNode = graph.getNodeData('db');
+            should(dbNode.options.url).be.exactly('localhost');
+        });
+
+        it('should emit a RESOLVING event at the begining', function(done) {
+            app.on(App.events.RESOLVING, function() {
+                done();
+            });
+            app.resolve();
+        });
+
+        it('should emit a RESOLVED event if successful', function(done) {
+            app.on(App.events.RESOLVED, function() {
+                done();
+            });
+            app.resolve();
+        });
+
+        it('should keep the status at its initial state if failure', function() {
+            serverModule.addDependencies('utils');
+            app.addConfig(serverModule);
+
+            should(app.status).be.exactly(App.status.CREATED);
+            try {
+                app.resolve();
+            } catch (err) {}
+            should(app.status).be.exactly(App.status.CREATED);
+        });
+
+        it('should have updated the status to RESOLVED', function() {
+            should(app.status).be.exactly(App.status.CREATED);
+            app.resolve();
+            should(app.status).be.exactly(App.status.RESOLVED);
+        });
+
+        it('should not raise an error if in CREATED status', function(done) {
+            app._changeStatus(App.status.CREATED);
+            should(function() {
+                app.resolve();
+            }).not.throw(errors.ERR_APP_001);
+
+            app._changeStatus(App.status.CREATED);
+            app.resolve((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should not raise an error if in RESOLVED status', function(done) {
+            app._changeStatus(App.status.RESOLVED);
+            should(function() {
+                app.resolve();
+            }).not.throw(errors.ERR_APP_001);
+
+            app._changeStatus(App.status.RESOLVED);
+            app.resolve((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should not raise an error if in SETUP status', function(done) {
+            app._changeStatus(App.status.SETUP);
+            should(function() {
+                app.resolve();
+            }).not.throw(errors.ERR_APP_001);
+
+            app._changeStatus(App.status.SETUP);
+            app.resolve((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should raise an error if in STARTED status', function(done) {
+            app._changeStatus(App.status.STARTED);
+            should(function() {
+                app.resolve();
+            }).throw(errors.ERR_APP_001);
+
+            app._changeStatus(App.status.STARTED);
+            app.resolve((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_001.message);
+                done();
+            });
+        });
+
+        it('should not raise an error if in STOPPED status', function(done) {
+            app._changeStatus(App.status.STOPPED);
+            should(function() {
+                app.resolve();
+            }).not.throw(errors.ERR_APP_001);
+
+            app._changeStatus(App.status.STOPPED);
+            app.resolve((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
 
     });
 
     describe('#setup()', function() {
 
+        beforeEach('initialize app before each test', function() {
+            app = new App();
+            serverModule = new Module('server');
+            dbModule = new Module('db');
+            loggerModule = new Module('logger');
+        });
+
+        it('should first call app#resolve() if app in CREATED status', function(
+            done) {
+            sinon.spy(app, 'resolve');
+            app.setup(() => {
+                should(app.resolve.calledOnce).be.true();
+                done();
+            });
+        });
+
+        it('should pass resolve error in the callback if any', function(done) {
+            serverModule.addDependencies('db', 'utils');
+            app.addConfig(serverModule);
+
+            app.setup((err) => {
+                if (err) {
+                    done();
+                }
+            });
+        });
+
+        it('should synchronously execute setup() on each module in the right order',
+            function(done) {
+                let loggerSpy = sinon.spy(loggerModule, 'setup');
+                let serverSpy = sinon.spy(serverModule, 'setup');
+                let dbSpy = sinon.spy(dbModule, 'setup');
+                serverModule.addDependencies('logger');
+                dbModule.addDependencies('logger', 'server');
+
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                app.setup(() => {
+                    should(loggerSpy.calledOnce).be.true();
+                    should(serverSpy.calledAfter(loggerSpy)).be.true();
+                    should(dbSpy.calledAfter(serverSpy)).be.true();
+                    done();
+                });
+            });
+
+        it('should not throw an error if callback is undefined', function() {
+            should(function() {
+                app.setup(undefined);
+            }).not.throw();
+        });
+
+        it('should not throw an error if callback is null', function() {
+            should(function() {
+                app.setup(null);
+            }).not.throw();
+        });
+
+        it('should emit a SETTING_UP event at the begining', function(done) {
+            app.on(App.events.SETTING_UP, function() {
+                done();
+            });
+            app.setup();
+        });
+
+        it('should emit a SETUP event if successful', function(done) {
+            app.on(App.events.SETUP, function() {
+                done();
+            });
+            app.setup();
+        });
+
+        it('should keep the status at its initial state if failure', function(done) {
+            app = new App();
+            serverModule.setup = function(app, options, imports,
+                moduleDone) {
+                moduleDone(new Error());
+            };
+            app.addConfig(serverModule);
+            app.resolve();
+
+            should(app.status).be.exactly(App.status.RESOLVED);
+            app.setup((err) => {
+                if (err) {
+                    should(app.status).be.exactly(App.status.RESOLVED);
+                    done();
+                }
+            });
+        });
+
+        it('should have updated the status to SETUP', function() {
+            should(app.status).be.exactly(App.status.CREATED);
+            app.setup();
+            should(app.status).be.exactly(App.status.SETUP);
+        });
+
+        it('should not raise an error if in CREATED status', function(done) {
+            app._changeStatus(App.status.CREATED);
+            app.setup((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should not raise an error if in RESOLVED status', function(done) {
+            app._changeStatus(App.status.RESOLVED);
+            app.setup((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should not raise an error if in SETUP status', function(done) {
+            app._changeStatus(App.status.SETUP);
+            app.setup((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should raise an error if in STARTED status', function(done) {
+            app._changeStatus(App.status.STARTED);
+            app.setup((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_002.message);
+                done();
+            });
+        });
+
+        it('should not raise an error if in STOPPED status', function(done) {
+            app._changeStatus(App.status.STOPPED);
+            app.setup((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
     });
 
     describe('#start()', function() {
+
+        beforeEach('initialize app before each test', function() {
+            app = new App();
+            serverModule = new Module('server');
+            dbModule = new Module('db');
+            loggerModule = new Module('logger');
+        });
+
+        it('should first call app#setup() if app in CREATED or RESOLVED status',
+            function(
+                done) {
+                app = new App();
+                sinon.spy(app, 'setup');
+                app.start(() => {
+                    should(app.setup.calledOnce).be.true();
+                    done();
+                });
+            });
+
+        it('should pass setup error in the callback if any', function(done) {
+            app = new App();
+            serverModule.addDependencies('db', 'utils');
+            app.addConfig(serverModule);
+
+            app.start((err) => {
+                if (err) {
+                    done();
+                }
+            });
+        });
+
+        it(
+            'should synchronously execute enable() on each module in the right order',
+            function(done) {
+                let loggerSpy = sinon.spy(loggerModule, 'enable');
+                let serverSpy = sinon.spy(serverModule, 'enable');
+                let dbSpy = sinon.spy(dbModule, 'enable');
+                serverModule.addDependencies('logger');
+                dbModule.addDependencies('logger', 'server');
+
+                app.addConfig(loggerModule, serverModule, dbModule);
+
+                app.start(() => {
+                    should(loggerSpy.calledOnce).be.true();
+                    should(serverSpy.calledAfter(loggerSpy)).be.true();
+                    should(dbSpy.calledAfter(serverSpy)).be.true();
+                    done();
+                });
+            });
+
+        it('should not throw an error if callback is undefined', function() {
+            should(function() {
+                app.start(undefined);
+            }).not.throw();
+        });
+
+        it('should not throw an error if callback is null', function() {
+            should(function() {
+                app.start(null);
+            }).not.throw();
+        });
+
+        it('should emit a STARTING event at the begining', function(done) {
+            app.on(App.events.STARTING, function() {
+                done();
+            });
+            app.start();
+        });
+
+        it('should emit a STARTED event if successful', function(done) {
+            app.on(App.events.STARTED, function() {
+                done();
+            });
+            app.start();
+        });
+
+        it('should keep the status at its initial state if failure', function(done) {
+            app = new App();
+            serverModule.enable = function(app, options, imports,
+                moduleDone) {
+                moduleDone(new Error());
+            };
+            app.addConfig(serverModule);
+            app.resolve();
+            app._changeStatus(App.status.SETUP);
+
+            should(app.status).be.exactly(App.status.SETUP);
+            app.start((err) => {
+                if (err) {
+                    should(app.status).be.exactly(App.status.SETUP);
+                    done();
+                }
+            });
+        });
+
+        it('should have updated the status to STARTED', function() {
+            should(app.status).be.exactly(App.status.CREATED);
+            app.start();
+            should(app.status).be.exactly(App.status.STARTED);
+        });
+
+        it('should not raise an error if in CREATED status', function(done) {
+            app._changeStatus(App.status.CREATED);
+            app.start((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should not raise an error if in RESOLVED status', function(done) {
+            app._changeStatus(App.status.RESOLVED);
+            app.start((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should not raise an error if in SETUP status', function(done) {
+            app._changeStatus(App.status.SETUP);
+            app.start((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should raise an error if in STARTED status', function(done) {
+            app._changeStatus(App.status.STARTED);
+            app.start((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_003.message);
+                done();
+            });
+        });
+
+        it('should not raise an error if in STOPPED status', function(done) {
+            app._changeStatus(App.status.STOPPED);
+            app.start((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
 
     });
 
     describe('#stop()', function() {
 
+        beforeEach('initialize app before each test', function() {
+            app = new App();
+            serverModule = new Module('server');
+            dbModule = new Module('db');
+            loggerModule = new Module('logger');
+
+            app.start();
+        });
+
+        it(
+            'should synchronously execute disable() on each module in the right order',
+            function(done) {
+                let loggerSpy = sinon.spy(loggerModule, 'disable');
+                let serverSpy = sinon.spy(serverModule, 'disable');
+                let dbSpy = sinon.spy(dbModule, 'disable');
+                serverModule.addDependencies('logger');
+                dbModule.addDependencies('logger', 'server');
+
+                app = new App();
+                app.addConfig(loggerModule, serverModule, dbModule);
+                app.start(() => {
+                    app.stop(() => {
+                        should(dbSpy.calledOnce).be.true();
+                        should(serverSpy.calledAfter(dbSpy)).be
+                            .true();
+                        should(loggerSpy.calledAfter(serverSpy))
+                            .be.true();
+                        done();
+                    });
+                });
+            }
+        );
+
+        it('should not throw an error if callback is undefined', function() {
+            should(function() {
+                app.stop(undefined);
+            }).not.throw();
+        });
+
+        it('should not throw an error if callback is null', function() {
+            should(function() {
+                app.stop(null);
+            }).not.throw();
+        });
+
+        it('should emit a STOPPING event at the begining', function(done) {
+            app.on(App.events.STOPPING, function() {
+                done();
+            });
+            app.stop();
+        });
+
+        it('should emit a STOPPED event if successful', function(done) {
+            app.on(App.events.STOPPED, function() {
+                done();
+            });
+            app.stop();
+        });
+
+        it('should keep the status at its initial state if failure', function(done) {
+            app = new App();
+            serverModule.disable = function(app, options, imports,
+                moduleDone) {
+                moduleDone(new Error());
+            };
+            app.addConfig(serverModule);
+            app.start(() => {
+                should(app.status).be.exactly(App.status.STARTED);
+                app.stop((err) => {
+                    if (err) {
+                        should(app.status).be.exactly(App.status
+                            .STARTED);
+                        done();
+                    }
+                });
+            });
+        });
+
+        it('should have updated the status to STOPPED if successful', function() {
+            should(app.status).be.exactly(App.status.STARTED);
+            app.stop();
+            should(app.status).be.exactly(App.status.STOPPED);
+        });
+
+        it('should raise an error if in CREATED status', function(done) {
+            app._changeStatus(App.status.CREATED);
+            app.stop((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_004.message);
+                done();
+            });
+        });
+
+        it('should raise an error if in RESOLVED status', function(done) {
+            app._changeStatus(App.status.RESOLVED);
+            app.stop((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_004.message);
+                done();
+            });
+        });
+
+        it('should raise an error if in SETUP status', function(done) {
+            app._changeStatus(App.status.SETUP);
+            app.stop((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_004.message);
+                done();
+            });
+        });
+
+        it('should not raise an error if in STARTED status', function(done) {
+            app._changeStatus(App.status.STARTED);
+            app.stop((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
+
+        it('should raise an error if in STOPPED status', function(done) {
+            app._changeStatus(App.status.STOPPED);
+            app.stop((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_004.message);
+                done();
+            });
+        });
+
     });
 
     describe('#destroy()', function() {
+
+        beforeEach('initialize app before each test', function() {
+            app = new App();
+            serverModule = new Module('server');
+            dbModule = new Module('db');
+            loggerModule = new Module('logger');
+
+            app.start(() => {
+                app.stop();
+            });
+        });
+
+        it(
+            'should synchronously execute destroy() on each module in the right order',
+            function(done) {
+                let loggerSpy = sinon.spy(loggerModule, 'destroy');
+                let serverSpy = sinon.spy(serverModule, 'destroy');
+                let dbSpy = sinon.spy(dbModule, 'destroy');
+                serverModule.addDependencies('logger');
+                dbModule.addDependencies('logger', 'server');
+
+                app = new App();
+                app.addConfig(loggerModule, serverModule, dbModule);
+                app.start(() => {
+                    app.stop(() => {
+                        app.destroy(() => {
+                            should(dbSpy.calledOnce).be
+                                .true();
+                            should(serverSpy.calledAfter(
+                                dbSpy)).be.true();
+                            should(loggerSpy.calledAfter(
+                                serverSpy)).be.true();
+                            done();
+                        });
+                    });
+                });
+            }
+        );
+
+        it('should not throw an error if callback is undefined', function() {
+            should(function() {
+                app.destroy(undefined);
+            }).not.throw();
+        });
+
+        it('should not throw an error if callback is null', function() {
+            should(function() {
+                app.destroy(null);
+            }).not.throw();
+        });
+
+        it('should emit a DESTROYING event at the begining', function(done) {
+            app.on(App.events.DESTROYING, function() {
+                done();
+            });
+            app.destroy();
+        });
+
+        it('should emit a DESTROYED event if successful', function(done) {
+            app.on(App.events.DESTROYED, function() {
+                done();
+            });
+            app.destroy();
+        });
+
+        it('should keep the status at its initial state if failure', function(done) {
+            app = new App();
+            serverModule.destroy = function(app, options, imports,
+                moduleDone) {
+                moduleDone(new Error());
+            };
+            app.addConfig(serverModule);
+            app.start(() => {
+                app.stop(() => {
+                    should(app.status).be.exactly(App.status
+                        .STOPPED);
+                    app.destroy((err) => {
+                        if (err) {
+                            should(app.status).be.exactly(
+                                App.status.STOPPED
+                            );
+                            done();
+                        }
+                    });
+                });
+            });
+        });
+
+        it('should raise an error if in CREATED status', function(done) {
+            app._changeStatus(App.status.CREATED);
+            app.destroy((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_005.message);
+                done();
+            });
+        });
+
+        it('should raise an error if in RESOLVED status', function(done) {
+            app._changeStatus(App.status.RESOLVED);
+            app.destroy((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_005.message);
+                done();
+            });
+        });
+
+        it('should raise an error if in SETUP status', function(done) {
+            app._changeStatus(App.status.SETUP);
+            app.destroy((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_005.message);
+                done();
+            });
+        });
+
+        it('should raise an error if in STARTED status', function(done) {
+            app._changeStatus(App.status.STARTED);
+            app.destroy((err) => {
+                should(err.message).be.exactly(errors.ERR_APP_005.message);
+                done();
+            });
+        });
+
+        it('should not raise an error if in STOPPED status', function(done) {
+            app._changeStatus(App.status.STOPPED);
+            app.destroy((err) => {
+                should(err).be.null();
+                done();
+            });
+        });
 
     });
 
