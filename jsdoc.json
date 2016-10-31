@@ -23,6 +23,6 @@
     },
     "docdash": {
         "static": true,
-        "sort": true
+        "sort": false
     }
 }
