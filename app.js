@@ -8,60 +8,19 @@ const DepGraph = require('dependency-graph').DepGraph;
 
 const ModuleWrapper = require('./moduleWrapper');
 
-/**
- * Provide errors defined in ./resources/errors.json.
- *
- * @const {Object}
- * @enum {Error}
- * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
- * @access private
- */
+// Provide errors defined in ./resources/errors.json.
 const _errors = new ErrorsFactory(require('./resources/errors.json'));
 
-/**
- * Provide the App events as defined in ./resources/events.json.
- *
- * @const {Object}
- * @enum {String}
- * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
- * @access private
- */
+// Provide the App events as defined in ./resources/events.json.
 const _events = require('./resources/events.json').app;
 
-/**
- * Provide the App status as defined in ./resources/status.json.
- *
- * @const {Object}
- * @enum {String}
- * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
- * @access private
- */
+// Provide the App status as defined in ./resources/status.json.
 const _status = require('./resources/status.json').app;
 
-/**
- * Handle all private properties of all App instances.
- *
- * @type {WeakMap}
- * @readonly
- * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
- * @access private
- */
+// Handle all private properties of all App instances.
 const privateProps = new WeakMap();
 
-/**
- * Change the status of an App instance.
- *
- * @param  {App} appInstance The App instance.
- * @param  {String} newStatus   The new status to set.
- * @throws {Error} ERR_APP_015 if the status is not a [supported status]{@link App.status}.
- * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
- * @access private
- */
+// Change the status of an App instance.
 function changeStatus(appInstance, newStatus) {
 
     if (!_.includes(_status, newStatus)) {
@@ -73,16 +32,7 @@ function changeStatus(appInstance, newStatus) {
     privateProps.set(appInstance, props);
 }
 
-/**
- * Check a configuration module list. Remove nulls, duplicates, flatten the Array and check if all module are Module instance.
- *
- * @param  {?(Module|Array.<Module>)} config The list of module to check.
- * @return {!Array.<Module>}  An Array of the cleaned configuration.
- * @throws {Error} ERR_APP_013 if a module is not a Module instance.
- * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
- * @access private
- */
+// Check a configuration module list. Remove nulls, duplicates, flatten the Array and check if all module are Module instance.
 function checkConfig(config) {
     if (_.isNull(config)) {
         return [];
