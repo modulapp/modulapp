@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- '6'
+branches:
+  only:
+  - master
+  - dev
+notifications:
+  slack:
+    secure: I1lTf0C0+7KAo6YTwfSTro5zHxUp7x3EYxPEs9nb5mHj7XiMeCj9H9wKGEytZimGhiY033wEt+G64mayxYDY8fW3rYmu7ZbVpcT8AMobYJ50C8O0LwRxOrmmQ450BOl1/m39oApak+a8PMQo0TsGjn1qLMmeggpCoWO2UlJ31dfqSHTVbOBp8K+7P7dxTclXStKiZ66dFAlu4+ymk9Bg4Xo1xfD6sKRhz9vmsTbmKNEfXPhp22sgtEI3ESTWRCewpnAef4d1ZOOynbWZIV0la7H0NCTJNnksr+62mMFijC1MSdFByvtiznJcjgsBAcnx/5Se7tUYr3rxA5ra4SvZnRZHmjmCs8S2emWkhltybd6K7EfJ29c97Y1bJuT3wdkdE7Sl6vHJW/j5aOm01sM4ZRMVPQeCfdDr8CNOzeqvUZOG/leRAfDTQkresGIP6L8mpU4nOWZinUuuH/skJ3C8+zFJ1KX7p6BoLzpTUknay286k9dR0KLwTIxlaBWAhCJ52HByMxwMHqJB8aenW9p8EgPSJ0SOBZXmEZtn/ZTVXEBrmvff393MTJiGXlEpYcwdNIRQS5/teqEZCkuyvgu6jsjbnuFQTW4MWQ6DEgnwCLgVbnUCFuCrqVdw+kz/NwoZTx2By/vtpgtW1+5S2on8XohoUv1mFN16Q19PZ5zZmds=
+after_success:
+    - npm run coveralls

@@ -1,0 +1,26 @@
+{
+    "app": {
+        "RESOLVING": "resolving",
+        "RESOLVED": "resolved",
+        "SETTING_UP": "setting_up",
+        "SETUP": "setup",
+        "STARTING": "starting",
+        "STARTED": "started",
+        "STOPPING": "stopping",
+        "STOPPED": "stopped",
+        "DESTROYING": "destroying",
+        "DESTROYED": "destroyed"
+    },
+    "module": {
+        "CREATING": "creating",
+        "CREATED": "created",
+        "SETTING_UP": "setting_up",
+        "SETUP": "setup",
+        "ENABLING": "enabling",
+        "ENABLED": "enabled",
+        "DISABLING": "disabling",
+        "DISABLED": "disabled",
+        "DESTROYING": "destroying",
+        "DESTROYED": "destroyed"
+    }
+}

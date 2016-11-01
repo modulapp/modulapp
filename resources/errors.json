@@ -1,0 +1,112 @@
+[{
+    "code": "ERR_APP_XXX",
+    "message": "Something's wrong."
+}, {
+    "code": "ERR_APP_000",
+    "message": "Not implemented yet."
+}, {
+    "code": "ERR_APP_001",
+    "message": "App already started, stop the app before resolving again."
+}, {
+    "code": "ERR_APP_002",
+    "message": "App already started, stop the app before setting up again."
+}, {
+    "code": "ERR_APP_003",
+    "message": "App already started, stop the app before starting again."
+}, {
+    "code": "ERR_APP_004",
+    "message": "App not started, cannot be stopped."
+}, {
+    "code": "ERR_APP_005",
+    "message": "App not stopped, cannot be destroyed."
+}, {
+    "code": "ERR_APP_006",
+    "message": "Cycles have been found in the dependency graph."
+}, {
+    "code": "ERR_APP_007",
+    "message": "Module dependencies are missing in the configuration."
+}, {
+    "code": "ERR_APP_008",
+    "message": "Only an object argument is accepted as options."
+}, {
+    "code": "ERR_APP_009",
+    "message": "Options cannot be changed in app after resolve."
+}, {
+    "code": "ERR_APP_010",
+    "message": "First argument for App constructor must be an array or an object."
+}, {
+    "code": "ERR_APP_011",
+    "message": "Second argument for App constructor must be an object."
+}, {
+    "code": "ERR_APP_012",
+    "message": "Non-array argument cannot be accepted as config."
+}, {
+    "code": "ERR_APP_013",
+    "message": "Only module instance can be accepted as part of the config array."
+}, {
+    "code": "ERR_APP_014",
+    "message": "Config cannot be changed in app after resolve."
+}, {
+    "code": "ERR_APP_015",
+    "message": "The status must be one of the defined status."
+}, {
+    "code": "ERR_MOD_000",
+    "message": "Not implemented yet."
+}, {
+    "code": "ERR_MOD_XXX",
+    "message": "Something's wrong."
+}, {
+    "code": "ERR_MOD_001",
+    "message": "The module id must be provided."
+}, {
+    "code": "ERR_MOD_002",
+    "message": "Options cannot be changed in module after setup."
+}, {
+    "code": "ERR_MOD_003",
+    "message": "Dependencies cannot be changed in module after setup."
+}, {
+    "code": "ERR_MOD_004",
+    "message": "Only an object argument is accepted as options."
+}, {
+    "code": "ERR_MOD_005",
+    "message": "Non-string argument cannot be accepted as dependencies."
+}, {
+    "code": "ERR_MOD_006",
+    "message": "ModuleWrapper cannot be instanciated with null or missing module and app arguments."
+}, {
+    "code": "ERR_MOD_007",
+    "message": "ModuleWrapper must be instanciated with an instance of Module."
+}, {
+    "code": "ERR_MOD_008",
+    "message": "ModuleWrapper must be instanciated with an instance of App."
+}, {
+    "code": "ERR_MOD_009",
+    "message": "Only an object argument is accepted as imports."
+}, {
+    "code": "ERR_MOD_010",
+    "message": "Options cannot be changed in module wrapper after setup."
+}, {
+    "code": "ERR_MOD_011",
+    "message": "Imports cannot be changed in module wrapper after setup."
+}, {
+    "code": "ERR_MOD_012",
+    "message": "Only ModuleWrapper instances can be part of the object argument for imports."
+}, {
+    "code": "ERR_MOD_013",
+    "message": "The status must be one of the defined status."
+}, {
+    "code": "ERR_MOD_014",
+    "message": "The status update can only be done from its internal wrapper."
+}, {
+    "code": "ERR_MOD_015",
+    "message": "setupModule can only be executed in created status."
+}, {
+    "code": "ERR_MOD_016",
+    "message": "enableModule can only be executed in setup status."
+}, {
+    "code": "ERR_MOD_017",
+    "message": "disableModule can only be executed in enabled status."
+}, {
+    "code": "ERR_MOD_018",
+    "message": "destroyModule can only be executed in disabled status."
+}]

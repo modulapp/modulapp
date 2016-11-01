@@ -1,1 +1,4 @@
-throw new Error('Not implemented yet');
+"use strict";
+
+module.exports.App = require('./app');
+module.exports.Module = require('./module');
