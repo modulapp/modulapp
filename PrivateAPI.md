@@ -1,44 +1,3 @@
-# Modulapp
-
-Modular application framework for node.js
-
-[![npm](https://img.shields.io/npm/v/modulapp.svg)](https://www.npmjs.com/package/modulapp)
-[![npm](https://img.shields.io/npm/dm/modulapp.svg)](https://www.npmjs.com/package/modulapp)
-[![npm](https://img.shields.io/npm/l/modulapp.svg)](https://www.npmjs.com/package/modulapp)
-[![node](https://img.shields.io/node/v/modulapp.svg)]()
-[![David](https://img.shields.io/david/modulapp/modulapp.svg)](https://github.com/modulapp/modulapp)
-
-[![Travis build](https://img.shields.io/travis/modulapp/modulapp/master.svg)](https://travis-ci.org/modulapp/modulapp)
-[![Coveralls](https://img.shields.io/coveralls/modulapp/modulapp.svg)](https://coveralls.io/github/modulapp/modulapp)
-[![David](https://img.shields.io/david/dev/modulapp/modulapp.svg)](https://github.com/modulapp/modulapp)
-
-## Overview
-
-This is a framework for defining application in a modular way.
-Modulapp is providing an `App` class and a `Module` class to be instanciated.
-
-The differents Module instances contain the behavior of your app.
-
-The App manages the dependencies and the lifecycle of the modules.
-
-## Example
-
-### Module
-
-    // myModule.js
-    const Module = require('modulapp').Module;
-    let myModule = new Module("myModule");
-    module.exports = myModule;
-
-### App
-
-    // app.js
-    const App = require('modulapp').App;
-    let myModule = require('./myModule');
-    let app = new App([myModule]);
-
-# API Reference
-
 ## Classes
 
 <dl>
@@ -47,6 +6,9 @@ The App manages the dependencies and the lifecycle of the modules.
 </dd>
 <dt><a href="#Module">Module</a> ⇐ <code>EventEmitter</code></dt>
 <dd><p>Class representing a Module.</p>
+</dd>
+<dt><a href="#ModuleWrapper">ModuleWrapper</a> ⇐ <code>EventEmitter</code> ℗</dt>
+<dd><p>Class representing a ModuleWrapper.</p>
 </dd>
 </dl>
 
@@ -67,10 +29,12 @@ Class representing an App.
     * _instance_
         * [.id](#App+id) : <code>String</code>
         * [.config](#App+config) : <code>[Array.&lt;Module&gt;](#Module)</code>
+        * [.graph](#App+graph) : <code>DepGraph</code> ℗
         * [.options](#App+options) : <code>Object</code>
         * [.status](#App+status) : <code>String</code>
         * [.addOptions([options])](#App+addOptions)
         * [.addConfig([...config])](#App+addConfig)
+        * [._changeStatus(newStatus)](#App+_changeStatus) ℗
         * _events_
             * ["resolving"](#App+event_resolving)
             * ["resolved"](#App+event_resolved)
@@ -167,6 +131,18 @@ app.config = [serverModule, dbModule]; // -> [serverModule, dbModule]
 app.config = null; // -> []
 app.config = serverModule; // -> [serverModule]
 ```
+<a name="App+graph"></a>
+
+### app.graph : <code>DepGraph</code> ℗
+The module dependency graph of the app.
+Using [dependency-graph package](https://www.npmjs.com/package/dependency-graph) to help resolve the dependency tree of the modules.
+Getting graph never return null, at least an empty graph once the app has not been resolved yet.
+
+**Kind**: instance property of <code>[App](#App)</code>  
+**Access:** private  
+**Read only**: true  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
 <a name="App+options"></a>
 
 ### app.options : <code>Object</code>
@@ -266,6 +242,24 @@ app.addConfig(); // -> [loggerModule, serverModule]
 app.addConfig(socketModule); // -> [loggerModule, serverModule, socketModule]
 app.addConfig(socketModule, utilsModule, [dbModule, serverModule]); // -> [loggerModule, serverModule, socketModule, utilsModule, dbModule]
 ```
+<a name="App+_changeStatus"></a>
+
+### app._changeStatus(newStatus) ℗
+Change the status of the app.
+
+**Kind**: instance method of <code>[App](#App)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_APP_015 if the status is not a [supported status](#App.status).
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| newStatus | <code>String</code> | The new status to set. |
+
 <a name="App+event_resolving"></a>
 
 ### "resolving"
@@ -612,8 +606,10 @@ Class representing a Module.
         * [.version](#Module+version) : <code>String</code>
         * [.options](#Module+options) : <code>Object</code>
         * [.dependencies](#Module+dependencies) : <code>Array.&lt;String&gt;</code>
+        * [.package](#Module+package) : <code>Object</code> ℗
         * [.addOptions([options])](#Module+addOptions)
         * [.addDependencies([...dependencies])](#Module+addDependencies)
+        * [._changeStatus(newStatus, wrapper)](#Module+_changeStatus) ℗
         * _events_
             * ["setting_up"](#Module+event_setting_up)
             * ["setup"](#Module+event_setup)
@@ -807,6 +803,16 @@ myModule.dependencies = ['server', 'db']; // -> ['server', 'db']
 myModule.dependencies = null; // -> []
 myModule.dependencies = 'server'; // -> ['server']
 ```
+<a name="Module+package"></a>
+
+### module.package : <code>Object</code> ℗
+The package of the module.
+
+**Kind**: instance property of <code>[Module](#Module)</code>  
+**Access:** private  
+**Read only**: true  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
 <a name="Module+addOptions"></a>
 
 ### module.addOptions([options])
@@ -861,6 +867,26 @@ myModule.addDependencies(); // -> ['logger', 'server']
 myModule.addDependencies('socket'); // -> ['logger', 'server', 'socket']
 myModule.addDependencies('socket', 'utils', ['db', 'server']); // -> ['logger', 'server', 'socket', 'utils', 'db']
 ```
+<a name="Module+_changeStatus"></a>
+
+### module._changeStatus(newStatus, wrapper) ℗
+Change the status of the module.
+
+**Kind**: instance method of <code>[Module](#Module)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_014 if the wrapper parameter is not provided or is not a ModuleWrapper instance
+- <code>Error</code> ERR_MOD_013 if the status is not a [supported status](#Module.status)
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| newStatus | <code>String</code> | The new status to set |
+| wrapper | <code>[ModuleWrapper](#ModuleWrapper)</code> | The wrapper of the module |
+
 <a name="Module+event_setting_up"></a>
 
 ### "setting_up"
@@ -1098,9 +1124,321 @@ if (myModule.status === Module.status.ENABLED) {
     myModule.foo();
 }
 ```
+<a name="ModuleWrapper"></a>
 
-* * *
+## ModuleWrapper ⇐ <code>EventEmitter</code> ℗
+Class representing a ModuleWrapper.
 
-## License
+**Kind**: global class  
+**Extends:** <code>EventEmitter</code>  
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
 
-[MIT](https://github.com/modulapp/modulapp/blob/master/LICENSE.md)
+* [ModuleWrapper](#ModuleWrapper) ⇐ <code>EventEmitter</code> ℗
+    * [new ModuleWrapper(_module, _app, [_options], [_imports])](#new_ModuleWrapper_new)
+    * [.module](#ModuleWrapper+module) : <code>[Module](#Module)</code> ℗
+    * [.app](#ModuleWrapper+app) : <code>[App](#App)</code> ℗
+    * [.imports](#ModuleWrapper+imports) : <code>Object</code> ℗
+    * [.id](#ModuleWrapper+id) : <code>String</code> ℗
+    * [.version](#ModuleWrapper+version) : <code>String</code> ℗
+    * [.status](#ModuleWrapper+status) : <code>String</code> ℗
+    * [.options](#ModuleWrapper+options) : <code>Object</code> ℗
+    * [.package](#ModuleWrapper+package) : <code>Object</code> ℗
+    * [.dependencies](#ModuleWrapper+dependencies) : <code>Array.&lt;String&gt;</code> ℗
+    * [._initialFuncSetup](#ModuleWrapper+_initialFuncSetup) : <code>function</code> ℗
+    * [.setup](#ModuleWrapper+setup) : <code>function</code> ℗
+    * [._initialFuncEnable](#ModuleWrapper+_initialFuncEnable) : <code>function</code> ℗
+    * [.enable](#ModuleWrapper+enable) : <code>function</code> ℗
+    * [._initialFuncDisable](#ModuleWrapper+_initialFuncDisable) : <code>function</code> ℗
+    * [.disable](#ModuleWrapper+disable) : <code>function</code> ℗
+    * [._initialFuncDestroy](#ModuleWrapper+_initialFuncDestroy) : <code>function</code> ℗
+    * [.destroy](#ModuleWrapper+destroy) : <code>function</code> ℗
+    * [.addOptions([newOptions])](#ModuleWrapper+addOptions) ℗
+    * [.addImports([newImports])](#ModuleWrapper+addImports) ℗
+    * [.setupModule(done)](#ModuleWrapper+setupModule) ℗
+    * [.enableModule(done)](#ModuleWrapper+enableModule) ℗
+    * [.disableModule(done)](#ModuleWrapper+disableModule) ℗
+    * [.destroyModule(done)](#ModuleWrapper+destroyModule) ℗
+
+<a name="new_ModuleWrapper_new"></a>
+
+### new ModuleWrapper(_module, _app, [_options], [_imports])
+Create a new instance of ModuleWrapper.
+
+**Throws**:
+
+- <code>Error</code> ERR_MOD_006 if _module or _app are null or undefined
+- <code>Error</code> ERR_MOD_007 if _module is not an instance of [Module](#Module)
+- <code>Error</code> ERR_MOD_008 if _app is not an instance of [App](#App)
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| _module | <code>[Module](#Module)</code> | The module to wrap |
+| _app | <code>[App](#App)</code> | The reference to the app |
+| [_options] | <code>Object</code> | The options of the module |
+| [_imports] | <code>Object</code> | The dependencies of the module |
+
+<a name="ModuleWrapper+module"></a>
+
+### moduleWrapper.module : <code>[Module](#Module)</code> ℗
+The [Module](#Module) instance to wrap.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+app"></a>
+
+### moduleWrapper.app : <code>[App](#App)</code> ℗
+The app managing the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+imports"></a>
+
+### moduleWrapper.imports : <code>Object</code> ℗
+The list of dependencies of the module.
+A dependency is accessed by its id as key of this imports object.
+Dependencies are instance of ModuleWrapper wrapping an instance of Module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+id"></a>
+
+### moduleWrapper.id : <code>String</code> ℗
+The id of the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+version"></a>
+
+### moduleWrapper.version : <code>String</code> ℗
+The version of the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+status"></a>
+
+### moduleWrapper.status : <code>String</code> ℗
+The status of the moduleWrapper.
+The value is part of the [supported status](#Module.status).
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+options"></a>
+
+### moduleWrapper.options : <code>Object</code> ℗
+The consolidated options for the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+package"></a>
+
+### moduleWrapper.package : <code>Object</code> ℗
+The package.json information from the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+dependencies"></a>
+
+### moduleWrapper.dependencies : <code>Array.&lt;String&gt;</code> ℗
+The list of dependency ids from the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+_initialFuncSetup"></a>
+
+### moduleWrapper._initialFuncSetup : <code>function</code> ℗
+Keep the initial [setup](#Module+setup) Function of the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+setup"></a>
+
+### moduleWrapper.setup : <code>function</code> ℗
+Create a setup Function at wrapper level to call the [setup](#Module+setup) Function of the module with predefined parameters.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+_initialFuncEnable"></a>
+
+### moduleWrapper._initialFuncEnable : <code>function</code> ℗
+Keep the initial [enable](#Module+enable) Function of the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+enable"></a>
+
+### moduleWrapper.enable : <code>function</code> ℗
+Create a enable Function at wrapper level to call the [enable](#Module+enable) Function of the module with predefined parameters.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+_initialFuncDisable"></a>
+
+### moduleWrapper._initialFuncDisable : <code>function</code> ℗
+Keep the initial [disable](#Module+disable) Function of the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+disable"></a>
+
+### moduleWrapper.disable : <code>function</code> ℗
+Create a disable Function at wrapper level to call the [disable](#Module+disable) Function of the module with predefined parameters.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+_initialFuncDestroy"></a>
+
+### moduleWrapper._initialFuncDestroy : <code>function</code> ℗
+Keep the initial [destroy](#Module+destroy) Function of the module.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+destroy"></a>
+
+### moduleWrapper.destroy : <code>function</code> ℗
+Create a destroy Function at wrapper level to call the [destroy](#Module+destroy) Function of the module with predefined parameters.
+
+**Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Access:** private  
+**Since**: //TODO since  
+<a name="ModuleWrapper+addOptions"></a>
+
+### moduleWrapper.addOptions([newOptions]) ℗
+Add options to the moduleWrapper.
+Merge with existing options.
+Options are passed to the module in the different lifecycle hook functions.
+
+**Kind**: instance method of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_004 if the options parameter is not an Object
+- <code>Error</code> ERR_MOD_010 if not in created status
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [newOptions] | <code>Object</code> | <code>{}</code> | The options to add |
+
+<a name="ModuleWrapper+addImports"></a>
+
+### moduleWrapper.addImports([newImports]) ℗
+Add imports to the moduleWrapper.
+Merge the existing imports.
+Imports are passed to the module in the different lifecycle hook functions.
+
+```javascript
+// example of imports object
+{
+    logger: loggerModuleWrapper,
+    server: serverModuleWrapper
+}
+```
+
+**Kind**: instance method of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_009 if the imports parameter is not an Object
+- <code>Error</code> ERR_MOD_011 if not in created status
+- <code>Error</code> ERR_MOD_012 if a value of the imports Object is not a ModuleWrapper instance
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [newImports] | <code>Object</code> | <code>{}</code> | The imports Object to add |
+
+<a name="ModuleWrapper+setupModule"></a>
+
+### moduleWrapper.setupModule(done) ℗
+Execute the [setup](#ModuleWrapper+setup) function, check the status and emit events.
+
+**Kind**: instance method of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_015 if not in created status
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| done | <code>function</code> | Callback executed at the end of the execution or if any error |
+
+<a name="ModuleWrapper+enableModule"></a>
+
+### moduleWrapper.enableModule(done) ℗
+Execute the [enable](#ModuleWrapper+enable) function, check the status and emit events.
+
+**Kind**: instance method of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_016 if not in setup status
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| done | <code>function</code> | Callback executed at the end of the execution or if any error |
+
+<a name="ModuleWrapper+disableModule"></a>
+
+### moduleWrapper.disableModule(done) ℗
+Execute the [disable](#ModuleWrapper+disable) function, check the status and emit events.
+
+**Kind**: instance method of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_016 if not in enabled status
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| done | <code>function</code> | Callback executed at the end of the execution or if any error |
+
+<a name="ModuleWrapper+destroyModule"></a>
+
+### moduleWrapper.destroyModule(done) ℗
+Execute the [destroy](#ModuleWrapper+destroy) function, check the status and emit events.
+
+**Kind**: instance method of <code>[ModuleWrapper](#ModuleWrapper)</code>  
+**Throws**:
+
+- <code>Error</code> ERR_MOD_016 if not in disabled status
+
+**Access:** private  
+**Since**: //TODO since  
+**Author:** nauwep <nauwep.dev@gmail.com>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| done | <code>function</code> | Callback executed at the end of the execution or if any error |
+
