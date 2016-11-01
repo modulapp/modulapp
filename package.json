@@ -1,6 +1,6 @@
 {
     "name": "modulapp",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Modular application framework",
     "main": "index.js",
     "engines": {
