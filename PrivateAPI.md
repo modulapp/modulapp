@@ -21,7 +21,7 @@ Class representing an App.
 **Extends:** <code>EventEmitter</code>  
 **Emits**: <code>[resolving](#App+event_resolving)</code>, <code>[resolved](#App+event_resolved)</code>, <code>[setting_up](#App+event_setting_up)</code>, <code>[setup](#App+event_setup)</code>, <code>[starting](#App+event_starting)</code>, <code>[started](#App+event_started)</code>, <code>[stopping](#App+event_stopping)</code>, <code>[stopped](#App+event_stopped)</code>, <code>[destroying](#App+event_destroying)</code>, <code>[destroyed](#App+event_destroyed)</code>  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 * [App](#App) ⇐ <code>EventEmitter</code>
@@ -95,7 +95,7 @@ The id of the app, randomly generated.
 **Kind**: instance property of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -117,7 +117,7 @@ Setting a module will build an Array with that single module.
 - <code>Error</code> ERR_APP_014 if the module is not in [created status](#App+status).
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -141,7 +141,7 @@ Getting graph never return null, at least an empty graph once the app has not be
 **Kind**: instance property of <code>[App](#App)</code>  
 **Access:** private  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 <a name="App+options"></a>
 
@@ -158,7 +158,7 @@ Setting null or undefined replaces the current options by an empty Object {}.
 - <code>Error</code> ERR_APP_008 if not an Object
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -180,7 +180,7 @@ The value is part of the [supported status](#App.status).
 **Kind**: instance property of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -199,7 +199,7 @@ Merge with existing options.
 - <code>Error</code> ERR_APP_008 if the options parameter is not an Object.
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -226,7 +226,7 @@ Merge with existing config and check the new modules and remove duplicates and n
 - <code>Error</code> ERR_APP_013 if a module is not a Module instance.
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -253,7 +253,7 @@ Change the status of the app.
 - <code>Error</code> ERR_APP_015 if the status is not a [supported status](#App.status).
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -267,7 +267,7 @@ Resolving event. When the app is about to be resolved.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_resolved"></a>
 
 ### "resolved"
@@ -275,7 +275,7 @@ Resolved event. When the app has been resolved.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_setting_up"></a>
 
 ### "setting_up"
@@ -283,7 +283,7 @@ Setting up event. When the app is about to be setup.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_setup"></a>
 
 ### "setup"
@@ -291,7 +291,7 @@ Setup event. When the app has been setup.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_starting"></a>
 
 ### "starting"
@@ -299,7 +299,7 @@ Starting event. When the app is about to be started.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_started"></a>
 
 ### "started"
@@ -307,7 +307,7 @@ Started event. When the app has been started.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_stopping"></a>
 
 ### "stopping"
@@ -315,7 +315,7 @@ Stopping event. When the app is about to be stopped.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_stopped"></a>
 
 ### "stopped"
@@ -323,7 +323,7 @@ Stopped event. When the app has been stopped.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_destroying"></a>
 
 ### "destroying"
@@ -331,7 +331,7 @@ Destroying event. When the app is about to be destroyed.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_destroyed"></a>
 
 ### "destroyed"
@@ -339,7 +339,7 @@ Destroyed event. When the app has been destroyed.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+resolve"></a>
 
 ### app.resolve([callback])
@@ -355,7 +355,7 @@ This method is synchronous, callback is not required.
 - <code>Error</code> ERR_APP_007 in case of missing module
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -398,7 +398,7 @@ Setup every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#setup  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -428,7 +428,7 @@ Enable every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#enable  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -458,7 +458,7 @@ Disable every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#disable  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -494,7 +494,7 @@ Destroy every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#destroy  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -550,7 +550,7 @@ All supported events of App class.
 **Kind**: static enum of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -578,7 +578,7 @@ Don't confuse this static method App.status with the instance method [status](#A
 **Kind**: static enum of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -595,7 +595,7 @@ Class representing a Module.
 **Extends:** <code>EventEmitter</code>  
 **Emits**: <code>[setting_up](#Module+event_setting_up)</code>, <code>[setup](#Module+event_setup)</code>, <code>[enabling](#Module+event_enabling)</code>, <code>[enabled](#Module+event_enabled)</code>, <code>[disabling](#Module+event_disabling)</code>, <code>[disabled](#Module+event_disabled)</code>, <code>[destroying](#Module+event_destroying)</code>, <code>[destroyed](#Module+event_destroyed)</code>  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 * [Module](#Module) ⇐ <code>EventEmitter</code>
@@ -709,7 +709,7 @@ The id of the module.
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -725,7 +725,7 @@ The value is part of the [supported status](#Module.status).
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -740,7 +740,7 @@ The version of the module.
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -761,7 +761,7 @@ Setting null or undefined replaces the current options by an empty Object {}.
 - <code>Error</code> ERR_MOD_004 if not an Object
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -789,7 +789,7 @@ Setting a String will build an Array with that single String.
 - <code>Error</code> ERR_MOD_005 if a non-String dependency is found
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -811,7 +811,7 @@ The package of the module.
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** private  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 <a name="Module+addOptions"></a>
 
@@ -825,7 +825,7 @@ Merge with existing options.
 - <code>Error</code> ERR_MOD_004 if the options parameter is not an Object
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -851,7 +851,7 @@ Merge with existing dependencies and check the new dependencies, flatten the Arr
 - <code>Error</code> ERR_MOD_005 if a non-String dependency is found
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -879,7 +879,7 @@ Change the status of the module.
 - <code>Error</code> ERR_MOD_013 if the status is not a [supported status](#Module.status)
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -954,7 +954,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -985,7 +985,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1016,7 +1016,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1047,7 +1047,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1088,7 +1088,7 @@ All supported events of Module class.
 **Kind**: static enum of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -1116,7 +1116,7 @@ Don't confuse this static method Module.status with the instance method [status]
 **Kind**: static enum of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -1132,7 +1132,7 @@ Class representing a ModuleWrapper.
 **Kind**: global class  
 **Extends:** <code>EventEmitter</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 * [ModuleWrapper](#ModuleWrapper) ⇐ <code>EventEmitter</code> ℗
@@ -1187,7 +1187,7 @@ The [Module](#Module) instance to wrap.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+app"></a>
 
 ### moduleWrapper.app : <code>[App](#App)</code> ℗
@@ -1195,7 +1195,7 @@ The app managing the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+imports"></a>
 
 ### moduleWrapper.imports : <code>Object</code> ℗
@@ -1205,7 +1205,7 @@ Dependencies are instance of ModuleWrapper wrapping an instance of Module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+id"></a>
 
 ### moduleWrapper.id : <code>String</code> ℗
@@ -1213,7 +1213,7 @@ The id of the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+version"></a>
 
 ### moduleWrapper.version : <code>String</code> ℗
@@ -1221,7 +1221,7 @@ The version of the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+status"></a>
 
 ### moduleWrapper.status : <code>String</code> ℗
@@ -1230,7 +1230,7 @@ The value is part of the [supported status](#Module.status).
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+options"></a>
 
 ### moduleWrapper.options : <code>Object</code> ℗
@@ -1238,7 +1238,7 @@ The consolidated options for the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+package"></a>
 
 ### moduleWrapper.package : <code>Object</code> ℗
@@ -1246,7 +1246,7 @@ The package.json information from the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+dependencies"></a>
 
 ### moduleWrapper.dependencies : <code>Array.&lt;String&gt;</code> ℗
@@ -1254,7 +1254,7 @@ The list of dependency ids from the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+_initialFuncSetup"></a>
 
 ### moduleWrapper._initialFuncSetup : <code>function</code> ℗
@@ -1262,7 +1262,7 @@ Keep the initial [setup](#Module+setup) Function of the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+setup"></a>
 
 ### moduleWrapper.setup : <code>function</code> ℗
@@ -1270,7 +1270,7 @@ Create a setup Function at wrapper level to call the [setup](#Module+setup) Func
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+_initialFuncEnable"></a>
 
 ### moduleWrapper._initialFuncEnable : <code>function</code> ℗
@@ -1278,7 +1278,7 @@ Keep the initial [enable](#Module+enable) Function of the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+enable"></a>
 
 ### moduleWrapper.enable : <code>function</code> ℗
@@ -1286,7 +1286,7 @@ Create a enable Function at wrapper level to call the [enable](#Module+enable) F
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+_initialFuncDisable"></a>
 
 ### moduleWrapper._initialFuncDisable : <code>function</code> ℗
@@ -1294,7 +1294,7 @@ Keep the initial [disable](#Module+disable) Function of the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+disable"></a>
 
 ### moduleWrapper.disable : <code>function</code> ℗
@@ -1302,7 +1302,7 @@ Create a disable Function at wrapper level to call the [disable](#Module+disable
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+_initialFuncDestroy"></a>
 
 ### moduleWrapper._initialFuncDestroy : <code>function</code> ℗
@@ -1310,7 +1310,7 @@ Keep the initial [destroy](#Module+destroy) Function of the module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+destroy"></a>
 
 ### moduleWrapper.destroy : <code>function</code> ℗
@@ -1318,7 +1318,7 @@ Create a destroy Function at wrapper level to call the [destroy](#Module+destroy
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="ModuleWrapper+addOptions"></a>
 
 ### moduleWrapper.addOptions([newOptions]) ℗
@@ -1333,7 +1333,7 @@ Options are passed to the module in the different lifecycle hook functions.
 - <code>Error</code> ERR_MOD_010 if not in created status
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -1363,7 +1363,7 @@ Imports are passed to the module in the different lifecycle hook functions.
 - <code>Error</code> ERR_MOD_012 if a value of the imports Object is not a ModuleWrapper instance
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -1381,7 +1381,7 @@ Execute the [setup](#ModuleWrapper+setup) function, check the status and emit ev
 - <code>Error</code> ERR_MOD_015 if not in created status
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1399,7 +1399,7 @@ Execute the [enable](#ModuleWrapper+enable) function, check the status and emit 
 - <code>Error</code> ERR_MOD_016 if not in setup status
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1417,7 +1417,7 @@ Execute the [disable](#ModuleWrapper+disable) function, check the status and emi
 - <code>Error</code> ERR_MOD_016 if not in enabled status
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1435,7 +1435,7 @@ Execute the [destroy](#ModuleWrapper+destroy) function, check the status and emi
 - <code>Error</code> ERR_MOD_016 if not in disabled status
 
 **Access:** private  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |

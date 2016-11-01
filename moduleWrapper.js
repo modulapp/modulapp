@@ -19,7 +19,7 @@ const _status = require('./resources/status.json').module;
  * @class
  * @extends EventEmitter
  * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
+ * @since 1.0.0
  * @access private
  */
 class ModuleWrapper extends EventEmitter {
@@ -58,7 +58,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {!Module}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.module = _module;
@@ -70,7 +70,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {!App}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.app = _app;
@@ -84,7 +84,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {?Object}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.imports = _imports;
@@ -98,7 +98,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {!String}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.id = this.module.id;
@@ -111,7 +111,7 @@ class ModuleWrapper extends EventEmitter {
              * @memberof ModuleWrapper
              * @instance
              * @type {?String}
-             * @since //TODO since
+             * @since 1.0.0
              * @access private
              */
             this.version = this.module.version;
@@ -125,7 +125,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {!String}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.status = _status.CREATED;
@@ -137,7 +137,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {?Object}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.options = _.merge(_options, this.module.options);
@@ -149,7 +149,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {?Object}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.package = this.module.package;
@@ -161,7 +161,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {!Array.<String>}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.dependencies = this.module.dependencies;
@@ -177,7 +177,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this._initialFuncSetup = this.module.setup;
@@ -189,7 +189,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.setup = _.bind(this._initialFuncSetup, this.module, this.app, this.options, this.imports);
@@ -204,7 +204,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this._initialFuncEnable = this.module.enable;
@@ -216,7 +216,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.enable = _.bind(this._initialFuncEnable, this.module, this.app, this.options, this
@@ -232,7 +232,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this._initialFuncDisable = this.module.disable;
@@ -244,7 +244,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.disable = _.bind(this._initialFuncDisable, this.module, this.app, this.options,
@@ -260,7 +260,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this._initialFuncDestroy = this.module.destroy;
@@ -272,7 +272,7 @@ class ModuleWrapper extends EventEmitter {
          * @memberof ModuleWrapper
          * @instance
          * @type {Function}
-         * @since //TODO since
+         * @since 1.0.0
          * @access private
          */
         this.destroy = _.bind(this._initialFuncDestroy, this.module, this.app, this.options,
@@ -290,7 +290,7 @@ class ModuleWrapper extends EventEmitter {
      * @throws {Error} ERR_MOD_004 if the options parameter is not an Object
      * @throws {Error} ERR_MOD_010 if not in created status
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     addOptions(newOptions = {}) {
@@ -322,7 +322,7 @@ class ModuleWrapper extends EventEmitter {
      * @throws {Error} ERR_MOD_011 if not in created status
      * @throws {Error} ERR_MOD_012 if a value of the imports Object is not a ModuleWrapper instance
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     addImports(newImports = {}) {
@@ -347,7 +347,7 @@ class ModuleWrapper extends EventEmitter {
      * @param {!Function} done Callback executed at the end of the execution or if any error
      * @throws {Error} ERR_MOD_015 if not in created status
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     setupModule(done) {
@@ -385,7 +385,7 @@ class ModuleWrapper extends EventEmitter {
      * @param {!Function} done Callback executed at the end of the execution or if any error
      * @throws {Error} ERR_MOD_016 if not in setup status
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     enableModule(done) {
@@ -423,7 +423,7 @@ class ModuleWrapper extends EventEmitter {
      * @param {!Function} done Callback executed at the end of the execution or if any error
      * @throws {Error} ERR_MOD_016 if not in enabled status
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     disableModule(done) {
@@ -461,7 +461,7 @@ class ModuleWrapper extends EventEmitter {
      * @param {!Function} done Callback executed at the end of the execution or if any error
      * @throws {Error} ERR_MOD_016 if not in disabled status
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     destroyModule(done) {
