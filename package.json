@@ -10,7 +10,11 @@
     "scripts": {
         "test": "node node_modules/mocha/bin/mocha",
         "cover": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R min",
-        "coveralls": "rm -rf ./coverage && npm run cover && cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js"
+        "coveralls": "rm -rf ./coverage && npm run cover && cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
+        "build_docs": "npm run doc_README && npm run doc_website && npm run doc_privateAPI",
+        "doc_README": "node node_modules/jsdoc-to-markdown/bin.js --partial doc/README_content.hbs --partial doc/README_license.hbs --template doc/README_structure.hbs --files *.js > README.md",
+        "doc_website": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
+        "doc_privateAPI": "node node_modules/jsdoc-to-markdown/bin.js --private *.js > PrivateAPI.md"
     },
     "repository": {
         "type": "git",
@@ -31,7 +35,10 @@
     "homepage": "https://github.com/modulapp/modulapp#readme",
     "devDependencies": {
         "coveralls": "^2.11.14",
+        "docdash": "^0.4.0",
         "istanbul": "^0.4.5",
+        "jsdoc": "^3.4.2",
+        "jsdoc-to-markdown": "^2.0.1",
         "mocha": "^3.0.2",
         "mocha-lcov-reporter": "^1.2.0",
         "should": "^11.1.0",
