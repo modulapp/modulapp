@@ -88,7 +88,7 @@ function checkConfig(config) {
  * @emits App#destroying
  * @emits App#destroyed
  * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
+ * @since 1.0.0
  * @access public
  */
 class App extends EventEmitter {
@@ -162,7 +162,7 @@ class App extends EventEmitter {
      * @readonly
      * @static
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     static get events() {
@@ -194,7 +194,7 @@ class App extends EventEmitter {
      * @readonly
      * @static
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     static get status() {
@@ -211,7 +211,7 @@ class App extends EventEmitter {
      * @type {!String}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     get id() {
@@ -239,7 +239,7 @@ class App extends EventEmitter {
      * @throws {Error} ERR_APP_013 if a module is not a Module instance.
      * @throws {Error} ERR_APP_014 if the module is not in [created status]{@link App#status}.
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     set config(newConfig = []) {
@@ -258,7 +258,7 @@ class App extends EventEmitter {
      * @type {!DepGraph}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     get graph() {
@@ -285,7 +285,7 @@ class App extends EventEmitter {
      * @throws {Error} ERR_APP_009 if the app is not in created status.
      * @throws {Error} ERR_APP_008 if not an Object
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     set options(newOptions = {}) {
@@ -315,7 +315,7 @@ class App extends EventEmitter {
      * @type {!String}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     get status() {
@@ -336,7 +336,7 @@ class App extends EventEmitter {
      * @param {?Object} [options={}] The options to add.
      * @throws {Error} ERR_APP_008 if the options parameter is not an Object.
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     addOptions(options = {}) {
@@ -362,7 +362,7 @@ class App extends EventEmitter {
      * @param {...?(Module|Array.<Module>)} [config] The modules to add.
      * @throws {Error} ERR_APP_013 if a module is not a Module instance.
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     addConfig(...config) {
@@ -379,7 +379,7 @@ class App extends EventEmitter {
      * @param {String} newStatus The new status to set.
      * @throws {Error} ERR_APP_015 if the status is not a [supported status]{@link App.status}.
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     _changeStatus(newStatus) {
@@ -422,7 +422,7 @@ class App extends EventEmitter {
      * @throws {Error} ERR_APP_007 in case of missing module
      * @category lifecycle management
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     resolve(callback) {
@@ -441,7 +441,7 @@ class App extends EventEmitter {
          * Resolving event. When the app is about to be resolved.
          * @event App#resolving
          * @category events
-         * @since //TODO since
+         * @since 1.0.0
          */
         this.emit(_events.RESOLVING);
 
@@ -522,7 +522,7 @@ class App extends EventEmitter {
          * Resolved event. When the app has been resolved.
          * @event App#resolved
          * @category events
-         * @since //TODO since
+         * @since 1.0.0
          */
         this.emit(_events.RESOLVED);
         changeStatus(this, _status.RESOLVED);
@@ -551,7 +551,7 @@ class App extends EventEmitter {
      * @see Module#setup
      * @category lifecycle management
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     setup(callback = _.noop) {
@@ -574,7 +574,7 @@ class App extends EventEmitter {
          * Setting up event. When the app is about to be setup.
          * @event App#setting_up
          * @category events
-         * @since //TODO since
+         * @since 1.0.0
          */
         this.emit(_events.SETTING_UP);
 
@@ -595,7 +595,7 @@ class App extends EventEmitter {
                  * Setup event. When the app has been setup.
                  * @event App#setup
                  * @category events
-                 * @since //TODO since
+                 * @since 1.0.0
                  */
                 this.emit(_events.SETUP);
                 changeStatus(this, _status.SETUP);
@@ -625,7 +625,7 @@ class App extends EventEmitter {
      * @see Module#enable
      * @category lifecycle management
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     start(callback = _.noop) {
@@ -650,7 +650,7 @@ class App extends EventEmitter {
          * Starting event. When the app is about to be started.
          * @event App#starting
          * @category events
-         * @since //TODO since
+         * @since 1.0.0
          */
         this.emit(_events.STARTING);
 
@@ -671,7 +671,7 @@ class App extends EventEmitter {
                  * Started event. When the app has been started.
                  * @event App#started
                  * @category events
-                 * @since //TODO since
+                 * @since 1.0.0
                  */
                 this.emit(_events.STARTED);
                 changeStatus(this, _status.STARTED);
@@ -707,7 +707,7 @@ class App extends EventEmitter {
      * @see Module#disable
      * @category lifecycle management
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     stop(callback = _.noop) {
@@ -722,7 +722,7 @@ class App extends EventEmitter {
          * Stopping event. When the app is about to be stopped.
          * @event App#stopping
          * @category events
-         * @since //TODO since
+         * @since 1.0.0
          */
         this.emit(_events.STOPPING);
 
@@ -744,7 +744,7 @@ class App extends EventEmitter {
                  * Stopped event. When the app has been stopped.
                  * @event App#stopped
                  * @category events
-                 * @since //TODO since
+                 * @since 1.0.0
                  */
                 this.emit(_events.STOPPED);
                 changeStatus(this, _status.STOPPED);
@@ -786,7 +786,7 @@ class App extends EventEmitter {
      * @see Module#destroy
      * @category lifecycle management
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     destroy(callback = _.noop) {
@@ -801,7 +801,7 @@ class App extends EventEmitter {
          * Destroying event. When the app is about to be destroyed.
          * @event App#destroying
          * @category events
-         * @since //TODO since
+         * @since 1.0.0
          */
         this.emit(_events.DESTROYING);
 
@@ -822,7 +822,7 @@ class App extends EventEmitter {
                  * Destroyed event. When the app has been destroyed.
                  * @event App#destroyed
                  * @category events
-                 * @since //TODO since
+                 * @since 1.0.0
                  */
                 this.emit(_events.DESTROYED);
                 callback(null);

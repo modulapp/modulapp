@@ -114,7 +114,7 @@ function checkDependencies(dependencies) {
  * @emits Module#destroying
  * @emits Module#destroyed
  * @author nauwep <nauwep.dev@gmail.com>
- * @since //TODO since
+ * @since 1.0.0
  * @access public
  */
 class Module extends EventEmitter {
@@ -203,7 +203,7 @@ class Module extends EventEmitter {
      * @static
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     static get events() {
@@ -235,7 +235,7 @@ class Module extends EventEmitter {
      * @static
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     static get status() {
@@ -252,7 +252,7 @@ class Module extends EventEmitter {
      * @type {!String}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     get id() {
@@ -270,7 +270,7 @@ class Module extends EventEmitter {
      * @type {!String}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     get status() {
@@ -287,7 +287,7 @@ class Module extends EventEmitter {
      * @type {?String}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     get version() {
@@ -313,7 +313,7 @@ class Module extends EventEmitter {
      * @throws {Error} ERR_MOD_002 if the module is not in created status
      * @throws {Error} ERR_MOD_004 if not an Object
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     set options(newOptions = {}) {
@@ -352,7 +352,7 @@ class Module extends EventEmitter {
      * @throws {Error} ERR_MOD_003 if the module is not in [created status]{@link Module#status}
      * @throws {Error} ERR_MOD_005 if a non-String dependency is found
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     set dependencies(newDependencies = []) {
@@ -368,7 +368,7 @@ class Module extends EventEmitter {
      * @type {?Object}
      * @readonly
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     get package() {
@@ -388,7 +388,7 @@ class Module extends EventEmitter {
      * @param {?Object} [options={}] The options to add
      * @throws {Error} ERR_MOD_004 if the options parameter is not an Object
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     addOptions(options = {}) {
@@ -414,7 +414,7 @@ class Module extends EventEmitter {
      * @param {...?(String|String[])} [dependencies] The dependencies to add
      * @throws {Error} ERR_MOD_005 if a non-String dependency is found
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     addDependencies(...dependencies) {
@@ -433,7 +433,7 @@ class Module extends EventEmitter {
      * @throws {Error} ERR_MOD_014 if the wrapper parameter is not provided or is not a ModuleWrapper instance
      * @throws {Error} ERR_MOD_013 if the status is not a [supported status]{@link Module.status}
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access private
      */
     _changeStatus(newStatus, wrapper) {
@@ -471,7 +471,7 @@ class Module extends EventEmitter {
      * @param {!Function} done Callback to return passing any error as first argument done(err)
      * @category lifecycle hooks
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     setup(app, options, imports, done) {
@@ -499,7 +499,7 @@ class Module extends EventEmitter {
      * @param {!Function} done Callback to return passing any error as first argument done(err)
      * @category lifecycle hooks
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     enable(app, options, imports, done) {
@@ -527,7 +527,7 @@ class Module extends EventEmitter {
      * @param {!Function} done Callback to return passing any error as first argument done(err)
      * @category lifecycle hooks
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     disable(app, options, imports, done) {
@@ -555,7 +555,7 @@ class Module extends EventEmitter {
      * @param {!Function} done Callback to return passing any error as first argument done(err)
      * @category lifecycle hooks
      * @author nauwep <nauwep.dev@gmail.com>
-     * @since //TODO since
+     * @since 1.0.0
      * @access public
      */
     destroy(app, options, imports, done) {
