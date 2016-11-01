@@ -14,30 +14,144 @@ Modular application framework for node.js
 
 ## Overview
 
-This is a framework for defining application in a modular way.
-Modulapp is providing an `App` class and a `Module` class to be instanciated.
+Modulapp is a framework for defining application in a modular way.
+It provides an `App` class and a `Module` class.
 
-The differents Module instances contain the behavior of your app.
+### Module concept
+Basically a module is an autonomous part of the application. It could be a npm package or it could be a dedicated file in the app's repository. A module can have dependencies (ie. other modules) and can also provides its own API to other dependants.
 
+A module is an instance of the `Module` class (which extends EventEmitter). You can add any property and functions to that instance.
+
+Modulapp allows to define hooks for a module. The lifecycle of a module has 4 steps: `setup`, `enable`, `disable` and `destroy`. A specific behavior of the module can be defined during those 4 steps. It's during those hooks that dependencies and options are injected to the module.
+
+The `App` instance is managing the lifecycle of all modules and dealing with the dependencies and options.
+
+### App concept
 The App manages the dependencies and the lifecycle of the modules.
+
+An app is an instance of the `App` class (which extends EventEmitter). The modules must be declared to the app. Then the lifecycle of the app can be performed. The app's lifecycle is composed of 5 steps:
+* `resolve`: Checks the modules and resolve the dependency tree
+* `setup`: Synchronously execute the `setup` hook of every module following the dependency tree order
+* `start`: Synchronously execute the `enable` hook of every module following the dependency tree order
+* `stop`: Synchronously execute the `disable` hook of every module following the dependency tree reverse order
+* `destroy`: Synchronously execute the `destroy` hook of every module following the dependency tree reverse order
+
+As the modules are processed synchronously following the dependency tree, the dependencies of a particular module have already been processed before it.
+
+## Usage
+
+Install from npm
+
+```
+npm install modulapp
+```
+
+To write a module, import the `Module` class.
+
+```javascript
+const Module = require('modulapp').Module;
+```
+
+To write an app, import the `App` class.
+
+```javascript
+const App = require('modulapp').App;
+```
 
 ## Example
 
-### Module
+### Module class
 
-    // myModule.js
-    const Module = require('modulapp').Module;
-    let myModule = new Module("myModule");
-    module.exports = myModule;
+```javascript
+// myModule.js
+const Module = require('modulapp').Module;
+let myModule = new Module("myModule");
 
-### App
+// define the dependencies by referencing other modulapp modules' id
+myModule.dependencies = ['server', 'db'];
 
-    // app.js
-    const App = require('modulapp').App;
-    let myModule = require('./myModule');
-    let app = new App([myModule]);
+// custom property
+myModule.foo = 'foo';
 
-# API Reference
+// custom function
+myModule.bar = function() {
+    myModule.emit('bar'); // Module extends EventEmitter
+};
+
+// overwrite the setup hook
+myModule.setup = function(app, imports, options, done) {
+    console.log('setting up myModule');
+    done(null); // executing the done callback is required
+};
+
+// overwrite the enable hook
+myModule.enable = function(app, imports, options, done) {
+    console.log('enabling myModule');
+
+        let db = imports.db;
+        db.on('disconnected', () => {
+            // Do some stuff on event
+        });
+
+        let server = imports.server
+        server.doSomething((err) => {
+            if (err) {
+                done(err);  // if something wrong return done with the error
+            } else {
+                done(null);
+            }
+        });
+};
+
+// myModule.disable can also be overwritten
+// myModule.destroy can also be overwritten
+
+module.exports = myModule;
+```
+
+### App class
+
+```javascript
+// app.js
+const App = require('modulapp').App;
+let app = new App();
+
+// Get the modules
+let server = require('./server.js');
+let db = require('./db.js');
+let myModule = require('./myModule.js');
+
+// set the configuration
+app.addConfig(server, db, myModule);
+
+// start the application
+// start() will itself execute resolve() and setup() if not done
+app.start((err) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('app started!');
+    }
+});
+
+someListener.on('destroy app', () => {
+    app.stop((err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            app.destroy((err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('app destroyed!');
+                }
+            });
+        }
+    });
+});
+```
+
+# API References
 
 ## Classes
 
@@ -59,7 +173,7 @@ Class representing an App.
 **Extends:** <code>EventEmitter</code>  
 **Emits**: <code>[resolving](#App+event_resolving)</code>, <code>[resolved](#App+event_resolved)</code>, <code>[setting_up](#App+event_setting_up)</code>, <code>[setup](#App+event_setup)</code>, <code>[starting](#App+event_starting)</code>, <code>[started](#App+event_started)</code>, <code>[stopping](#App+event_stopping)</code>, <code>[stopped](#App+event_stopped)</code>, <code>[destroying](#App+event_destroying)</code>, <code>[destroyed](#App+event_destroyed)</code>  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 * [App](#App) ⇐ <code>EventEmitter</code>
@@ -131,7 +245,7 @@ The id of the app, randomly generated.
 **Kind**: instance property of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -153,7 +267,7 @@ Setting a module will build an Array with that single module.
 - <code>Error</code> ERR_APP_014 if the module is not in [created status](#App+status).
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -182,7 +296,7 @@ Setting null or undefined replaces the current options by an empty Object {}.
 - <code>Error</code> ERR_APP_008 if not an Object
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -204,7 +318,7 @@ The value is part of the [supported status](#App.status).
 **Kind**: instance property of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -223,7 +337,7 @@ Merge with existing options.
 - <code>Error</code> ERR_APP_008 if the options parameter is not an Object.
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -250,7 +364,7 @@ Merge with existing config and check the new modules and remove duplicates and n
 - <code>Error</code> ERR_APP_013 if a module is not a Module instance.
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -273,7 +387,7 @@ Resolving event. When the app is about to be resolved.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_resolved"></a>
 
 ### "resolved"
@@ -281,7 +395,7 @@ Resolved event. When the app has been resolved.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_setting_up"></a>
 
 ### "setting_up"
@@ -289,7 +403,7 @@ Setting up event. When the app is about to be setup.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_setup"></a>
 
 ### "setup"
@@ -297,7 +411,7 @@ Setup event. When the app has been setup.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_starting"></a>
 
 ### "starting"
@@ -305,7 +419,7 @@ Starting event. When the app is about to be started.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_started"></a>
 
 ### "started"
@@ -313,7 +427,7 @@ Started event. When the app has been started.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_stopping"></a>
 
 ### "stopping"
@@ -321,7 +435,7 @@ Stopping event. When the app is about to be stopped.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_stopped"></a>
 
 ### "stopped"
@@ -329,7 +443,7 @@ Stopped event. When the app has been stopped.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_destroying"></a>
 
 ### "destroying"
@@ -337,7 +451,7 @@ Destroying event. When the app is about to be destroyed.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+event_destroyed"></a>
 
 ### "destroyed"
@@ -345,7 +459,7 @@ Destroyed event. When the app has been destroyed.
 
 **Kind**: event emitted by <code>[App](#App)</code>  
 **Category**: events  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 <a name="App+resolve"></a>
 
 ### app.resolve([callback])
@@ -361,7 +475,7 @@ This method is synchronous, callback is not required.
 - <code>Error</code> ERR_APP_007 in case of missing module
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -404,7 +518,7 @@ Setup every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#setup  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -434,7 +548,7 @@ Enable every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#enable  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -464,7 +578,7 @@ Disable every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#disable  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -500,7 +614,7 @@ Destroy every modules following the dependency graph.
 **Category**: lifecycle management  
 **Access:** public  
 **See**: Module#destroy  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -556,7 +670,7 @@ All supported events of App class.
 **Kind**: static enum of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -584,7 +698,7 @@ Don't confuse this static method App.status with the instance method [status](#A
 **Kind**: static enum of <code>[App](#App)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -601,7 +715,7 @@ Class representing a Module.
 **Extends:** <code>EventEmitter</code>  
 **Emits**: <code>[setting_up](#Module+event_setting_up)</code>, <code>[setup](#Module+event_setup)</code>, <code>[enabling](#Module+event_enabling)</code>, <code>[enabled](#Module+event_enabled)</code>, <code>[disabling](#Module+event_disabling)</code>, <code>[disabled](#Module+event_disabled)</code>, <code>[destroying](#Module+event_destroying)</code>, <code>[destroyed](#Module+event_destroyed)</code>  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 * [Module](#Module) ⇐ <code>EventEmitter</code>
@@ -713,7 +827,7 @@ The id of the module.
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -729,7 +843,7 @@ The value is part of the [supported status](#Module.status).
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -744,7 +858,7 @@ The version of the module.
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -765,7 +879,7 @@ Setting null or undefined replaces the current options by an empty Object {}.
 - <code>Error</code> ERR_MOD_004 if not an Object
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -793,7 +907,7 @@ Setting a String will build an Array with that single String.
 - <code>Error</code> ERR_MOD_005 if a non-String dependency is found
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -819,7 +933,7 @@ Merge with existing options.
 - <code>Error</code> ERR_MOD_004 if the options parameter is not an Object
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Default | Description |
@@ -845,7 +959,7 @@ Merge with existing dependencies and check the new dependencies, flatten the Arr
 - <code>Error</code> ERR_MOD_005 if a non-String dependency is found
 
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -928,7 +1042,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -959,7 +1073,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -990,7 +1104,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1021,7 +1135,7 @@ Once the app is resolved, this method is not available anymore.
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
 **Access:** public  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 
 | Param | Type | Description |
@@ -1062,7 +1176,7 @@ All supported events of Module class.
 **Kind**: static enum of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
@@ -1090,7 +1204,7 @@ Don't confuse this static method Module.status with the instance method [status]
 **Kind**: static enum of <code>[Module](#Module)</code>  
 **Access:** public  
 **Read only**: true  
-**Since**: //TODO since  
+**Since**: 1.0.0  
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
