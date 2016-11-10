@@ -16,3 +16,5 @@ test/
 .travis.yml
 .jshintrc
 .gitignore
+.jshintignore
+src/
