@@ -5,10 +5,10 @@ const _ = require('lodash');
 const ErrorsFactory = require('errors-factory');
 const errors = new ErrorsFactory(require('../resources/errors.json'));
 
-const ModuleWrapper = require('../moduleWrapper');
-const App = require('../app');
+const ModuleWrapper = require('../src/moduleWrapper');
+const App = require('../src/app');
 
-const Module = require('../module');
+const Module = require('../src/module');
 
 describe('Module', function() {
 

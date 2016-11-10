@@ -4,10 +4,11 @@ const should = require('should');
 const sinon = require('sinon');
 const ErrorsFactory = require('errors-factory');
 const errors = new ErrorsFactory(require('../resources/errors.json'));
-const Module = require('../module');
-const App = require('../app');
 
-const ModuleWrapper = require('../moduleWrapper');
+const Module = require('../src/module');
+const App = require('../src/app');
+
+const ModuleWrapper = require('../src/moduleWrapper');
 
 describe('ModuleWrapper', function() {
 

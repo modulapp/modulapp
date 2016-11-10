@@ -6,10 +6,10 @@ const DepGraph = require('dependency-graph').DepGraph;
 const ErrorsFactory = require('errors-factory');
 const errors = new ErrorsFactory(require('../resources/errors.json'));
 
-const Module = require('../module');
-const ModuleWrapper = require('../moduleWrapper');
+const Module = require('../src/module');
+const ModuleWrapper = require('../src/moduleWrapper');
 
-const App = require('../app');
+const App = require('../src/app');
 
 describe('App', function() {
 
