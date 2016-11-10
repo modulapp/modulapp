@@ -8,14 +8,14 @@ const DepGraph = require('dependency-graph').DepGraph;
 
 const ModuleWrapper = require('./moduleWrapper');
 
-// Provide errors defined in ./resources/errors.json.
-const _errors = new ErrorsFactory(require('./resources/errors.json'));
+// Provide errors defined in ../resources/errors.json.
+const _errors = new ErrorsFactory(require('../resources/errors.json'));
 
-// Provide the App events as defined in ./resources/events.json.
-const _events = require('./resources/events.json').app;
+// Provide the App events as defined in ../resources/events.json.
+const _events = require('../resources/events.json').app;
 
-// Provide the App status as defined in ./resources/status.json.
-const _status = require('./resources/status.json').app;
+// Provide the App status as defined in ../resources/status.json.
+const _status = require('../resources/status.json').app;
 
 // Handle all private properties of all App instances.
 const privateProps = new WeakMap();

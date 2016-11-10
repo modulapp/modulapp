@@ -4,14 +4,14 @@ const EventEmitter = require('events').EventEmitter;
 const ErrorsFactory = require('errors-factory');
 const _ = require('lodash');
 
-// Provide errors defined in ./resources/errors.json.
-const _errors = new ErrorsFactory(require('./resources/errors.json'));
+// Provide errors defined in ../resources/errors.json.
+const _errors = new ErrorsFactory(require('../resources/errors.json'));
 
-// Provide the Module events as defined in ./resources/events.json.
-const _events = require('./resources/events.json').module;
+// Provide the Module events as defined in ../resources/events.json.
+const _events = require('../resources/events.json').module;
 
-// Provide the Module status as defined in ./resources/status.json.
-const _status = require('./resources/status.json').module;
+// Provide the Module status as defined in ../resources/status.json.
+const _status = require('../resources/status.json').module;
 
 // Handle all private properties of all Module instances.
 const privateProps = new WeakMap();
