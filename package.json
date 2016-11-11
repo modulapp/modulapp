@@ -9,16 +9,17 @@
         "npm": ">=3.0.0"
     },
     "scripts": {
-        "build": "node node_modules/browserify/bin/cmd.js ./src/index.js > ./lib/modulapp.js --no-bundle-external --node -s modulapp",
+        "build": "npm run build_lib && npm run test && npm run cover && npm run build_docs",
+        "build_lib": "node node_modules/browserify/bin/cmd.js ./src/index.js > ./lib/modulapp.js --no-bundle-external --node -s modulapp",
         "test_lib": "node node_modules/mocha/bin/mocha test/lib.js",
         "test_src": "node node_modules/mocha/bin/mocha test/src.js",
         "test": "npm run test_src && npm run test_lib",
         "cover": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- test/src.js -R min",
         "coveralls": "rm -rf ./coverage && npm run cover && cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
         "build_docs": "npm run doc_README && npm run doc_website && npm run doc_privateAPI",
-        "doc_README": "node node_modules/jsdoc-to-markdown/bin.js --partial doc/README_content.hbs --partial doc/README_license.hbs --template doc/README_structure.hbs --files *.js > README.md",
+        "doc_README": "node node_modules/jsdoc-to-markdown/bin.js --partial doc/README_content.hbs --partial doc/README_license.hbs --template doc/README_structure.hbs --files src/*.js > README.md",
         "doc_website": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
-        "doc_privateAPI": "node node_modules/jsdoc-to-markdown/bin.js --private *.js > PrivateAPI.md"
+        "doc_privateAPI": "node node_modules/jsdoc-to-markdown/bin.js --private src/*.js > PrivateAPI.md"
     },
     "repository": {
         "type": "git",
