@@ -1,0 +1,13 @@
+{
+    "ignore": [
+        "**/lib/**"
+    ],
+    "test": [
+        "**/test/**"
+    ],
+    "critics": {
+        "lint": {
+            "engine": "jshint"
+        }
+    }
+}
