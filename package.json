@@ -3,19 +3,23 @@
     "version": "1.0.0",
     "description": "Modular application framework",
     "homepage": "https://modulapp.github.io/",
-    "main": "index.js",
+    "main": "lib/modulapp.js",
     "engines": {
         "node": ">=6.0.0",
         "npm": ">=3.0.0"
     },
     "scripts": {
-        "test": "node node_modules/mocha/bin/mocha",
-        "cover": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R min",
+        "build": "npm run build_lib && npm run test && npm run cover && npm run build_docs",
+        "build_lib": "node node_modules/browserify/bin/cmd.js ./src/index.js > ./lib/modulapp.js --no-bundle-external --node -s modulapp",
+        "test_lib": "node node_modules/mocha/bin/mocha test/lib.js",
+        "test_src": "node node_modules/mocha/bin/mocha test/src.js",
+        "test": "npm run test_src && npm run test_lib",
+        "cover": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- test/src.js -R min",
         "coveralls": "rm -rf ./coverage && npm run cover && cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
         "build_docs": "npm run doc_README && npm run doc_website && npm run doc_privateAPI",
-        "doc_README": "node node_modules/jsdoc-to-markdown/bin.js --partial doc/README_content.hbs --partial doc/README_license.hbs --template doc/README_structure.hbs --files *.js > README.md",
+        "doc_README": "node node_modules/jsdoc-to-markdown/bin.js --partial doc/README_content.hbs --partial doc/README_license.hbs --template doc/README_structure.hbs --files src/*.js > README.md",
         "doc_website": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
-        "doc_privateAPI": "node node_modules/jsdoc-to-markdown/bin.js --private *.js > PrivateAPI.md"
+        "doc_privateAPI": "node node_modules/jsdoc-to-markdown/bin.js --private src/*.js > PrivateAPI.md"
     },
     "repository": {
         "type": "git",
@@ -33,8 +37,8 @@
     "bugs": {
         "url": "https://github.com/modulapp/modulapp/issues"
     },
-    "homepage": "https://github.com/modulapp/modulapp#readme",
     "devDependencies": {
+        "browserify": "^13.1.1",
         "coveralls": "^2.11.14",
         "docdash": "^0.4.0",
         "istanbul": "^0.4.5",
@@ -43,7 +47,8 @@
         "mocha": "^3.0.2",
         "mocha-lcov-reporter": "^1.2.0",
         "should": "^11.1.0",
-        "sinon": "^1.17.5"
+        "sinon": "^1.17.5",
+        "uglify-js": "^2.7.4"
     },
     "dependencies": {
         "async": "^2.0.1",

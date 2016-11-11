@@ -3,8 +3,8 @@
         "allowUnknownTags": true
     },
     "source": {
-        "include": ["doc/README_content.md", "app.js", "moduleWrapper.js", "module.js"],
-        "exclude": ["node_modules/", "test/", "website/", "resources/"]
+        "include": ["doc/README_content.md", "src/app.js", "src/moduleWrapper.js", "src/module.js"],
+        "exclude": ["node_modules/", "test/", "website/", "resources/", "lib/"]
     },
     "plugins": [
         "plugins/markdown",
