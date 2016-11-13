@@ -968,15 +968,15 @@ describe('App', function() {
                 let serverNode = graph.getNodeData('server');
                 should.exist(serverNode.imports.logger);
                 let loggerServerImport = serverNode.imports.logger;
-                should(loggerServerImport).be.an.instanceOf(ModuleWrapper);
+                should(loggerServerImport).be.an.instanceOf(Module);
 
                 let dbNode = graph.getNodeData('db');
                 should.exist(dbNode.imports.server);
                 let serverDbImport = dbNode.imports.server;
-                should(serverDbImport).be.an.instanceOf(ModuleWrapper);
+                should(serverDbImport).be.an.instanceOf(Module);
                 should.exist(dbNode.imports.logger);
                 let loggerDbImport = dbNode.imports.logger;
-                should(loggerDbImport).be.an.instanceOf(ModuleWrapper);
+                should(loggerDbImport).be.an.instanceOf(Module);
             });
 
         it('should set the appropriate options', function() {

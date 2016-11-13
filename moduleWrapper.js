@@ -78,7 +78,7 @@ class ModuleWrapper extends EventEmitter {
         /**
          * The list of dependencies of the module.
          * A dependency is accessed by its id as key of this imports object.
-         * Dependencies are instance of ModuleWrapper wrapping an instance of Module.
+         * Dependencies are instance of Module.
          *
          * @name imports
          * @memberof ModuleWrapper
@@ -312,15 +312,15 @@ class ModuleWrapper extends EventEmitter {
      * ```javascript
      * // example of imports object
      * {
-     *     logger: loggerModuleWrapper,
-     *     server: serverModuleWrapper
+     *     logger: loggerModule,
+     *     server: serverModule
      * }
      * ```
      *
      * @param {?Object} [newImports={}] The imports Object to add
      * @throws {Error} ERR_MOD_009 if the imports parameter is not an Object
      * @throws {Error} ERR_MOD_011 if not in created status
-     * @throws {Error} ERR_MOD_012 if a value of the imports Object is not a ModuleWrapper instance
+     * @throws {Error} ERR_MOD_012 if a value of the imports Object is not a Module instance
      * @author nauwep <nauwep.dev@gmail.com>
      * @since 1.0.0
      * @access private
@@ -330,8 +330,8 @@ class ModuleWrapper extends EventEmitter {
             throw _errors.ERR_MOD_011;
         }
         if (_.isPlainObject(newImports) || _.isNull(newImports)) {
-            _.forEach(newImports, (wrapperInstance) => {
-                if (wrapperInstance.constructor.name !== 'ModuleWrapper') {
+            _.forEach(newImports, (moduleInstance) => {
+                if (moduleInstance.constructor.name !== 'Module') {
                     throw _errors.ERR_MOD_012;
                 }
             });

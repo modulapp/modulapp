@@ -90,7 +90,7 @@
     "message": "Imports cannot be changed in module wrapper after setup."
 }, {
     "code": "ERR_MOD_012",
-    "message": "Only ModuleWrapper instances can be part of the object argument for imports."
+    "message": "Only Module instances can be part of the object argument for imports."
 }, {
     "code": "ERR_MOD_013",
     "message": "The status must be one of the defined status."

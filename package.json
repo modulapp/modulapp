@@ -1,6 +1,6 @@
 {
     "name": "modulapp",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Modular application framework",
     "homepage": "https://modulapp.github.io/",
     "main": "index.js",

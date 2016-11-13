@@ -316,18 +316,17 @@ describe('ModuleWrapper', function() {
 
     describe('#addImports()', function() {
 
-        const anotherApp = new App();
         const loggerModule = new Module('logger');
         const dbModule = new Module('db');
         const serverModule = new Module('server');
 
         const testImports1 = {
-            logger: new ModuleWrapper(loggerModule, anotherApp),
-            db: new ModuleWrapper(dbModule, anotherApp)
+            logger: loggerModule,
+            db: dbModule
         };
 
         const testImports2 = {
-            server: new ModuleWrapper(serverModule, anotherApp)
+            server: serverModule
         };
 
         beforeEach('Clear options before each tests', function() {
