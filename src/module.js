@@ -2,10 +2,15 @@
 
 const EventEmitter = require('events').EventEmitter;
 const ErrorsFactory = require('errors-factory');
+const MessagesFactory = require('messages-factory');
 const _ = require('lodash');
 
 // Provide errors defined in ../resources/errors.json.
 const _errors = new ErrorsFactory(require('../resources/errors.json'));
+
+// Provide messages defined in ../resources/messages.json.
+const messagesJson = require('../resources/messages.json').module;
+const _messages = new MessagesFactory(messagesJson);
 
 // Provide the Module events as defined in ../resources/events.json.
 const _events = require('../resources/events.json').module;
@@ -165,6 +170,27 @@ class Module extends EventEmitter {
             }
         }
 
+        let logger = null;
+        if (_.has(options, 'modulapp.logger')) {
+            logger = options.modulapp.logger;
+        }
+        let loggerCategory = `Module ${id}`;
+        if (_.has(options, 'modulapp.loggerCategory')) {
+            loggerCategory = options.modulapp.loggerCategory;
+        }
+
+        if (_.isBoolean(logger) && !logger) {
+            this.logger = require('./logger')(loggerCategory);
+        } else if (_.isBoolean(logger) && logger) {
+            this.logger = require('./logger')(loggerCategory, 'info');
+        } else if (_.isString(logger)) {
+            this.logger = require('./logger')(loggerCategory, logger);
+        } else if (_.isPlainObject()) {
+            this.logger = logger;
+        } else {
+            this.logger = require('./logger')(loggerCategory);
+        }
+
         // store all properties in the private WeakMap
         privateProps.set(this, {
             id: id,
@@ -175,6 +201,7 @@ class Module extends EventEmitter {
             package: packagejson
         });
 
+        this.logger(_messages.MOD_005(id));
     }
 
     /**
@@ -256,6 +283,7 @@ class Module extends EventEmitter {
      * @access public
      */
     get id() {
+        this.logger.verbose(_messages.MOD_006());
         return privateProps.get(this).id;
     }
 
@@ -274,6 +302,7 @@ class Module extends EventEmitter {
      * @access public
      */
     get status() {
+        this.logger.verbose(_messages.MOD_007());
         return privateProps.get(this).status;
     }
 
@@ -291,10 +320,12 @@ class Module extends EventEmitter {
      * @access public
      */
     get version() {
+        this.logger.verbose(_messages.MOD_008());
         return privateProps.get(this).version;
     }
 
     get options() {
+        this.logger.verbose(_messages.MOD_009());
         return privateProps.get(this).options;
     }
 
@@ -317,6 +348,7 @@ class Module extends EventEmitter {
      * @access public
      */
     set options(newOptions = {}) {
+        this.logger.verbose(_messages.MOD_010());
         if (this.status !== _status.CREATED) {
             throw _errors.ERR_MOD_002;
         }
@@ -329,9 +361,11 @@ class Module extends EventEmitter {
             throw _errors.ERR_MOD_004;
         }
         privateProps.set(this, props);
+        this.logger.info(_messages.MOD_020());
     }
 
     get dependencies() {
+        this.logger.verbose(_messages.MOD_011());
         return privateProps.get(this).dependencies;
     }
 
@@ -356,10 +390,12 @@ class Module extends EventEmitter {
      * @access public
      */
     set dependencies(newDependencies = []) {
+        this.logger.verbose(_messages.MOD_012());
         if (this.status !== _status.CREATED) {
             throw _errors.ERR_MOD_003;
         }
         privateProps.get(this).dependencies = checkDependencies(newDependencies);
+        this.logger.info(_messages.MOD_019());
     }
 
     /**
@@ -372,6 +408,7 @@ class Module extends EventEmitter {
      * @access private
      */
     get package() {
+        this.logger.verbose(_messages.MOD_013());
         return privateProps.get(this).package;
     }
 
@@ -392,8 +429,10 @@ class Module extends EventEmitter {
      * @access public
      */
     addOptions(options = {}) {
+        this.logger.verbose(_messages.MOD_014());
         if (_.isPlainObject(options) || _.isNull(options)) {
             this.options = _.merge(this.options, options);
+            this.logger.info(_messages.MOD_015());
         } else {
             throw _errors.ERR_MOD_004;
         }
@@ -418,11 +457,13 @@ class Module extends EventEmitter {
      * @access public
      */
     addDependencies(...dependencies) {
+        this.logger.verbose(_messages.MOD_016());
         dependencies = checkDependencies(dependencies);
         dependencies = _.concat(this.dependencies, dependencies);
         dependencies = _.flattenDeep(dependencies);
         dependencies = _.uniq(dependencies);
         this.dependencies = dependencies;
+        this.logger.info(_messages.MOD_017());
     }
 
     /**
@@ -437,6 +478,7 @@ class Module extends EventEmitter {
      * @access private
      */
     _changeStatus(newStatus, wrapper) {
+        this.logger.debug(_messages.MOD_018(newStatus));
         if (_.isUndefined(wrapper) || wrapper.constructor.name !== 'ModuleWrapper') {
             throw _errors.ERR_MOD_014;
         }
@@ -475,6 +517,7 @@ class Module extends EventEmitter {
      * @access public
      */
     setup(app, options, imports, done) {
+        this.logger.info(_messages.MOD_001(this.id));
         done(null);
     }
 
@@ -503,6 +546,7 @@ class Module extends EventEmitter {
      * @access public
      */
     enable(app, options, imports, done) {
+        this.logger.info(_messages.MOD_002(this.id));
         done(null);
     }
 
@@ -531,6 +575,7 @@ class Module extends EventEmitter {
      * @access public
      */
     disable(app, options, imports, done) {
+        this.logger.info(_messages.MOD_003(this.id));
         done(null);
     }
 
@@ -559,6 +604,7 @@ class Module extends EventEmitter {
      * @access public
      */
     destroy(app, options, imports, done) {
+        this.logger.info(_messages.MOD_004(this.id));
         done(null);
     }
 

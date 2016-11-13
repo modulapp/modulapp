@@ -1,0 +1,319 @@
+{
+    "app": [{
+        "code": "APP_001",
+        "message": "new modulapp app created with id: {0}"
+    }, {
+        "code": "APP_004",
+        "message": "getting id of app"
+    }, {
+        "code": "APP_005",
+        "message": "getting config of app"
+    }, {
+        "code": "APP_006",
+        "message": "setting config to app aborted as status different than created"
+    }, {
+        "code": "APP_007",
+        "message": "new config set to app"
+    }, {
+        "code": "APP_008",
+        "message": "getting graph of app"
+    }, {
+        "code": "APP_009",
+        "message": "getting options of app"
+    }, {
+        "code": "APP_010",
+        "message": "setting options to app"
+    }, {
+        "code": "APP_011",
+        "message": "setting options to app aborted as status different than created"
+    }, {
+        "code": "APP_012",
+        "message": "setting options to app aborted as options not in appropriate format"
+    }, {
+        "code": "APP_013",
+        "message": "new options set to app"
+    }, {
+        "code": "APP_014",
+        "message": "getting status of app"
+    }, {
+        "code": "APP_015",
+        "message": "adding new options to app"
+    }, {
+        "code": "APP_016",
+        "message": "new options added to app"
+    }, {
+        "code": "APP_017",
+        "message": "adding new config to app"
+    }, {
+        "code": "APP_018",
+        "message": "new config added to app"
+    }, {
+        "code": "APP_019",
+        "message": "private change of app status to {0}"
+    }, {
+        "code": "APP_020",
+        "message": "resolving the app configuration"
+    }, {
+        "code": "APP_021",
+        "message": "app configuration resolved"
+    }, {
+        "code": "APP_022",
+        "message": "setting up the app"
+    }, {
+        "code": "APP_023",
+        "message": "app setup"
+    }, {
+        "code": "APP_024",
+        "message": "starting the app"
+    }, {
+        "code": "APP_025",
+        "message": "app started"
+    }, {
+        "code": "APP_026",
+        "message": "stopping the app"
+    }, {
+        "code": "APP_027",
+        "message": "app stopped"
+    }, {
+        "code": "APP_028",
+        "message": "destroying the app"
+    }, {
+        "code": "APP_029",
+        "message": "app destroyed"
+    }, {
+        "code": "APP_030",
+        "message": "setting config to app"
+    }, {
+        "code": "APP_031",
+        "message": "changing app status to {0}"
+    }, {
+        "code": "APP_032",
+        "message": "app status changed from {0} to {1}"
+    }],
+    "module": [{
+        "code": "MOD_001",
+        "message": "executing modulapp default setup of {0} module"
+    }, {
+        "code": "MOD_002",
+        "message": "executing modulapp default enable of {0} module"
+    }, {
+        "code": "MOD_003",
+        "message": "executing modulapp default disable of {0} module"
+    }, {
+        "code": "MOD_004",
+        "message": "executing modulapp default destroy of {0} module"
+    }, {
+        "code": "MOD_005",
+        "message": "new modulapp module created with id: {0}"
+    }, {
+        "code": "MOD_006",
+        "message": "getting id of module"
+    }, {
+        "code": "MOD_007",
+        "message": "getting status of module"
+    }, {
+        "code": "MOD_008",
+        "message": "getting version of module"
+    }, {
+        "code": "MOD_009",
+        "message": "getting options of module"
+    }, {
+        "code": "MOD_010",
+        "message": "setting options to module"
+    }, {
+        "code": "MOD_011",
+        "message": "getting dependencies of module"
+    }, {
+        "code": "MOD_012",
+        "message": "setting dependencies to module"
+    }, {
+        "code": "MOD_013",
+        "message": "getting package of module"
+    }, {
+        "code": "MOD_014",
+        "message": "adding new options to module"
+    }, {
+        "code": "MOD_015",
+        "message": "new options added to module"
+    }, {
+        "code": "MOD_016",
+        "message": "adding new dependencies to module"
+    }, {
+        "code": "MOD_017",
+        "message": "new dependencies added to module"
+    }, {
+        "code": "MOD_018",
+        "message": "private change of module status to {0}"
+    }, {
+        "code": "MOD_019",
+        "message": "dependencies set to module"
+    }, {
+        "code": "MOD_020",
+        "message": "options set to module"
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }, {
+        "code": "MOD_0",
+        "message": ""
+    }]
+}

@@ -2,6 +2,7 @@
 
 const EventEmitter = require('events').EventEmitter;
 const ErrorsFactory = require('errors-factory');
+const MessagesFactory = require('messages-factory');
 const _ = require('lodash');
 const async = require('async');
 const DepGraph = require('dependency-graph').DepGraph;
@@ -10,6 +11,10 @@ const ModuleWrapper = require('./moduleWrapper');
 
 // Provide errors defined in ../resources/errors.json.
 const _errors = new ErrorsFactory(require('../resources/errors.json'));
+
+// Provide messages defined in ../resources/messages.json.
+const messagesJson = require('../resources/messages.json').app;
+const _messages = new MessagesFactory(messagesJson);
 
 // Provide the App events as defined in ../resources/events.json.
 const _events = require('../resources/events.json').app;
@@ -27,9 +32,13 @@ function changeStatus(appInstance, newStatus) {
         throw _errors.ERR_APP_015;
     }
 
+    appInstance.logger.verbose(_messages.APP_031(newStatus));
+
     let props = privateProps.get(appInstance);
+    let oldStatus = props.status;
     props.status = newStatus;
     privateProps.set(appInstance, props);
+    appInstance.logger.info(_messages.APP_032(oldStatus, newStatus));
 }
 
 // Check a configuration module list. Remove nulls, duplicates, flatten the Array and check if all module are Module instance.
@@ -124,14 +133,39 @@ class App extends EventEmitter {
 
         super();
 
+        const id = _.uniqueId();
+
+        let logger = null;
+        if (_.has(options, 'modulapp.logger')) {
+            logger = options.modulapp.logger;
+        }
+        let loggerCategory = `App ${id}`;
+        if (_.has(options, 'modulapp.loggerCategory')) {
+            loggerCategory = options.modulapp.loggerCategory;
+        }
+
+        if (_.isBoolean(logger) && !logger) {
+            this.logger = require('./logger')(loggerCategory);
+        } else if (_.isBoolean(logger) && logger) {
+            this.logger = require('./logger')(loggerCategory, 'info');
+        } else if (_.isString(logger)) {
+            this.logger = require('./logger')(loggerCategory, logger);
+        } else if (_.isPlainObject()) {
+            this.logger = logger;
+        } else {
+            this.logger = require('./logger')(loggerCategory);
+        }
+
         // store all properties in the private WeakMap
         privateProps.set(this, {
-            id: _.uniqueId(),
+            id: id,
             config: config,
             graph: new DepGraph(),
             options: options,
             status: _status.CREATED
         });
+
+        this.logger.info(_messages.APP_001(id));
     }
 
     /**
@@ -215,10 +249,12 @@ class App extends EventEmitter {
      * @access public
      */
     get id() {
+        this.logger.verbose(_messages.APP_004());
         return privateProps.get(this).id;
     }
 
     get config() {
+        this.logger.verbose(_messages.APP_005());
         return privateProps.get(this).config;
     }
 
@@ -243,11 +279,14 @@ class App extends EventEmitter {
      * @access public
      */
     set config(newConfig = []) {
+        this.logger.verbose(_messages.APP_030());
         // TODO if status in resolved, update the config and resolve again?
         if (this.status !== _status.CREATED) {
+            this.logger.debug(_messages.APP_006());
             throw _errors.ERR_APP_014;
         }
         privateProps.get(this).config = checkConfig(newConfig);
+        this.logger.info(_messages.APP_007());
     }
 
     /**
@@ -262,10 +301,12 @@ class App extends EventEmitter {
      * @access private
      */
     get graph() {
+        this.logger.verbose(_messages.APP_008());
         return privateProps.get(this).graph;
     }
 
     get options() {
+        this.logger.verbose(_messages.APP_009());
         return privateProps.get(this).options;
     }
 
@@ -289,8 +330,10 @@ class App extends EventEmitter {
      * @access public
      */
     set options(newOptions = {}) {
+        this.logger.verbose(_messages.APP_010());
         // TODO if status in resolved, update the wrapper in the graph?
         if (this.status !== _status.CREATED) {
+            this.logger.debug(_messages.APP_011());
             throw _errors.ERR_APP_009;
         }
         let props = privateProps.get(this);
@@ -299,9 +342,11 @@ class App extends EventEmitter {
         } else if (_.isPlainObject(newOptions)) {
             props.options = newOptions;
         } else {
+            this.logger.debug(_messages.APP_012());
             throw _errors.ERR_APP_008;
         }
         privateProps.set(this, props);
+        this.logger.info(_messages.APP_013());
     }
 
     /**
@@ -319,6 +364,7 @@ class App extends EventEmitter {
      * @access public
      */
     get status() {
+        this.logger.verbose(_messages.APP_014());
         return privateProps.get(this).status;
     }
 
@@ -340,8 +386,10 @@ class App extends EventEmitter {
      * @access public
      */
     addOptions(options = {}) {
+        this.logger.verbose(_messages.APP_015());
         if (_.isPlainObject(options) || _.isNull(options)) {
             this.options = _.merge(this.options, options);
+            this.logger.info(_messages.APP_016());
         } else {
             throw _errors.ERR_APP_008;
         }
@@ -366,11 +414,13 @@ class App extends EventEmitter {
      * @access public
      */
     addConfig(...config) {
+        this.logger.verbose(_messages.APP_017());
         config = checkConfig(config);
         config = _.concat(this.config, config);
         config = _.flattenDeep(config);
         config = _.uniq(config);
         this.config = config;
+        this.logger.info(_messages.APP_018());
     }
 
     /**
@@ -383,6 +433,7 @@ class App extends EventEmitter {
      * @access private
      */
     _changeStatus(newStatus) {
+        this.logger.debug(_messages.APP_019(newStatus));
         changeStatus(this, newStatus);
     }
 
@@ -436,6 +487,8 @@ class App extends EventEmitter {
                 throw _errors.ERR_APP_001;
             }
         }
+
+        this.logger.info(_messages.APP_020());
 
         /**
          * Resolving event. When the app is about to be resolved.
@@ -526,6 +579,7 @@ class App extends EventEmitter {
          */
         this.emit(_events.RESOLVED);
         changeStatus(this, _status.RESOLVED);
+        this.logger.info(_messages.APP_021());
         if (_.isFunction(callback)) {
             return callback(null);
         }
@@ -570,6 +624,8 @@ class App extends EventEmitter {
             }
         }
 
+        this.logger.info(_messages.APP_022());
+
         /**
          * Setting up event. When the app is about to be setup.
          * @event App#setting_up
@@ -599,6 +655,7 @@ class App extends EventEmitter {
                  */
                 this.emit(_events.SETUP);
                 changeStatus(this, _status.SETUP);
+                this.logger.info(_messages.APP_023());
                 callback(null);
             }
         });
@@ -646,6 +703,8 @@ class App extends EventEmitter {
             });
         }
 
+        this.logger.info(_messages.APP_024());
+
         /**
          * Starting event. When the app is about to be started.
          * @event App#starting
@@ -675,6 +734,7 @@ class App extends EventEmitter {
                  */
                 this.emit(_events.STARTED);
                 changeStatus(this, _status.STARTED);
+                this.logger.info(_messages.APP_025());
                 callback(null);
             }
         });
@@ -718,6 +778,8 @@ class App extends EventEmitter {
             return callback(_errors.ERR_APP_004);
         }
 
+        this.logger.info(_messages.APP_026());
+
         /**
          * Stopping event. When the app is about to be stopped.
          * @event App#stopping
@@ -748,6 +810,7 @@ class App extends EventEmitter {
                  */
                 this.emit(_events.STOPPED);
                 changeStatus(this, _status.STOPPED);
+                this.logger.info(_messages.APP_027());
                 callback(null);
             }
         });
@@ -797,6 +860,8 @@ class App extends EventEmitter {
             return callback(_errors.ERR_APP_005);
         }
 
+        this.logger.info(_messages.APP_028());
+
         /**
          * Destroying event. When the app is about to be destroyed.
          * @event App#destroying
@@ -825,6 +890,7 @@ class App extends EventEmitter {
                  * @since 1.0.0
                  */
                 this.emit(_events.DESTROYED);
+                this.logger.info(_messages.APP_029());
                 callback(null);
             }
         });
