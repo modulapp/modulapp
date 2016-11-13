@@ -511,7 +511,7 @@ class App extends EventEmitter {
             _.forEach(depNodeIds, (depNodeId) => {
                 let depWrapper = this.graph.getNodeData(depNodeId);
                 if (depWrapper.constructor.name === 'ModuleWrapper') {
-                    imports[depNodeId] = depWrapper;
+                    imports[depNodeId] = depWrapper.module;
                 }
             });
             wrapper.addImports(imports);
