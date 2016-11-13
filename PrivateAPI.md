@@ -631,10 +631,7 @@ Class representing a Module.
 <a name="new_Module_new"></a>
 
 ### new Module(id, [initialOptions])
-Create a new instance of Module.
-The id parameter is required, it could be either a String or an Object representing the package.json.
-
-In case of the package.json is provided, the id, version, dependencies and options will be extracted from this Object.
+Create a new instance of Module.The id parameter is required, it could be either a String or an Object representing the package.json.In case of the package.json is provided, the id, version, dependencies and options will be extracted from this Object.
 
 **Throws**:
 
@@ -649,23 +646,7 @@ In case of the package.json is provided, the id, version, dependencies and optio
 
 **Example**  
 ```js
-const Module = require('modulapp').Module;
-let myModule = new Module('myModule');
-
-myModule.foo = 'foo';
-myModule.bar = function() {
-    // this is a custom method
-};
-
-myModule.setup = function(app, options, imports, done) {
-    // this is overriding the setup  method
-
-    let logger = imports.logger;
-    logger.log('setting up myModule');
-    done(null);
-};
-
-module.exports = myModule;
+const Module = require('modulapp').Module;let myModule = new Module('myModule');myModule.foo = 'foo';myModule.bar = function() {    // this is a custom method};myModule.setup = function(app, options, imports, done) {    // this is overriding the setup  method    let logger = imports.logger;    logger.log('setting up myModule');    done(null);};module.exports = myModule;
 ```
 **Example** *(constructor with a String argument)*  
 ```js
@@ -713,14 +694,12 @@ The id of the module.
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
-console.log(myModule.id); // -> 'myModule'
-myModule.id = 'anotherId'; // -> throw Error read-only
+console.log(myModule.id); // -> 'myModule'myModule.id = 'anotherId'; // -> throw Error read-only
 ```
 <a name="Module+status"></a>
 
 ### module.status : <code>String</code>
-The status of the module.
-The value is part of the [supported status](#Module.status).
+The status of the module.The value is part of the [supported status](#Module.status).
 
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Access:** public  
@@ -729,8 +708,7 @@ The value is part of the [supported status](#Module.status).
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
-console.log(myModule.status); // -> 'created'
-myModule.status = Module.status.SETUP; // -> throw Error read-only
+console.log(myModule.status); // -> 'created'myModule.status = Module.status.SETUP; // -> throw Error read-only
 ```
 <a name="Module+version"></a>
 
@@ -744,15 +722,12 @@ The version of the module.
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
-console.log(myModule.version); // -> '1.0.0'
-myModule.version = '1.0.1'; // -> throw Error read-only
+console.log(myModule.version); // -> '1.0.0'myModule.version = '1.0.1'; // -> throw Error read-only
 ```
 <a name="Module+options"></a>
 
 ### module.options : <code>Object</code>
-The options of the module.
-Getting options never return null, at least an empty Object {}.
-Setting null or undefined replaces the current options by an empty Object {}.
+The options of the module.Getting options never return null, at least an empty Object {}.Setting null or undefined replaces the current options by an empty Object {}.
 
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Throws**:
@@ -770,17 +745,12 @@ Setting null or undefined replaces the current options by an empty Object {}.
 
 **Example**  
 ```js
-console.log(myModule.options); // -> {port: 8080}
-myModule.options = {host: 'localhost'}; // -> {host: 'localhost'}
-myModule.options = null; // -> {}
+console.log(myModule.options); // -> {port: 8080}myModule.options = {host: 'localhost'}; // -> {host: 'localhost'}myModule.options = null; // -> {}
 ```
 <a name="Module+dependencies"></a>
 
 ### module.dependencies : <code>Array.&lt;String&gt;</code>
-The dependencies of the module.
-Getting dependencies never return null, at least an empty Array [].
-Setting null or undefined replaces the current config by an empty Array [].
-Setting a String will build an Array with that single String.
+The dependencies of the module.Getting dependencies never return null, at least an empty Array [].Setting null or undefined replaces the current config by an empty Array [].Setting a String will build an Array with that single String.
 
 **Kind**: instance property of <code>[Module](#Module)</code>  
 **Throws**:
@@ -798,10 +768,7 @@ Setting a String will build an Array with that single String.
 
 **Example**  
 ```js
-console.log(myModule.dependencies); // -> ['logger']
-myModule.dependencies = ['server', 'db']; // -> ['server', 'db']
-myModule.dependencies = null; // -> []
-myModule.dependencies = 'server'; // -> ['server']
+console.log(myModule.dependencies); // -> ['logger']myModule.dependencies = ['server', 'db']; // -> ['server', 'db']myModule.dependencies = null; // -> []myModule.dependencies = 'server'; // -> ['server']
 ```
 <a name="Module+package"></a>
 
@@ -816,8 +783,7 @@ The package of the module.
 <a name="Module+addOptions"></a>
 
 ### module.addOptions([options])
-Add options to the module.
-Merge with existing options.
+Add options to the module.Merge with existing options.
 
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Throws**:
@@ -834,16 +800,12 @@ Merge with existing options.
 
 **Example**  
 ```js
-console.log(myModule.options); // -> {port: 8080}
-myModule.addOptions({host: 'localhost'}); // -> {port: 8080, host: 'localhost'}
-myModule.addOptions(null); // -> {port: 8080, host: 'localhost'}
-myModule.addOptions(); // -> {port: 8080, host: 'localhost'}
+console.log(myModule.options); // -> {port: 8080}myModule.addOptions({host: 'localhost'}); // -> {port: 8080, host: 'localhost'}myModule.addOptions(null); // -> {port: 8080, host: 'localhost'}myModule.addOptions(); // -> {port: 8080, host: 'localhost'}
 ```
 <a name="Module+addDependencies"></a>
 
 ### module.addDependencies([...dependencies])
-Add dependencies to the module.
-Merge with existing dependencies and check the new dependencies, flatten the Array and remove duplicates and null.
+Add dependencies to the module.Merge with existing dependencies and check the new dependencies, flatten the Array and remove duplicates and null.
 
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Throws**:
@@ -860,12 +822,7 @@ Merge with existing dependencies and check the new dependencies, flatten the Arr
 
 **Example**  
 ```js
-console.log(myModule.dependencies); // -> ['logger']
-myModule.addDependencies(['server']); // -> ['logger', 'server']
-myModule.addDependencies(null); // -> ['logger', 'server']
-myModule.addDependencies(); // -> ['logger', 'server']
-myModule.addDependencies('socket'); // -> ['logger', 'server', 'socket']
-myModule.addDependencies('socket', 'utils', ['db', 'server']); // -> ['logger', 'server', 'socket', 'utils', 'db']
+console.log(myModule.dependencies); // -> ['logger']myModule.addDependencies(['server']); // -> ['logger', 'server']myModule.addDependencies(null); // -> ['logger', 'server']myModule.addDependencies(); // -> ['logger', 'server']myModule.addDependencies('socket'); // -> ['logger', 'server', 'socket']myModule.addDependencies('socket', 'utils', ['db', 'server']); // -> ['logger', 'server', 'socket', 'utils', 'db']
 ```
 <a name="Module+_changeStatus"></a>
 
@@ -946,10 +903,7 @@ Destroyed event. When the module has been destroyed.
 <a name="Module+setup"></a>
 
 ### module.setup(app, options, imports, done)
-The setup function of the module.
-Executed while the app is being setup.
-Could be overriden, does nothing by default.
-Once the app is resolved, this method is not available anymore.
+The setup function of the module.Executed while the app is being setup.Could be overriden, does nothing by default.Once the app is resolved, this method is not available anymore.
 
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
@@ -966,21 +920,12 @@ Once the app is resolved, this method is not available anymore.
 
 **Example**  
 ```js
-const Module = require('modulapp').Module;
-let myModule = new Module('myModule');
-
-// override the default setup function
-myModule.setup = function(app, options, imports, done) {
-   // place your custom code to be executed when myModule is setup
-}
+const Module = require('modulapp').Module;let myModule = new Module('myModule');// override the default setup functionmyModule.setup = function(app, options, imports, done) {   // place your custom code to be executed when myModule is setup}
 ```
 <a name="Module+enable"></a>
 
 ### module.enable(app, options, imports, done)
-The enable function of the module.
-Executed while the app is being started.
-Could be overriden, does nothing by default.
-Once the app is resolved, this method is not available anymore.
+The enable function of the module.Executed while the app is being started.Could be overriden, does nothing by default.Once the app is resolved, this method is not available anymore.
 
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
@@ -997,21 +942,12 @@ Once the app is resolved, this method is not available anymore.
 
 **Example**  
 ```js
-const Module = require('modulapp').Module;
-let myModule = new Module('myModule');
-
-// override the default enable function
-myModule.enable = function(app, options, imports, done) {
-   // place your custom code to be executed when myModule is enable
-}
+const Module = require('modulapp').Module;let myModule = new Module('myModule');// override the default enable functionmyModule.enable = function(app, options, imports, done) {   // place your custom code to be executed when myModule is enable}
 ```
 <a name="Module+disable"></a>
 
 ### module.disable(app, options, imports, done)
-The disable function of the module.
-Executed while the app is being stopped.
-Could be overriden, does nothing by default.
-Once the app is resolved, this method is not available anymore.
+The disable function of the module.Executed while the app is being stopped.Could be overriden, does nothing by default.Once the app is resolved, this method is not available anymore.
 
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
@@ -1028,21 +964,12 @@ Once the app is resolved, this method is not available anymore.
 
 **Example**  
 ```js
-const Module = require('modulapp').Module;
-let myModule = new Module('myModule');
-
-// override the default disable function
-myModule.disable = function(app, options, imports, done) {
-   // place your custom code to be executed when myModule is disabled
-}
+const Module = require('modulapp').Module;let myModule = new Module('myModule');// override the default disable functionmyModule.disable = function(app, options, imports, done) {   // place your custom code to be executed when myModule is disabled}
 ```
 <a name="Module+destroy"></a>
 
 ### module.destroy(app, options, imports, done)
-The destroy function of the module.
-Executed while the app is being destroyed.
-Could be overriden, does nothing by default.
-Once the app is resolved, this method is not available anymore.
+The destroy function of the module.Executed while the app is being destroyed.Could be overriden, does nothing by default.Once the app is resolved, this method is not available anymore.
 
 **Kind**: instance method of <code>[Module](#Module)</code>  
 **Category**: lifecycle hooks  
@@ -1059,31 +986,12 @@ Once the app is resolved, this method is not available anymore.
 
 **Example**  
 ```js
-const Module = require('modulapp').Module;
-let myModule = new Module('myModule');
-
-// override the default destroy function
-myModule.destroy = function(app, options, imports, done) {
-   // place your custom code to be executed when myModule is destroyed
-}
+const Module = require('modulapp').Module;let myModule = new Module('myModule');// override the default destroy functionmyModule.destroy = function(app, options, imports, done) {   // place your custom code to be executed when myModule is destroyed}
 ```
 <a name="Module.events"></a>
 
 ### Module.events : <code>enum</code>
-All supported events of Module class.
-
-```javascript
-{
-    SETTING_UP: 'setting_up',
-    SETUP: 'setup',
-    ENABLING: 'enabling',
-    ENABLED: 'enabled',
-    DISABLING: 'disabling',
-    DISABLED: 'disabled',
-    DESTROYING: 'destroying',
-    DESTROYED: 'destroyed'
-}
-```
+All supported events of Module class.```javascript{    SETTING_UP: 'setting_up',    SETUP: 'setup',    ENABLING: 'enabling',    ENABLED: 'enabled',    DISABLING: 'disabling',    DISABLED: 'disabled',    DESTROYING: 'destroying',    DESTROYED: 'destroyed'}```
 
 **Kind**: static enum of <code>[Module](#Module)</code>  
 **Access:** public  
@@ -1092,26 +1000,12 @@ All supported events of Module class.
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
-myModule.on(Module.events.SETUP, () => {
-    // define behavior when myModule has been setup
-});
+myModule.on(Module.events.SETUP, () => {    // define behavior when myModule has been setup});
 ```
 <a name="Module.status"></a>
 
 ### Module.status : <code>enum</code>
-All supported status of Module class.
-
-Don't confuse this static method Module.status with the instance method [status](#Module+status).
-
-```javascript
-{
-    CREATED: 'created',
-    SETUP: 'setup',
-    ENABLED: 'enabled',
-    DISABLED: 'disabled',
-    DESTROYED: 'destroyed'
-}
-```
+All supported status of Module class.Don't confuse this static method Module.status with the instance method [status](#Module+status).```javascript{    CREATED: 'created',    SETUP: 'setup',    ENABLED: 'enabled',    DISABLED: 'disabled',    DESTROYED: 'destroyed'}```
 
 **Kind**: static enum of <code>[Module](#Module)</code>  
 **Access:** public  
@@ -1120,9 +1014,7 @@ Don't confuse this static method Module.status with the instance method [status]
 **Author:** nauwep <nauwep.dev@gmail.com>  
 **Example**  
 ```js
-if (myModule.status === Module.status.ENABLED) {
-    myModule.foo();
-}
+if (myModule.status === Module.status.ENABLED) {    myModule.foo();}
 ```
 <a name="ModuleWrapper"></a>
 
@@ -1201,7 +1093,7 @@ The app managing the module.
 ### moduleWrapper.imports : <code>Object</code> ℗
 The list of dependencies of the module.
 A dependency is accessed by its id as key of this imports object.
-Dependencies are instance of ModuleWrapper wrapping an instance of Module.
+Dependencies are instance of Module.
 
 **Kind**: instance property of <code>[ModuleWrapper](#ModuleWrapper)</code>  
 **Access:** private  
@@ -1350,8 +1242,8 @@ Imports are passed to the module in the different lifecycle hook functions.
 ```javascript
 // example of imports object
 {
-    logger: loggerModuleWrapper,
-    server: serverModuleWrapper
+    logger: loggerModule,
+    server: serverModule
 }
 ```
 
@@ -1360,7 +1252,7 @@ Imports are passed to the module in the different lifecycle hook functions.
 
 - <code>Error</code> ERR_MOD_009 if the imports parameter is not an Object
 - <code>Error</code> ERR_MOD_011 if not in created status
-- <code>Error</code> ERR_MOD_012 if a value of the imports Object is not a ModuleWrapper instance
+- <code>Error</code> ERR_MOD_012 if a value of the imports Object is not a Module instance
 
 **Access:** private  
 **Since**: 1.0.0  
